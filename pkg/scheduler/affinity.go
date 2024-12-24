@@ -42,7 +42,7 @@ func (s *defaultSystemAffinityOps) SchedSetaffinity(pid int, mask *CPUSet) error
 func (s *defaultSystemAffinityOps) GetProcessThreads(pid int) ([]int, error) {
 	entries, err := os.ReadDir(fmt.Sprintf("/proc/%d/task", pid))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read process threads for pid %d: %w", pid, err)
 	}
 	var tids []int
 	for _, e := range entries {
@@ -56,7 +56,7 @@ func (s *defaultSystemAffinityOps) GetProcessThreads(pid int) ([]int, error) {
 func (s *defaultSystemAffinityOps) GetChildProcesses(pid int) ([]int, error) {
 	tids, err := s.GetProcessThreads(pid)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get child processes for pid %d: %w", pid, err)
 	}
 	var children []int
 	for _, tid := range tids {
@@ -96,7 +96,7 @@ func (a *defaultAffinityProvider) ApplyAffinity(vmid int, pid int, config *proxm
 
 	r, err := a.cpuInfo.GetCoreRanking()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to get core ranking: %w", err)
 	}
 	if len(r) == 0 {
 		return "", fmt.Errorf("core ranking calculation returned empty results, cannot apply affinity")

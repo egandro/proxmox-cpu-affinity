@@ -92,7 +92,7 @@ func (c *CPUInfo) Update(rounds int, iterations int) error {
 				// Measure latency between logical CPU i and logical CPU j
 				lat, err := measureSingleLink(src.CPU, dst.CPU, iterations)
 				if err != nil {
-					return err
+					return fmt.Errorf("failed to measure latency between CPU %d and %d: %w", src.CPU, dst.CPU, err)
 				}
 				latSums[i*numCores+j] += lat
 				latSqSums[i*numCores+j] += lat * lat
