@@ -145,8 +145,49 @@ func TestService_Ping(t *testing.T) {
 }
 
 func TestService_VmStarted_InvalidID(t *testing.T) {
-	// We don't need a full server start for this if we could test handler directly,
-	// but integration testing the router is safer.
-	// For brevity, relying on the previous test structure is fine.
-	// This test is just a placeholder to show where edge cases would go.
+	_, _, baseURL, teardown := setupTestService(t)
+	defer teardown()
+
+	url := fmt.Sprintf("%s/api/vmstarted/not-a-number", baseURL)
+	resp, err := http.Get(url)
+	assert.NoError(t, err)
+	defer func() { _ = resp.Body.Close() }()
+
+	assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+}
+
+func TestService_VmStarted_Error(t *testing.T) {
+	mockSched, _, baseURL, teardown := setupTestService(t)
+	defer teardown()
+
+	mockSched.On("VmStarted", 999).Return(nil, fmt.Errorf("VM not found"))
+
+	url := fmt.Sprintf("%s/api/vmstarted/999", baseURL)
+	resp, err := http.Get(url)
+	assert.NoError(t, err)
+	defer func() { _ = resp.Body.Close() }()
+
+	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	mockSched.AssertExpectations(t)
+}
+
+func TestService_GetCoreRanking_Error(t *testing.T) {
+	_, mockCpuInfo, baseURL, teardown := setupTestService(t)
+	defer teardown()
+
+	mockCpuInfo.On("GetCoreRanking").Return(nil, fmt.Errorf("ranking failed"))
+
+	url := fmt.Sprintf("%s/api/ranking", baseURL)
+	resp, err := http.Get(url)
+	assert.NoError(t, err)
+	defer func() { _ = resp.Body.Close() }()
+
+	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
+	mockCpuInfo.AssertExpectations(t)
+}
+
+func TestService_ShutdownNilServer(t *testing.T) {
+	svc := &service{}
+	err := svc.Shutdown(context.Background())
+	assert.NoError(t, err)
 }
