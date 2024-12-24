@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -15,16 +16,16 @@ type MockProxmoxClient struct {
 	mock.Mock
 }
 
-func (m *MockProxmoxClient) GetVmConfig(vmid int) (*proxmox.VmConfig, error) {
-	args := m.Called(vmid)
+func (m *MockProxmoxClient) GetVmConfig(ctx context.Context, vmid int) (*proxmox.VmConfig, error) {
+	args := m.Called(ctx, vmid)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).(*proxmox.VmConfig), args.Error(1)
 }
 
-func (m *MockProxmoxClient) GetVmPid(vmid int) (int, error) {
-	args := m.Called(vmid)
+func (m *MockProxmoxClient) GetVmPid(ctx context.Context, vmid int) (int, error) {
+	args := m.Called(ctx, vmid)
 	return args.Int(0), args.Error(1)
 }
 
@@ -33,8 +34,8 @@ type MockAffinityProvider struct {
 	mock.Mock
 }
 
-func (m *MockAffinityProvider) ApplyAffinity(vmid int, pid int, config *proxmox.VmConfig) (string, error) {
-	args := m.Called(vmid, pid, config)
+func (m *MockAffinityProvider) ApplyAffinity(ctx context.Context, vmid int, pid int, config *proxmox.VmConfig) (string, error) {
+	args := m.Called(ctx, vmid, pid, config)
 	return args.String(0), args.Error(1)
 }
 
@@ -125,15 +126,17 @@ func TestVmStarted(t *testing.T) {
 			mockProxmox := new(MockProxmoxClient)
 			mockAffinity := new(MockAffinityProvider)
 
+			ctx := context.Background()
+
 			// Setup expectations
-			mockProxmox.On("GetVmConfig", tt.vmid).Return(tt.config, tt.configErr)
+			mockProxmox.On("GetVmConfig", ctx, tt.vmid).Return(tt.config, tt.configErr)
 
 			if tt.configErr == nil {
-				mockProxmox.On("GetVmPid", tt.vmid).Return(tt.pid, tt.runningErr)
+				mockProxmox.On("GetVmPid", ctx, tt.vmid).Return(tt.pid, tt.runningErr)
 			}
 
 			if tt.configErr == nil && tt.runningErr == nil && tt.pid != -1 && (tt.config == nil || tt.config.Affinity == "") {
-				mockAffinity.On("ApplyAffinity", tt.vmid, tt.pid, tt.config).Return(tt.affinityResult, tt.affinityErr)
+				mockAffinity.On("ApplyAffinity", ctx, tt.vmid, tt.pid, tt.config).Return(tt.affinityResult, tt.affinityErr)
 			}
 
 			s := &scheduler{
@@ -141,7 +144,7 @@ func TestVmStarted(t *testing.T) {
 				affinity: mockAffinity,
 			}
 
-			result, err := s.VmStarted(tt.vmid)
+			result, err := s.VmStarted(ctx, tt.vmid)
 
 			if tt.expectError {
 				assert.Error(t, err)

@@ -1,6 +1,7 @@
 package proxmox
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -17,14 +18,14 @@ import (
 // Executor defines an interface for executing system commands.
 // This allows mocking the actual execution in tests.
 type Executor interface {
-	Output(name string, arg ...string) ([]byte, error)
+	Output(ctx context.Context, name string, arg ...string) ([]byte, error)
 }
 
 // executor is the standard implementation using os/exec.
 type executor struct{}
 
-func (d *executor) Output(name string, arg ...string) ([]byte, error) {
-	cmd := exec.Command(name, arg...)
+func (d *executor) Output(ctx context.Context, name string, arg ...string) ([]byte, error) {
+	cmd := exec.CommandContext(ctx, name, arg...)
 	return cmd.Output()
 }
 
@@ -85,11 +86,11 @@ type VmConfig struct {
 
 // GetVmConfig retrieves the configuration of a Proxmox VM by its ID.
 // It executes: /usr/bin/pvesh get /nodes/HOSTNAME/qemu/VMID/config --output-format json-pretty
-func (p *proxmox) GetVmConfig(vmid int) (*VmConfig, error) {
+func (p *proxmox) GetVmConfig(ctx context.Context, vmid int) (*VmConfig, error) {
 	// Construct the pvesh command
 	argPath := fmt.Sprintf("/nodes/%s/qemu/%d/config", p.nodeName, vmid)
 
-	output, err := p.executor.Output("/usr/bin/pvesh", "get", argPath, "--output-format", "json-pretty")
+	output, err := p.executor.Output(ctx, "/usr/bin/pvesh", "get", argPath, "--output-format", "json-pretty")
 	if err != nil {
 		return nil, fmt.Errorf("pvesh command failed: %w", err)
 	}
@@ -115,7 +116,7 @@ func (p *proxmox) GetVmConfig(vmid int) (*VmConfig, error) {
 }
 
 // GetVmPid checks if the VM is running and returns its PID. Returns -1 if not running.
-func (p *proxmox) GetVmPid(vmid int) (int, error) {
+func (p *proxmox) GetVmPid(_ context.Context, vmid int) (int, error) {
 	pidPath := fmt.Sprintf("%s/%d.pid", config.DefaultQemuServerPidDir, vmid)
 
 	content, err := p.sys.ReadFile(pidPath)
