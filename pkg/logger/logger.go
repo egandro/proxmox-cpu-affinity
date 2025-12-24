@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"strings"
 )
 
 // SimpleHandler implements slog.Handler for common log format.
@@ -39,20 +38,4 @@ func (h *SimpleHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
 
 func (h *SimpleHandler) WithGroup(name string) slog.Handler {
 	return h
-}
-
-// ParseLevel parses a string into a slog.Level.
-func ParseLevel(levelStr string) (slog.Level, error) {
-	switch strings.ToLower(levelStr) {
-	case "debug":
-		return slog.LevelDebug, nil
-	case "info":
-		return slog.LevelInfo, nil
-	case "warn":
-		return slog.LevelWarn, nil
-	case "error":
-		return slog.LevelError, nil
-	default:
-		return slog.LevelInfo, fmt.Errorf("unknown log level '%s'", levelStr)
-	}
 }
