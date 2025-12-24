@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/proxmox"
 )
@@ -11,7 +12,6 @@ import (
 // Scheduler defines the interface for VM scheduling operations.
 type Scheduler interface {
 	VmStarted(vmid int) (interface{}, error)
-	GetCoreRanking() ([]cpuinfo.CoreRanking, error)
 }
 
 // ProxmoxClient defines the interface for Proxmox operations.
@@ -27,14 +27,14 @@ type scheduler struct {
 }
 
 // New creates a new scheduler.
-func New() (Scheduler, error) {
+func New(cfg *config.Config, cpuInfo cpuinfo.Provider) (Scheduler, error) {
 	p, err := proxmox.New()
 	if err != nil {
 		return nil, err
 	}
 	return &scheduler{
 		proxmox:  p,
-		affinity: newAffinityProvider(),
+		affinity: newAffinityProvider(cfg, cpuInfo),
 	}, nil
 }
 
@@ -73,9 +73,4 @@ func (s *scheduler) VmStarted(vmid int) (interface{}, error) {
 	}
 
 	return map[string]interface{}{"action": fmt.Sprintf("new affinity: %s", affinity)}, nil
-}
-
-// GetCoreRanking retrieves or calculates the CPU core rankings.
-func (s *scheduler) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
-	return s.affinity.GetCoreRanking()
 }

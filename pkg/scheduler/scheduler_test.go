@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/proxmox"
 )
 
@@ -32,14 +31,6 @@ func (m *MockProxmoxClient) GetVmPid(vmid int) (int, error) {
 // MockAffinityProvider mocks the affinityProvider interface.
 type MockAffinityProvider struct {
 	mock.Mock
-}
-
-func (m *MockAffinityProvider) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
-	args := m.Called()
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).([]cpuinfo.CoreRanking), args.Error(1)
 }
 
 func (m *MockAffinityProvider) ApplyAffinity(vmid int, pid int, config *proxmox.VmConfig) (string, error) {
@@ -118,6 +109,15 @@ func TestVmStarted(t *testing.T) {
 			expectError: true,
 			pid:         12345,
 		},
+		{
+			name: "Error - GetVmPid Failed",
+			vmid: 106,
+			config: &proxmox.VmConfig{
+				Cores: 4,
+			},
+			runningErr:  errors.New("pid error"),
+			expectError: true,
+		},
 	}
 
 	for _, tt := range tests {
@@ -132,7 +132,7 @@ func TestVmStarted(t *testing.T) {
 				mockProxmox.On("GetVmPid", tt.vmid).Return(tt.pid, tt.runningErr)
 			}
 
-			if tt.configErr == nil && tt.pid != -1 && (tt.config == nil || tt.config.Affinity == "") {
+			if tt.configErr == nil && tt.runningErr == nil && tt.pid != -1 && (tt.config == nil || tt.config.Affinity == "") {
 				mockAffinity.On("ApplyAffinity", tt.vmid, tt.pid, tt.config).Return(tt.affinityResult, tt.affinityErr)
 			}
 

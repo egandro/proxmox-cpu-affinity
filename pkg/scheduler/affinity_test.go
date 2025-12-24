@@ -18,8 +18,13 @@ type MockCpuInfoProvider struct {
 	mock.Mock
 }
 
-func (m *MockCpuInfoProvider) GetCoreRanking(rounds int, iterations int, onProgress func(int, int)) ([]cpuinfo.CoreRanking, error) {
-	args := m.Called(rounds, iterations, onProgress)
+func (m *MockCpuInfoProvider) Update(rounds int, iterations int) error {
+	args := m.Called(rounds, iterations)
+	return args.Error(0)
+}
+
+func (m *MockCpuInfoProvider) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
+	args := m.Called()
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
@@ -172,13 +177,14 @@ func TestApplyAffinity(t *testing.T) {
 				cpuInfo:   mockCpu,
 				sys:       mockSys,
 				lastIndex: 0,
+				config:    &config.Config{Rounds: 1, Iterations: 1},
 			}
 
 			// Setup Ranking Mock
 			if tt.mockRankingErr != nil {
-				mockCpu.On("GetCoreRanking", config.DefaultRounds, config.DefaultIterations, mock.Anything).Return(nil, tt.mockRankingErr)
+				mockCpu.On("GetCoreRanking").Return(nil, tt.mockRankingErr)
 			} else {
-				mockCpu.On("GetCoreRanking", config.DefaultRounds, config.DefaultIterations, mock.Anything).Return(tt.mockRankings, nil)
+				mockCpu.On("GetCoreRanking").Return(tt.mockRankings, nil)
 			}
 
 			// Setup Sys Mock
@@ -200,54 +206,4 @@ func TestApplyAffinity(t *testing.T) {
 			mockSys.AssertExpectations(t)
 		})
 	}
-}
-
-func TestGetCoreRanking(t *testing.T) {
-	rankings := []cpuinfo.CoreRanking{
-		{
-			CPU: 0,
-			Ranking: []cpuinfo.Neighbor{
-				{CPU: 1, LatencyNS: 10},
-			},
-		},
-	}
-
-	t.Run("Success - Fetch and Cache", func(t *testing.T) {
-		mockCpu := new(MockCpuInfoProvider)
-		p := &defaultAffinityProvider{
-			cpuInfo: mockCpu,
-		}
-
-		// Should be called exactly once
-		mockCpu.On("GetCoreRanking", config.DefaultRounds, config.DefaultIterations, mock.Anything).Return(rankings, nil).Once()
-
-		// First call - triggers fetch
-		got1, err := p.GetCoreRanking()
-		assert.NoError(t, err)
-		assert.Equal(t, rankings, got1)
-
-		// Second call - should use cache
-		got2, err := p.GetCoreRanking()
-		assert.NoError(t, err)
-		assert.Equal(t, rankings, got2)
-
-		mockCpu.AssertExpectations(t)
-	})
-
-	t.Run("Error - Provider Failure", func(t *testing.T) {
-		mockCpu := new(MockCpuInfoProvider)
-		p := &defaultAffinityProvider{
-			cpuInfo: mockCpu,
-		}
-
-		expectedErr := errors.New("topology detection failed")
-		mockCpu.On("GetCoreRanking", config.DefaultRounds, config.DefaultIterations, mock.Anything).Return(nil, expectedErr).Once()
-
-		got, err := p.GetCoreRanking()
-		assert.Error(t, err)
-		assert.Nil(t, got)
-		assert.Equal(t, expectedErr, err)
-
-		mockCpu.AssertExpectations(t)
-	})
 }

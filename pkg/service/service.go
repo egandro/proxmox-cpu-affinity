@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/scheduler"
 )
 
@@ -18,14 +19,16 @@ type service struct {
 	Port      int
 	server    *http.Server
 	scheduler scheduler.Scheduler
+	cpuInfo   cpuinfo.Provider
 }
 
 // New creates a new service instance.
-func New(host string, port int, sched scheduler.Scheduler) *service {
+func New(host string, port int, sched scheduler.Scheduler, cpuInfo cpuinfo.Provider) *service {
 	return &service{
 		Host:      host,
 		Port:      port,
 		scheduler: sched,
+		cpuInfo:   cpuInfo,
 	}
 }
 
@@ -34,6 +37,7 @@ func (s *service) Start() error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/vmstarted/{vmid}", s.handleVmStarted)
 	mux.HandleFunc("GET /api/ranking", s.handleGetCoreRanking)
+	mux.HandleFunc("GET /api/ping", s.handlePing)
 
 	addr := fmt.Sprintf("%s:%d", s.Host, s.Port)
 	slog.Info("Starting HTTP service", "address", addr)
@@ -70,12 +74,17 @@ func (s *service) handleVmStarted(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *service) handleGetCoreRanking(w http.ResponseWriter, r *http.Request) {
-	rankings, err := s.scheduler.GetCoreRanking()
+	rankings, err := s.cpuInfo.GetCoreRanking()
 	if err != nil {
 		s.respond(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
 	s.respond(w, http.StatusOK, rankings)
+}
+
+func (s *service) handlePing(w http.ResponseWriter, r *http.Request) {
+	slog.Debug("ping received")
+	s.respond(w, http.StatusOK, map[string]string{"ping": "pong"})
 }
 
 func (s *service) respond(w http.ResponseWriter, status int, data interface{}) {

@@ -37,6 +37,12 @@ const (
 	// Proxmox defaults
 	DefaultQemuServerPidDir = "/var/run/qemu-server"
 	DefaultConfigFilename   = "/etc/default/proxmox-cpu-affinity"
+
+	// Webhook defaults
+	DefaultWebhookRetry          = 10
+	DefaultWebhookSleep          = 10 // in seconds
+	DefaultWebhookTimeout        = 30 // in seconds
+	DefaultWebhookPingOnPreStart = true
 )
 
 // AdaptiveCpuInfoParameters calculates measurement parameters based on CPU count.
@@ -66,13 +72,17 @@ func AdaptiveCpuInfoParameters() (int, int) {
 }
 
 type Config struct {
-	ServiceHost         string
-	ServicePort         int
-	InsecureAllowRemote bool
-	LogLevel            string
-	LogFile             string
-	Rounds              int
-	Iterations          int
+	ServiceHost           string
+	ServicePort           int
+	InsecureAllowRemote   bool
+	LogLevel              string
+	LogFile               string
+	Rounds                int
+	Iterations            int
+	WebhookRetry          int
+	WebhookSleep          int // in seconds
+	WebhookPingOnPreStart bool
+	WebhookTimeout        int // in seconds
 }
 
 func (c *Config) Validate() error {
@@ -110,13 +120,17 @@ func Load(filename string) *Config {
 	defaultRounds, defaultIterations := AdaptiveCpuInfoParameters()
 
 	return &Config{
-		ServiceHost:         getEnv("PCA_HOST", DefaultServiceHost),
-		ServicePort:         getEnvInt("PCA_PORT", DefaultServicePort),
-		InsecureAllowRemote: getEnvBool("PCA_INSECURE_ALLOW_REMOTE", DefaultInsecureAllowRemote),
-		LogLevel:            getEnv("PCA_LOG_LEVEL", DefaultLogLevel),
-		LogFile:             getEnv("PCA_LOG_FILE", DefaultLogFile),
-		Rounds:              getEnvInt("PCA_ROUNDS", defaultRounds),
-		Iterations:          getEnvInt("PCA_ITERATIONS", defaultIterations),
+		ServiceHost:           getEnv("PCA_HOST", DefaultServiceHost),
+		ServicePort:           getEnvInt("PCA_PORT", DefaultServicePort),
+		InsecureAllowRemote:   getEnvBool("PCA_INSECURE_ALLOW_REMOTE", DefaultInsecureAllowRemote),
+		LogLevel:              getEnv("PCA_LOG_LEVEL", DefaultLogLevel),
+		LogFile:               getEnv("PCA_LOG_FILE", DefaultLogFile),
+		Rounds:                getEnvInt("PCA_ROUNDS", defaultRounds),
+		Iterations:            getEnvInt("PCA_ITERATIONS", defaultIterations),
+		WebhookRetry:          getEnvInt("PCA_WEBHOOK_RETRY", DefaultWebhookRetry),
+		WebhookSleep:          getEnvInt("PCA_WEBHOOK_SLEEP", DefaultWebhookSleep),
+		WebhookTimeout:        getEnvInt("PCA_WEBHOOK_TIMEOUT", DefaultWebhookTimeout),
+		WebhookPingOnPreStart: getEnvBool("PCA_WEBHOOK_PING_ON_PRESTART", DefaultWebhookPingOnPreStart),
 	}
 }
 

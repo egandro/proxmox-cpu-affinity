@@ -7,9 +7,15 @@ import (
 )
 
 func TestGetCoreRanking_OneIteration(t *testing.T) {
-	c := New()
+	c := New(nil)
 	// Run 1 round with 1 iteration to verify the loop logic without heavy load
-	rankings, err := c.GetCoreRanking(1, 1, nil)
+	err := c.Update(1, 1)
+	if err != nil {
+		t.Logf("Update failed (expected in non-Linux/restricted envs): %v", err)
+		return
+	}
+
+	rankings, err := c.GetCoreRanking()
 
 	if err != nil {
 		t.Logf("GetCoreRanking failed (expected in non-Linux/restricted envs): %v", err)

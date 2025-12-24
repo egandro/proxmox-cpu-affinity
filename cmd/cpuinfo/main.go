@@ -15,7 +15,8 @@ func main() {
 	showProgress := flag.Bool("progress", false, "Show progress during calculation")
 	flag.Parse()
 
-	c := cpuinfo.New()
+	cfg := config.Load("")
+
 	var onProgress func(int, int)
 	if *showProgress {
 		onProgress = func(round, total int) {
@@ -25,7 +26,12 @@ func main() {
 			}
 		}
 	}
-	rankings, err := c.GetCoreRanking(config.DefaultRounds, config.DefaultIterations, onProgress)
+	c := cpuinfo.New(onProgress)
+	if err := c.Update(cfg.Rounds, cfg.Iterations); err != nil {
+		fmt.Fprintf(os.Stderr, "Error calculating rankings: %v\n", err)
+		os.Exit(1)
+	}
+	rankings, err := c.GetCoreRanking()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error calculating rankings: %v\n", err)
 		os.Exit(1)

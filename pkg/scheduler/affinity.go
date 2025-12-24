@@ -1,7 +1,6 @@
 package scheduler
 
 import (
-	"encoding/json"
 	"fmt"
 	"log/slog"
 	"os"
@@ -9,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"golang.org/x/sys/unix"
 
@@ -20,12 +18,11 @@ import (
 
 // affinityProvider defines the internal interface for affinity operations.
 type affinityProvider interface {
-	GetCoreRanking() ([]cpuinfo.CoreRanking, error)
 	ApplyAffinity(vmid int, pid int, config *proxmox.VmConfig) (string, error)
 }
 
 type cpuInfoProvider interface {
-	GetCoreRanking(rounds int, iterations int, onProgress func(int, int)) ([]cpuinfo.CoreRanking, error)
+	GetCoreRanking() ([]cpuinfo.CoreRanking, error)
 }
 
 // SystemAffinityOps defines an interface for system-level affinity operations.
@@ -78,51 +75,25 @@ func (s *defaultSystemAffinityOps) GetChildProcesses(pid int) ([]int, error) {
 type defaultAffinityProvider struct {
 	cpuInfo    cpuInfoProvider
 	sys        SystemAffinityOps
-	rankings   []cpuinfo.CoreRanking
-	rankingsMu sync.Mutex
 	affinityMu sync.Mutex
 	lastIndex  int
+	config     *config.Config
 }
 
-func newAffinityProvider() affinityProvider {
+func newAffinityProvider(cfg *config.Config, cpuInfo cpuInfoProvider) affinityProvider {
 	return &defaultAffinityProvider{
-		cpuInfo:   cpuinfo.New(),
+		cpuInfo:   cpuInfo,
 		sys:       &defaultSystemAffinityOps{},
 		lastIndex: 0,
+		config:    cfg,
 	}
-}
-
-func (a *defaultAffinityProvider) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
-	a.rankingsMu.Lock()
-	defer a.rankingsMu.Unlock()
-
-	if a.rankings != nil {
-		return a.rankings, nil
-	}
-
-	slog.Info("Calculating CPU topology ranking", "rounds", config.DefaultRounds, "iterations", config.DefaultIterations)
-	start := time.Now()
-	onProgress := func(round, total int) {
-		slog.Debug("Ranking calculation progress", "round", round, "total", total)
-	}
-
-	rankings, err := a.cpuInfo.GetCoreRanking(config.DefaultRounds, config.DefaultIterations, onProgress)
-	if err != nil {
-		return nil, err
-	}
-
-	statsJSON, _ := json.Marshal(cpuinfo.SummarizeRankings(rankings))
-	slog.Info("CPU topology ranking calculated", "duration", time.Since(start).Round(time.Millisecond), "summary", string(statsJSON))
-
-	a.rankings = rankings
-	return a.rankings, nil
 }
 
 func (a *defaultAffinityProvider) ApplyAffinity(vmid int, pid int, config *proxmox.VmConfig) (string, error) {
 	a.affinityMu.Lock()
 	defer a.affinityMu.Unlock()
 
-	r, err := a.GetCoreRanking()
+	r, err := a.cpuInfo.GetCoreRanking()
 	if err != nil {
 		return "", err
 	}
