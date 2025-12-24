@@ -1,0 +1,5 @@
+{
+    "affinity": "0,1,2,3",
+    "cores": 4,
+    "sockets": 1
+}

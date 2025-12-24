@@ -1,0 +1,13 @@
+# Configuration for proxmox-cpu-affinity
+
+# Service Host and Port
+# PCA_HOST=127.0.0.1 # This must be localhost
+# PCA_PORT=8245
+
+# Logging
+# PCA_LOG_LEVEL=info
+# PCA_LOG_FILE=/var/log/proxmox-cpu-affinity.log
+
+# CPU Info / Scheduler Settings
+# PCA_ROUNDS=10
+# PCA_ITERATIONS=100000

@@ -1,0 +1,10 @@
+[Unit]
+Description=Proxmox CPU Affinity Service
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/proxmox-cpu-affinity-service
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

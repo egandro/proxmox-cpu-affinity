@@ -1,0 +1,13 @@
+# Binaries
+/bin
+
+# Go build artifacts
+*.exe
+*.test
+*.out
+*.deb
+/dist
+
+# IDEs
+.vscode/
+.idea/

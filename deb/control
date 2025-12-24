@@ -1,0 +1,8 @@
+Package: proxmox-cpu-affinity
+Version: __VERSION__
+Section: utils
+Priority: optional
+Architecture: __ARCH__
+Maintainer: Harald Fielker <harald.fielker@gmail.com>
+Description: Proxmox CPU Affinity Service
+ Automates CPU affinity for VMs based on topology.
