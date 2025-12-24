@@ -42,29 +42,30 @@ const (
 	DefaultHookTimeout = 300 // 5 minutes
 )
 
-// AdaptiveParameters calculates measurement parameters based on CPU count.
+// AdaptiveCpuInfoParameters calculates measurement parameters based on CPU count.
 // Larger systems use reduced parameters to avoid excessive benchmark time.
 // Returns (rounds, iterations).
-func AdaptiveParameters() (int, int) {
+func AdaptiveCpuInfoParameters() (int, int) {
 	cpuCount := runtime.NumCPU()
 
-	switch {
-	case cpuCount <= 16:
-		// Small systems: full precision
-		return 10, 100_000
-	case cpuCount <= 32:
-		// Medium systems: ~4x faster
-		return 5, 50_000
-	case cpuCount <= 64:
-		// Large systems: ~16x faster
-		return 3, 25_000
-	case cpuCount <= 128:
-		// Very large systems: ~50x faster
-		return 2, 10_000
-	default:
-		// Massive systems (>128 cores): ~100x faster
-		return 2, 5_000
+	limits := []struct {
+		cores      int
+		rounds     int
+		iterations int
+	}{
+		{16, 10, 100_000}, // Small systems: full precision
+		{32, 5, 50_000},   // Medium systems: ~4x faster
+		{64, 3, 25_000},   // Large systems: ~16x faster
+		{128, 2, 10_000},  // Very large systems: ~50x faster
 	}
+	for _, l := range limits {
+		if cpuCount <= l.cores {
+			return l.rounds, l.iterations
+		}
+	}
+
+	// Massive systems (>128 cores): ~100x faster
+	return 2, 5_000
 }
 
 type Config struct {
@@ -84,7 +85,7 @@ func Load(filename string) *Config {
 	_ = godotenv.Load(filename)
 
 	// Get adaptive defaults based on CPU count, allowing user overrides
-	defaultRounds, defaultIterations := AdaptiveParameters()
+	defaultRounds, defaultIterations := AdaptiveCpuInfoParameters()
 
 	return &Config{
 		ServiceHost: getEnv("PCA_HOST", DefaultServiceHost),

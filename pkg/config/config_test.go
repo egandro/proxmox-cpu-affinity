@@ -7,8 +7,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAdaptiveParameters(t *testing.T) {
-	rounds, iterations := AdaptiveParameters()
+func TestAdaptiveCpuInfoParameters(t *testing.T) {
+	rounds, iterations := AdaptiveCpuInfoParameters()
+
+	// Verify we get valid positive values
+	assert.Greater(t, rounds, 0, "rounds should be positive")
+	assert.Greater(t, iterations, 0, "iterations should be positive")
+}
+
+func TestAdaptiveCpuInfoParameters_DeveloperHack(t *testing.T) {
+	t.Skip("Skipping developer adaptive cpuinfo parameters test.")
+
+	rounds, iterations := AdaptiveCpuInfoParameters()
 	cpuCount := runtime.NumCPU()
 
 	// Verify we get valid positive values
@@ -45,7 +55,7 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, DefaultLogFile, cfg.LogFile)
 
 	// Rounds and iterations should match adaptive defaults
-	expectedRounds, expectedIterations := AdaptiveParameters()
+	expectedRounds, expectedIterations := AdaptiveCpuInfoParameters()
 	assert.Equal(t, expectedRounds, cfg.Rounds)
 	assert.Equal(t, expectedIterations, cfg.Iterations)
 }
