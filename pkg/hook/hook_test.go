@@ -2,10 +2,47 @@ package hook
 
 import (
 	"bytes"
+	"io"
+	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+// mockHTTPClient is a mock HTTP client for testing.
+type mockHTTPClient struct {
+	responses []*http.Response
+	errors    []error
+	callCount int
+}
+
+func (m *mockHTTPClient) Get(url string) (*http.Response, error) {
+	idx := m.callCount
+	m.callCount++
+	if idx >= len(m.responses) {
+		return nil, m.errors[len(m.errors)-1]
+	}
+	if idx < len(m.errors) && m.errors[idx] != nil {
+		return nil, m.errors[idx]
+	}
+	return m.responses[idx], nil
+}
+
+func newMockHTTPClient(statusCode int) *mockHTTPClient {
+	return &mockHTTPClient{
+		responses: []*http.Response{
+			{
+				StatusCode: statusCode,
+				Body:       io.NopCloser(strings.NewReader(`{"status":"ok"}`)),
+			},
+			{
+				StatusCode: statusCode,
+				Body:       io.NopCloser(strings.NewReader(`{}`)),
+			},
+		},
+	}
+}
 
 func TestHandler_OnPreStart(t *testing.T) {
 	var buf bytes.Buffer
@@ -17,10 +54,13 @@ func TestHandler_OnPreStart(t *testing.T) {
 
 func TestHandler_OnPostStart(t *testing.T) {
 	var buf bytes.Buffer
-	h := &handler{Output: &buf}
+	mockClient := newMockHTTPClient(http.StatusOK)
+	h := &handler{Output: &buf, client: mockClient}
 
 	err := h.OnPostStart(100)
 	assert.NoError(t, err)
+	// Should have called health check and vmstarted endpoint
+	assert.GreaterOrEqual(t, mockClient.callCount, 2)
 }
 
 func TestHandler_OnPreStop(t *testing.T) {

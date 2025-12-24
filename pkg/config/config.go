@@ -35,6 +35,11 @@ const (
 	// Proxmox defaults
 	DefaultQemuServerPidDir = "/var/run/qemu-server"
 	DefaultConfigFilename   = "/etc/default/proxmox-cpu-affinity"
+
+	// Hook defaults
+	// DefaultHookTimeout is the maximum time in seconds to wait for the service.
+	// This should be generous enough for slow system startups.
+	DefaultHookTimeout = 300 // 5 minutes
 )
 
 // AdaptiveParameters calculates measurement parameters based on CPU count.
@@ -69,6 +74,7 @@ type Config struct {
 	LogFile     string
 	Rounds      int
 	Iterations  int
+	HookTimeout int // seconds to wait for service availability
 }
 
 func Load(filename string) *Config {
@@ -87,6 +93,7 @@ func Load(filename string) *Config {
 		LogFile:     getEnv("PCA_LOG_FILE", DefaultLogFile),
 		Rounds:      getEnvInt("PCA_ROUNDS", defaultRounds),
 		Iterations:  getEnvInt("PCA_ITERATIONS", defaultIterations),
+		HookTimeout: getEnvInt("PCA_HOOK_TIMEOUT", DefaultHookTimeout),
 	}
 }
 

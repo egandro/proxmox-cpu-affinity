@@ -10,6 +10,8 @@ import (
 
 // Scheduler defines the interface for VM scheduling operations.
 type Scheduler interface {
+	// Init pre-computes the CPU core rankings. Should be called before starting the service.
+	Init() error
 	VmStarted(vmid int) (interface{}, error)
 	GetCoreRanking() ([]cpuinfo.CoreRanking, error)
 }
@@ -38,6 +40,16 @@ func New() (Scheduler, error) {
 	}, nil
 }
 
+// Init pre-computes the CPU core rankings.
+// This should be called before starting the HTTP service to ensure rankings are ready.
+func (s *scheduler) Init() error {
+	_, err := s.affinity.GetCoreRanking()
+	if err != nil {
+		return fmt.Errorf("failed to compute core ranking: %w", err)
+	}
+	return nil
+}
+
 // VmStarted handles the logic for starting a VM with affinity.
 func (s *scheduler) VmStarted(vmid int) (interface{}, error) {
 	slog.Info("VmStarted called", "vmid", vmid)
@@ -46,16 +58,6 @@ func (s *scheduler) VmStarted(vmid int) (interface{}, error) {
 	if err != nil {
 		slog.Error("Error getting VM config", "vmid", vmid, "error", err)
 		return nil, err
-	}
-
-	// Pre-compute/retrieve core rankings BEFORE getting PID.
-	// This eliminates the TOCTOU race window during expensive CPU benchmarking.
-	// On first call this may take seconds to minutes depending on CPU count.
-	// Subsequent calls return cached results immediately.
-	_, err = s.affinity.GetCoreRanking()
-	if err != nil {
-		slog.Error("Error getting core ranking", "vmid", vmid, "error", err)
-		return nil, fmt.Errorf("failed to get core ranking: %w", err)
 	}
 
 	pid, err := s.proxmox.GetVmPid(vmid)
