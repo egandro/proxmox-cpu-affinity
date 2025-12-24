@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"runtime"
 	"strconv"
@@ -21,8 +22,9 @@ const (
 	DefaultIterations = 100_000
 
 	// Service defaults
-	DefaultServicePort = 8245
-	DefaultServiceHost = "127.0.0.1"
+	DefaultServicePort         = 8245
+	DefaultServiceHost         = "127.0.0.1"
+	DefaultInsecureAllowRemote = false
 
 	// Logging defaults
 	DefaultLogDir      = "/var/log"
@@ -64,12 +66,38 @@ func AdaptiveCpuInfoParameters() (int, int) {
 }
 
 type Config struct {
-	ServiceHost string
-	ServicePort int
-	LogLevel    string
-	LogFile     string
-	Rounds      int
-	Iterations  int
+	ServiceHost         string
+	ServicePort         int
+	InsecureAllowRemote bool
+	LogLevel            string
+	LogFile             string
+	Rounds              int
+	Iterations          int
+}
+
+func (c *Config) Validate() error {
+	if !isLocalhostAddr(c.ServiceHost) {
+		if !c.InsecureAllowRemote {
+			return fmt.Errorf(`binding to non-localhost address %q exposes an unauthenticated API.
+
+This service has no authentication. Binding to a network-accessible address
+allows any host on the network to trigger CPU affinity changes on your VMs.
+
+If you understand the risks and want to proceed anyway, use:
+    --insecure-allow-remote
+    or set PCA_INSECURE_ALLOW_REMOTE=true`, c.ServiceHost)
+		}
+		fmt.Fprintf(os.Stderr, "WARNING: Binding to %q - unauthenticated API will be network-accessible!\n", c.ServiceHost)
+	}
+	return nil
+}
+
+func isLocalhostAddr(host string) bool {
+	switch host {
+	case "127.0.0.1", "localhost", "::1", "":
+		return true
+	}
+	return false
 }
 
 func Load(filename string) *Config {
@@ -82,18 +110,28 @@ func Load(filename string) *Config {
 	defaultRounds, defaultIterations := AdaptiveCpuInfoParameters()
 
 	return &Config{
-		ServiceHost: getEnv("PCA_HOST", DefaultServiceHost),
-		ServicePort: getEnvInt("PCA_PORT", DefaultServicePort),
-		LogLevel:    getEnv("PCA_LOG_LEVEL", DefaultLogLevel),
-		LogFile:     getEnv("PCA_LOG_FILE", DefaultLogFile),
-		Rounds:      getEnvInt("PCA_ROUNDS", defaultRounds),
-		Iterations:  getEnvInt("PCA_ITERATIONS", defaultIterations),
+		ServiceHost:         getEnv("PCA_HOST", DefaultServiceHost),
+		ServicePort:         getEnvInt("PCA_PORT", DefaultServicePort),
+		InsecureAllowRemote: getEnvBool("PCA_INSECURE_ALLOW_REMOTE", DefaultInsecureAllowRemote),
+		LogLevel:            getEnv("PCA_LOG_LEVEL", DefaultLogLevel),
+		LogFile:             getEnv("PCA_LOG_FILE", DefaultLogFile),
+		Rounds:              getEnvInt("PCA_ROUNDS", defaultRounds),
+		Iterations:          getEnvInt("PCA_ITERATIONS", defaultIterations),
 	}
 }
 
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
+	}
+	return fallback
+}
+
+func getEnvBool(key string, fallback bool) bool {
+	if value, ok := os.LookupEnv(key); ok {
+		if b, err := strconv.ParseBool(value); err == nil {
+			return b
+		}
 	}
 	return fallback
 }

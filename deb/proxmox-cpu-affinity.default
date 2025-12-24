@@ -1,8 +1,15 @@
 # Configuration for proxmox-cpu-affinity
 
 # Service Host and Port
-# PCA_HOST=127.0.0.1 # This must be localhost
+# PCA_HOST=127.0.0.1
 # PCA_PORT=8245
+
+# Security
+# By default, the service only binds to localhost to prevent unauthorized access.
+# Setting PCA_INSECURE_ALLOW_REMOTE=true allows binding to non-localhost addresses.
+# WARNING: This exposes the unauthenticated API to the network. Anyone with network
+# access to this port can change CPU affinity settings on your VMs.
+# PCA_INSECURE_ALLOW_REMOTE=false
 
 # Logging
 # PCA_LOG_LEVEL=info

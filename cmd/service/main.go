@@ -25,6 +25,7 @@ func main() {
 	logFileFlag := flag.String("log-file", "", "Path to log file")
 	logLevelFlag := flag.String("log-level", "", "Log level (debug, info, notice, warn, error)")
 	toStdout := flag.Bool("stdout", false, "Log to stdout")
+	insecureBind := flag.Bool("insecure-allow-remote", false, "Allow binding to non-localhost addresses (DANGEROUS: exposes unauthenticated API)")
 
 	flag.Parse()
 
@@ -42,6 +43,15 @@ func main() {
 	}
 	if *logLevelFlag != "" {
 		cfg.LogLevel = *logLevelFlag
+	}
+	if *insecureBind {
+		cfg.InsecureAllowRemote = true
+	}
+
+	// security check for insecure bind
+	if err := cfg.Validate(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
 	}
 
 	var logF *os.File
