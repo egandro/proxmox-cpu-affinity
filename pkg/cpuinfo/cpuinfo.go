@@ -12,9 +12,10 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-
-	"golang.org/x/sys/unix"
 )
+
+// lockToCPU is defined in cpuinfo_linux.go for Linux
+// and cpuinfo_other.go for other platforms.
 
 // Provider defines the interface for CPU topology and ranking operations.
 type Provider interface {
@@ -248,15 +249,6 @@ func measureSingleLink(cpuA, cpuB, iter int) (float64, error) {
 	return float64(duration.Nanoseconds()) / float64(iter*2), nil
 }
 
-func lockToCPU(cpuID int) error {
-	runtime.LockOSThread()
-	var mask unix.CPUSet
-	mask.Set(cpuID)
-	if err := unix.SchedSetaffinity(0, &mask); err != nil {
-		return fmt.Errorf("failed to lock thread to CPU %d: %w", cpuID, err)
-	}
-	return nil
-}
 
 func readSysFSInt(path string) (int, error) {
 	realPath, err := filepath.EvalSymlinks(path)

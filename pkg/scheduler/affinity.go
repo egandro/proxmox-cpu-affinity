@@ -9,12 +9,13 @@ import (
 	"strings"
 	"sync"
 
-	"golang.org/x/sys/unix"
-
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/proxmox"
 )
+
+// CPUSet and schedSetaffinity are defined in affinity_linux.go for Linux
+// and affinity_other.go for other platforms.
 
 // affinityProvider defines the internal interface for affinity operations.
 type affinityProvider interface {
@@ -27,15 +28,15 @@ type cpuInfoProvider interface {
 
 // SystemAffinityOps defines an interface for system-level affinity operations.
 type SystemAffinityOps interface {
-	SchedSetaffinity(pid int, mask *unix.CPUSet) error
+	SchedSetaffinity(pid int, mask *CPUSet) error
 	GetProcessThreads(pid int) ([]int, error)
 	GetChildProcesses(pid int) ([]int, error)
 }
 
 type defaultSystemAffinityOps struct{}
 
-func (s *defaultSystemAffinityOps) SchedSetaffinity(pid int, mask *unix.CPUSet) error {
-	return unix.SchedSetaffinity(pid, mask)
+func (s *defaultSystemAffinityOps) SchedSetaffinity(pid int, mask *CPUSet) error {
+	return schedSetaffinity(pid, mask)
 }
 
 func (s *defaultSystemAffinityOps) GetProcessThreads(pid int) ([]int, error) {
@@ -117,7 +118,7 @@ func (a *defaultAffinityProvider) ApplyAffinity(vmid int, pid int, config *proxm
 	}
 
 	var res []string
-	var mask unix.CPUSet
+	var mask CPUSet
 
 	primary := r[a.lastIndex]
 	res = append(res, strconv.Itoa(primary.CPU))
