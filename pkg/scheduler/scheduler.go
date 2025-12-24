@@ -48,6 +48,16 @@ func (s *scheduler) VmStarted(vmid int) (interface{}, error) {
 		return nil, err
 	}
 
+	// Pre-compute/retrieve core rankings BEFORE getting PID.
+	// This eliminates the TOCTOU race window during expensive CPU benchmarking.
+	// On first call this may take seconds to minutes depending on CPU count.
+	// Subsequent calls return cached results immediately.
+	_, err = s.affinity.GetCoreRanking()
+	if err != nil {
+		slog.Error("Error getting core ranking", "vmid", vmid, "error", err)
+		return nil, fmt.Errorf("failed to get core ranking: %w", err)
+	}
+
 	pid, err := s.proxmox.GetVmPid(vmid)
 	if err != nil {
 		slog.Error("Error checking if VM is running", "vmid", vmid, "error", err)

@@ -129,6 +129,8 @@ func TestVmStarted(t *testing.T) {
 			mockProxmox.On("GetVmConfig", tt.vmid).Return(tt.config, tt.configErr)
 
 			if tt.configErr == nil {
+				// GetCoreRanking is called before GetVmPid to minimize TOCTOU race window
+				mockAffinity.On("GetCoreRanking").Return([]cpuinfo.CoreRanking{{CPU: 0}}, nil)
 				mockProxmox.On("GetVmPid", tt.vmid).Return(tt.pid, tt.runningErr)
 			}
 

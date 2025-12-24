@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"runtime"
 	"strconv"
 
 	"github.com/joho/godotenv"
@@ -36,6 +37,31 @@ const (
 	DefaultConfigFilename   = "/etc/default/proxmox-cpu-affinity"
 )
 
+// AdaptiveParameters calculates measurement parameters based on CPU count.
+// Larger systems use reduced parameters to avoid excessive benchmark time.
+// Returns (rounds, iterations).
+func AdaptiveParameters() (int, int) {
+	cpuCount := runtime.NumCPU()
+
+	switch {
+	case cpuCount <= 16:
+		// Small systems: full precision
+		return 10, 100_000
+	case cpuCount <= 32:
+		// Medium systems: ~4x faster
+		return 5, 50_000
+	case cpuCount <= 64:
+		// Large systems: ~16x faster
+		return 3, 25_000
+	case cpuCount <= 128:
+		// Very large systems: ~50x faster
+		return 2, 10_000
+	default:
+		// Massive systems (>128 cores): ~100x faster
+		return 2, 5_000
+	}
+}
+
 type Config struct {
 	ServiceHost string
 	ServicePort int
@@ -51,13 +77,16 @@ func Load(filename string) *Config {
 	}
 	_ = godotenv.Load(filename)
 
+	// Get adaptive defaults based on CPU count, allowing user overrides
+	defaultRounds, defaultIterations := AdaptiveParameters()
+
 	return &Config{
 		ServiceHost: getEnv("PCA_HOST", DefaultServiceHost),
 		ServicePort: getEnvInt("PCA_PORT", DefaultServicePort),
 		LogLevel:    getEnv("PCA_LOG_LEVEL", DefaultLogLevel),
 		LogFile:     getEnv("PCA_LOG_FILE", DefaultLogFile),
-		Rounds:      getEnvInt("PCA_ROUNDS", DefaultRounds),
-		Iterations:  getEnvInt("PCA_ITERATIONS", DefaultIterations),
+		Rounds:      getEnvInt("PCA_ROUNDS", defaultRounds),
+		Iterations:  getEnvInt("PCA_ITERATIONS", defaultIterations),
 	}
 }
 
