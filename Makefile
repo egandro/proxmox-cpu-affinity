@@ -1,7 +1,7 @@
-.PHONY: all deps build clean test lint tidy deploy deb
+.PHONY: all deps build clean test coverage lint tidy deploy deb
 
 DEPLOY_HOST ?= testmox
-VERSION ?= 0.1.0
+VERSION ?= 0.1.1
 ARCH ?= amd64
 
 all: build
@@ -17,11 +17,16 @@ build:
 	go build -o bin/proxmox-cpu-affinity-cpuinfo ./cmd/cpuinfo
 
 clean:
-	rm -rf bin dist *.deb
+	rm -rf bin dist *.deb coverage.out coverage.html
 
 test:
 	go clean -testcache
 	go test -v ./...
+
+coverage:
+	go test -v -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out -o coverage.html
+	@echo "Coverage report generated at coverage.html"
 
 lint:
 	golangci-lint run ./...
@@ -30,6 +35,7 @@ lint:
 tidy:
 	go mod tidy
 
+# FORCE_PURGE=1 make deploy
 deploy: deb
 	ssh $(DEPLOY_HOST) "rm -rf /tmp/pa-scripts"
 	scp -r scripts $(DEPLOY_HOST):/tmp/pa-scripts
@@ -37,7 +43,7 @@ deploy: deb
 	ssh $(DEPLOY_HOST) "sudo cp -r /tmp/pa-scripts/* /opt/proxmox-cpu-affinity/scripts/ && sudo chmod +x /opt/proxmox-cpu-affinity/scripts/* && rm -rf /tmp/pa-scripts"
 
 	scp proxmox-cpu-affinity_$(VERSION)_$(ARCH).deb $(DEPLOY_HOST):/tmp/proxmox-cpu-affinity.deb
-	ssh $(DEPLOY_HOST) "sudo apt remove proxmox-cpu-affinity -y || true"
+	ssh $(DEPLOY_HOST) "sudo apt $(if $(FORCE_PURGE),purge,remove) proxmox-cpu-affinity -y || true"
 	ssh $(DEPLOY_HOST) "sudo dpkg -i /tmp/proxmox-cpu-affinity.deb"
 	ssh $(DEPLOY_HOST) "sudo rm -f /tmp/proxmox-cpu-affinity.deb"
 
