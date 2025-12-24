@@ -8,6 +8,17 @@
 # PCA_LOG_LEVEL=info
 # PCA_LOG_FILE=/var/log/proxmox-cpu-affinity.log
 
-# CPU Info / Scheduler Settings
+# CPU Benchmark Parameters
+# These control the precision of CPU topology measurement.
+# By default, values are automatically scaled based on CPU count:
+#   <= 16 cores:  rounds=10, iterations=100000
+#   <= 32 cores:  rounds=5,  iterations=50000
+#   <= 64 cores:  rounds=3,  iterations=25000
+#   <= 128 cores: rounds=2,  iterations=10000
+#   > 128 cores:  rounds=2,  iterations=5000
+#
+# Higher values = more accurate rankings but longer startup time.
+# Lower values = faster startup but potentially less optimal CPU assignments.
+# Uncomment to override the adaptive defaults:
 # PCA_ROUNDS=10
 # PCA_ITERATIONS=100000
