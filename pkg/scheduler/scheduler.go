@@ -10,6 +10,8 @@ import (
 
 // Scheduler defines the interface for VM scheduling operations.
 type Scheduler interface {
+	// Init pre-computes the CPU core rankings. Should be called before starting the service.
+	Init() error
 	VmStarted(vmid int) (interface{}, error)
 	GetCoreRanking() ([]cpuinfo.CoreRanking, error)
 }
@@ -36,6 +38,16 @@ func New() (Scheduler, error) {
 		proxmox:  p,
 		affinity: newAffinityProvider(),
 	}, nil
+}
+
+// Init pre-computes the CPU core rankings.
+// This should be called before starting the HTTP service to ensure rankings are ready.
+func (s *scheduler) Init() error {
+	_, err := s.affinity.GetCoreRanking()
+	if err != nil {
+		return fmt.Errorf("failed to compute core ranking: %w", err)
+	}
+	return nil
 }
 
 // VmStarted handles the logic for starting a VM with affinity.

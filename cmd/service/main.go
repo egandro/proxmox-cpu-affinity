@@ -71,6 +71,16 @@ func main() {
 		slog.Error("Failed to initialize scheduler", "error", err)
 		os.Exit(1)
 	}
+
+	// Pre-compute CPU core rankings before starting the webserver.
+	// This ensures rankings are ready when VMs start and hooks call the service.
+	slog.Info("Initializing CPU core rankings...")
+	if err := sched.Init(); err != nil {
+		slog.Error("Failed to initialize core rankings", "error", err)
+		os.Exit(1)
+	}
+	slog.Info("CPU core rankings initialized")
+
 	s := service.New(cfg.ServiceHost, cfg.ServicePort, sched)
 
 	go func() {

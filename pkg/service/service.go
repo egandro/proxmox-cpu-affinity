@@ -32,6 +32,7 @@ func New(host string, port int, sched scheduler.Scheduler) *service {
 // Start runs the HTTP server.
 func (s *service) Start() error {
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /api/health", s.handleHealth)
 	mux.HandleFunc("GET /api/vmstarted/{vmid}", s.handleVmStarted)
 	mux.HandleFunc("GET /api/ranking", s.handleGetCoreRanking)
 
@@ -52,6 +53,10 @@ func (s *service) Shutdown(ctx context.Context) error {
 		return s.server.Shutdown(ctx)
 	}
 	return nil
+}
+
+func (s *service) handleHealth(w http.ResponseWriter, r *http.Request) {
+	s.respond(w, http.StatusOK, map[string]string{"status": "ok"})
 }
 
 func (s *service) handleVmStarted(w http.ResponseWriter, r *http.Request) {

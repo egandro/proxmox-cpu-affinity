@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/mock"
 	"golang.org/x/sys/unix"
 
-	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/proxmox"
 )
@@ -169,16 +168,18 @@ func TestApplyAffinity(t *testing.T) {
 			mockSys := new(MockSystemAffinityOps)
 
 			p := &defaultAffinityProvider{
-				cpuInfo:   mockCpu,
-				sys:       mockSys,
-				lastIndex: 0,
+				cpuInfo:    mockCpu,
+				sys:        mockSys,
+				lastIndex:  0,
+				rounds:     10,
+				iterations: 100000,
 			}
 
 			// Setup Ranking Mock
 			if tt.mockRankingErr != nil {
-				mockCpu.On("GetCoreRanking", config.DefaultRounds, config.DefaultIterations, mock.Anything).Return(nil, tt.mockRankingErr)
+				mockCpu.On("GetCoreRanking", 10, 100000, mock.Anything).Return(nil, tt.mockRankingErr)
 			} else {
-				mockCpu.On("GetCoreRanking", config.DefaultRounds, config.DefaultIterations, mock.Anything).Return(tt.mockRankings, nil)
+				mockCpu.On("GetCoreRanking", 10, 100000, mock.Anything).Return(tt.mockRankings, nil)
 			}
 
 			// Setup Sys Mock
@@ -215,11 +216,13 @@ func TestGetCoreRanking(t *testing.T) {
 	t.Run("Success - Fetch and Cache", func(t *testing.T) {
 		mockCpu := new(MockCpuInfoProvider)
 		p := &defaultAffinityProvider{
-			cpuInfo: mockCpu,
+			cpuInfo:    mockCpu,
+			rounds:     10,
+			iterations: 100000,
 		}
 
 		// Should be called exactly once
-		mockCpu.On("GetCoreRanking", config.DefaultRounds, config.DefaultIterations, mock.Anything).Return(rankings, nil).Once()
+		mockCpu.On("GetCoreRanking", 10, 100000, mock.Anything).Return(rankings, nil).Once()
 
 		// First call - triggers fetch
 		got1, err := p.GetCoreRanking()
@@ -237,11 +240,13 @@ func TestGetCoreRanking(t *testing.T) {
 	t.Run("Error - Provider Failure", func(t *testing.T) {
 		mockCpu := new(MockCpuInfoProvider)
 		p := &defaultAffinityProvider{
-			cpuInfo: mockCpu,
+			cpuInfo:    mockCpu,
+			rounds:     10,
+			iterations: 100000,
 		}
 
 		expectedErr := errors.New("topology detection failed")
-		mockCpu.On("GetCoreRanking", config.DefaultRounds, config.DefaultIterations, mock.Anything).Return(nil, expectedErr).Once()
+		mockCpu.On("GetCoreRanking", 10, 100000, mock.Anything).Return(nil, expectedErr).Once()
 
 		got, err := p.GetCoreRanking()
 		assert.Error(t, err)
