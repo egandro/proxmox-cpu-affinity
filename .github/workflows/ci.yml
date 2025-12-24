@@ -42,10 +42,10 @@ jobs:
         with:
           args: ./...
 
-      # 3. Testing
+      # 3. Testing (with race detector)
       - name: Run Tests
         run: |
-          go test -v -coverprofile=coverage.out ./...
+          go test -v -race -coverprofile=coverage.out ./...
           go tool cover -func=coverage.out
 
       # 4. Build Binary
