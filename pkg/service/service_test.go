@@ -19,11 +19,6 @@ type MockScheduler struct {
 	mock.Mock
 }
 
-func (m *MockScheduler) Init() error {
-	args := m.Called()
-	return args.Error(0)
-}
-
 func (m *MockScheduler) VmStarted(vmid int) (interface{}, error) {
 	args := m.Called(vmid)
 	return args.Get(0), args.Error(1)
