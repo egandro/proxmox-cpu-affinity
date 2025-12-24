@@ -10,6 +10,13 @@ import (
 )
 
 func main() {
+	if _, err := os.Stat("/usr/sbin/proxmox-cpu-affinity-service"); os.IsNotExist(err) {
+		// In case the VM is migrated to a system where "proxmox-cpu-affinity" is not installed,
+		// we bypass the hook to avoid delaying VM startup due to timeouts.
+		fmt.Fprintln(os.Stderr, "Warning: /usr/sbin/proxmox-cpu-affinity-service not found.\nThis hook requires the proxmox-cpu-affinity package to be installed.")
+		os.Exit(0)
+	}
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s <vmid> <phase>\n", os.Args[0])
 		fmt.Fprintln(os.Stderr, "\nParameters:")
@@ -38,8 +45,6 @@ func main() {
 		os.Exit(1)
 	}
 	phase := args[1]
-
-	// fmt.Printf("GUEST HOOK: %s\n", strings.Join(args, " "))
 
 	h := hook.New()
 	if err := h.Handle(vmid, phase); err != nil {
