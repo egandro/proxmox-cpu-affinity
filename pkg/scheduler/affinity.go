@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"runtime"
 	"sort"
 	"strconv"
 	"strings"
@@ -83,18 +82,13 @@ type defaultAffinityProvider struct {
 	rankingsMu sync.Mutex
 	affinityMu sync.Mutex
 	lastIndex  int
-	rounds     int
-	iterations int
 }
 
 func newAffinityProvider() affinityProvider {
-	cfg := config.Load("")
 	return &defaultAffinityProvider{
-		cpuInfo:    cpuinfo.New(),
-		sys:        &defaultSystemAffinityOps{},
-		lastIndex:  0,
-		rounds:     cfg.Rounds,
-		iterations: cfg.Iterations,
+		cpuInfo:   cpuinfo.New(),
+		sys:       &defaultSystemAffinityOps{},
+		lastIndex: 0,
 	}
 }
 
@@ -106,13 +100,13 @@ func (a *defaultAffinityProvider) GetCoreRanking() ([]cpuinfo.CoreRanking, error
 		return a.rankings, nil
 	}
 
-	slog.Info("Calculating CPU topology ranking", "rounds", a.rounds, "iterations", a.iterations, "cpus", runtime.NumCPU())
+	slog.Info("Calculating CPU topology ranking", "rounds", config.DefaultRounds, "iterations", config.DefaultIterations)
 	start := time.Now()
 	onProgress := func(round, total int) {
 		slog.Debug("Ranking calculation progress", "round", round, "total", total)
 	}
 
-	rankings, err := a.cpuInfo.GetCoreRanking(a.rounds, a.iterations, onProgress)
+	rankings, err := a.cpuInfo.GetCoreRanking(config.DefaultRounds, config.DefaultIterations, onProgress)
 	if err != nil {
 		return nil, err
 	}
