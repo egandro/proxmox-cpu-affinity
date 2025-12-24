@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-VERSION="${1:-0.1.0}"
+VERSION="${1:-0.0.1}"
 ARCH="${2:-amd64}"
 
 echo "Building Debian package for version ${VERSION} (${ARCH})..."
