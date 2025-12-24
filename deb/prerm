@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+# Stop the service on remove or deconfigure
+if [ "$1" = "remove" ] || [ "$1" = "deconfigure" ]; then
+    if command -v systemctl >/dev/null 2>&1; then
+        systemctl stop proxmox-cpu-affinity.service || true
+        systemctl disable proxmox-cpu-affinity.service || true
+    fi
+fi
+
+exit 0

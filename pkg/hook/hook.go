@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 )
@@ -35,6 +36,7 @@ type Hook interface {
 // handler prints hook events to an output writer.
 type handler struct {
 	Output io.Writer
+	Config *config.Config
 }
 
 // hook handles the dispatching of hooks to an EventHandler.
@@ -44,9 +46,11 @@ type hook struct {
 
 // New creates a new hook with the default event handler.
 func New() Hook {
+	cfg := config.Load("")
 	return &hook{
 		Handler: &handler{
 			Output: os.Stdout,
+			Config: cfg,
 		},
 	}
 }
@@ -71,22 +75,23 @@ func (h *hook) Handle(vmid int, phase string) error {
 // OnPreStart is executed before the guest is started.
 // Exiting with a code != 0 will abort the start.
 func (h *handler) OnPreStart(vmid int) error {
+	// Ping the server and delay the start of the VM.
+	// The server might be in its calculation loop.
+	// Performing this delay during pre-start ensures we are in an environment
+	// where the system is not running many Qemu processes yet.
+	if h.Config.WebhookPingOnPreStart {
+		if err := h.callService("/api/ping"); err != nil {
+			_, _ = fmt.Fprintf(h.Output, "Error server not ready: %v\n", err)
+		}
+	}
 	return nil
 }
 
 // OnPostStart is executed after the guest successfully started.
 func (h *handler) OnPostStart(vmid int) error {
-	cfg := config.Load("")
-	url := fmt.Sprintf("http://%s:%d/api/vmstarted/%d", cfg.ServiceHost, cfg.ServicePort, vmid)
-	resp, err := http.Get(url) // #nosec G107
-	if err != nil {
+	path := fmt.Sprintf("/api/vmstarted/%d", vmid)
+	if err := h.callService(path); err != nil {
 		_, _ = fmt.Fprintf(h.Output, "Error calling vmstarted service: %v\n", err)
-		return nil
-	}
-	defer func() { _ = resp.Body.Close() }()
-
-	if resp.StatusCode != http.StatusOK {
-		_, _ = fmt.Fprintf(h.Output, "vmstarted service returned non-OK status: %s\n", resp.Status)
 	}
 	return nil
 }
@@ -99,4 +104,35 @@ func (h *handler) OnPreStop(vmid int) error {
 // OnPostStop is executed after the guest stopped.
 func (h *handler) OnPostStop(vmid int) error {
 	return nil
+}
+
+func (h *handler) callService(apiPath string) error {
+	url := fmt.Sprintf("http://%s:%d%s", h.Config.ServiceHost, h.Config.ServicePort, apiPath)
+
+	var err error
+	for i := 0; i <= h.Config.WebhookRetry; i++ {
+		if i > 0 {
+			time.Sleep(time.Duration(h.Config.WebhookSleep) * time.Second)
+		}
+
+		err = func() error {
+			client := &http.Client{
+				Timeout: time.Duration(h.Config.WebhookTimeout) * time.Second,
+			}
+			resp, reqErr := client.Get(url) // #nosec G107
+			if reqErr != nil {
+				return reqErr
+			}
+			defer func() { _ = resp.Body.Close() }()
+
+			if resp.StatusCode != http.StatusOK {
+				return fmt.Errorf("service returned non-OK status: %s", resp.Status)
+			}
+			return nil
+		}()
+		if err == nil {
+			return nil
+		}
+	}
+	return err
 }

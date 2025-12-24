@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -13,10 +14,13 @@ import (
 	"time"
 
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
+	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/logger"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/scheduler"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/service"
 )
+
+const MaxCalculationDuration = 2 * time.Minute
 
 func main() {
 	configFile := flag.String("config", config.DefaultConfigFilename, "Path to config file")
@@ -76,12 +80,53 @@ func main() {
 	handler := &logger.SimpleHandler{Output: output, Level: level}
 	slog.SetDefault(slog.New(handler))
 
-	sched, err := scheduler.New()
+	slog.Info("Proxmox CPU affinity service starting")
+
+	onProgress := func(round, total int) {
+		slog.Debug("Ranking calculation progress", "round", round, "total", total)
+	}
+
+	cpuInfo := cpuinfo.New(onProgress)
+
+	start := time.Now()
+	slog.Info("Calculating core-to-core ranking")
+
+	done := make(chan error, 1)
+	go func() {
+		done <- cpuInfo.Update(cfg.Rounds, cfg.Iterations)
+	}()
+
+	select {
+	case err := <-done:
+		if err != nil {
+			slog.Error("Error calculating ranking", "error", err)
+			os.Exit(1)
+		}
+	case <-time.After(MaxCalculationDuration):
+		slog.Error("Calculation timed out",
+			"timeout", MaxCalculationDuration,
+			"rounds", cfg.Rounds,
+			"iterations", cfg.Iterations,
+			"msg", "This might be a bug/timing issue. Please adjust PCA_ROUNDS/PCA_ITERATIONS in /etc/default/proxmox-cpu-affinity",
+		)
+		os.Exit(1)
+	}
+
+	rankings, err := cpuInfo.GetCoreRanking()
+	if err != nil {
+		slog.Error("Error getting cpuinfo core  ranking", "error", err)
+		os.Exit(1)
+	}
+
+	statsJSON, _ := json.Marshal(cpuinfo.SummarizeRankings(rankings))
+	slog.Info("CPU topology ranking calculated", "duration", time.Since(start).Round(time.Millisecond), "summary", string(statsJSON))
+
+	sched, err := scheduler.New(cfg, cpuInfo)
 	if err != nil {
 		slog.Error("Failed to initialize scheduler", "error", err)
 		os.Exit(1)
 	}
-	s := service.New(cfg.ServiceHost, cfg.ServicePort, sched)
+	s := service.New(cfg.ServiceHost, cfg.ServicePort, sched, cpuInfo)
 
 	go func() {
 		if err := s.Start(); err != nil && err != http.ErrServerClosed {

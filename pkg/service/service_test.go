@@ -24,12 +24,33 @@ func (m *MockScheduler) VmStarted(vmid int) (interface{}, error) {
 	return args.Get(0), args.Error(1)
 }
 
-func (m *MockScheduler) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
+// MockCpuInfo is a mock implementation of cpuinfo.Provider.
+type MockCpuInfo struct {
+	mock.Mock
+}
+
+func (m *MockCpuInfo) Update(rounds int, iterations int) error {
+	args := m.Called(rounds, iterations)
+	return args.Error(0)
+}
+
+func (m *MockCpuInfo) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
 	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).([]cpuinfo.CoreRanking), args.Error(1)
 }
 
-func setupTestService(t *testing.T) (*MockScheduler, string, func()) {
+func (m *MockCpuInfo) DetectTopology() ([]cpuinfo.CoreInfo, error) {
+	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]cpuinfo.CoreInfo), args.Error(1)
+}
+
+func setupTestService(t *testing.T) (*MockScheduler, *MockCpuInfo, string, func()) {
 	// 1. Find a free port on localhost
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	assert.NoError(t, err)
@@ -39,8 +60,11 @@ func setupTestService(t *testing.T) (*MockScheduler, string, func()) {
 	// 2. Setup Mock Scheduler
 	mockSched := new(MockScheduler)
 
-	// 3. Create and Start Service
-	svc := New("127.0.0.1", port, mockSched)
+	// 3. Setup Mock CpuInfo
+	mockCpuInfo := new(MockCpuInfo)
+
+	// 4. Create and Start Service
+	svc := New("127.0.0.1", port, mockSched, mockCpuInfo)
 
 	// Start in a goroutine
 	errChan := make(chan error, 1)
@@ -67,11 +91,11 @@ func setupTestService(t *testing.T) (*MockScheduler, string, func()) {
 		}
 	}
 
-	return mockSched, baseURL, teardown
+	return mockSched, mockCpuInfo, baseURL, teardown
 }
 
 func TestService_VmStarted(t *testing.T) {
-	mockSched, baseURL, teardown := setupTestService(t)
+	mockSched, _, baseURL, teardown := setupTestService(t)
 	defer teardown()
 
 	expectedResult := map[string]interface{}{
@@ -91,13 +115,13 @@ func TestService_VmStarted(t *testing.T) {
 }
 
 func TestService_GetCoreRanking(t *testing.T) {
-	mockSched, baseURL, teardown := setupTestService(t)
+	_, mockCpuInfo, baseURL, teardown := setupTestService(t)
 	defer teardown()
 
 	expectedRankings := []cpuinfo.CoreRanking{
 		{CPU: 0, Ranking: []cpuinfo.Neighbor{{CPU: 1, LatencyNS: 10}}},
 	}
-	mockSched.On("GetCoreRanking").Return(expectedRankings, nil)
+	mockCpuInfo.On("GetCoreRanking").Return(expectedRankings, nil)
 
 	url := fmt.Sprintf("%s/api/ranking", baseURL)
 	resp, err := http.Get(url)
@@ -105,7 +129,19 @@ func TestService_GetCoreRanking(t *testing.T) {
 	defer func() { _ = resp.Body.Close() }()
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	mockSched.AssertExpectations(t)
+	mockCpuInfo.AssertExpectations(t)
+}
+
+func TestService_Ping(t *testing.T) {
+	_, _, baseURL, teardown := setupTestService(t)
+	defer teardown()
+
+	url := fmt.Sprintf("%s/api/ping", baseURL)
+	resp, err := http.Get(url)
+	assert.NoError(t, err)
+	defer func() { _ = resp.Body.Close() }()
+
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestService_VmStarted_InvalidID(t *testing.T) {

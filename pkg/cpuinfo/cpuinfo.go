@@ -16,12 +16,23 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+// Provider defines the interface for CPU topology and ranking operations.
+type Provider interface {
+	Update(rounds int, iterations int) error
+	GetCoreRanking() ([]CoreRanking, error)
+	DetectTopology() ([]CoreInfo, error)
+}
+
 // CPUInfo handles CPU topology detection and latency measurement.
-type CPUInfo struct{}
+type CPUInfo struct {
+	onProgress func(round, total int)
+	mu         sync.RWMutex
+	cache      []CoreRanking
+}
 
 // New creates a new CPUInfo instance.
-func New() *CPUInfo {
-	return &CPUInfo{}
+func New(onProgress func(round, total int)) Provider {
+	return &CPUInfo{onProgress: onProgress}
 }
 
 // CoreInfo represents the CPU topology using standard Linux terminology
@@ -49,15 +60,18 @@ type CoreRanking struct {
 	Ranking []Neighbor `json:"ranking"`
 }
 
-// GetCoreRanking measures the latency between cores and returns a ranking.
+// Update measures the latency between cores and updates the internal cache.
 // rounds: Number of full measurement passes to average.
 // iterations: Ping-pongs per measurement.
 // onProgress: Optional callback function invoked before each round (round, total).
-func (c *CPUInfo) GetCoreRanking(rounds int, iterations int, onProgress func(round, total int)) ([]CoreRanking, error) {
+func (c *CPUInfo) Update(rounds int, iterations int) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	// 1. Discover Topology
 	topology, err := c.DetectTopology()
 	if err != nil {
-		return nil, fmt.Errorf("error detecting topology: %w", err)
+		return fmt.Errorf("error detecting topology: %w", err)
 	}
 
 	numCores := len(topology)
@@ -66,8 +80,8 @@ func (c *CPUInfo) GetCoreRanking(rounds int, iterations int, onProgress func(rou
 
 	// 2. Measure Accumulator (Linearized Matrix)
 	for r := 0; r < rounds; r++ {
-		if onProgress != nil {
-			onProgress(r+1, rounds)
+		if c.onProgress != nil {
+			c.onProgress(r+1, rounds)
 		}
 		for i, src := range topology {
 			for j, dst := range topology {
@@ -77,7 +91,7 @@ func (c *CPUInfo) GetCoreRanking(rounds int, iterations int, onProgress func(rou
 				// Measure latency between logical CPU i and logical CPU j
 				lat, err := measureSingleLink(src.CPU, dst.CPU, iterations)
 				if err != nil {
-					return nil, err
+					return err
 				}
 				latSums[i*numCores+j] += lat
 				latSqSums[i*numCores+j] += lat * lat
@@ -123,7 +137,18 @@ func (c *CPUInfo) GetCoreRanking(rounds int, iterations int, onProgress func(rou
 		})
 	}
 
-	return finalResults, nil
+	c.cache = finalResults
+	return nil
+}
+
+// GetCoreRanking returns the cached core ranking.
+func (c *CPUInfo) GetCoreRanking() ([]CoreRanking, error) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	if len(c.cache) == 0 {
+		return nil, fmt.Errorf("cache is empty, you have to call Update() first")
+	}
+	return c.cache, nil
 }
 
 // DetectTopology reads Linux sysfs to find CPU topology.

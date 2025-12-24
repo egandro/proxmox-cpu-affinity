@@ -29,3 +29,9 @@
 # Uncomment to override the adaptive defaults:
 # PCA_ROUNDS=10
 # PCA_ITERATIONS=100000
+
+# Webhook Settings
+# PCA_WEBHOOK_RETRY=10
+# PCA_WEBHOOK_SLEEP=10 # in seconds
+# PCA_WEBHOOK_TIMEOUT=30 # in seconds
+# PCA_WEBHOOK_PING_ON_PRESTART=true
