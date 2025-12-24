@@ -1,0 +1,87 @@
+name: Go Build & Package
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v*" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-package:
+    name: Lint, Test, Sec, Build, Deb
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    permissions:
+      contents: write
+      security-events: write
+
+    steps:
+      - name: Install System Dependencies
+        run: |
+          apt-get update && apt-get install -y git make curl bash binutils
+          git config --global --add safe.directory '*'
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      # 1. Linting
+      - name: GolangCI-Lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: latest
+
+      # 2. Security Scan (Gosec)
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          args: ./...
+
+      # 3. Testing
+      - name: Run Tests
+        run: |
+          go test -v -coverprofile=coverage.out ./...
+          go tool cover -func=coverage.out
+
+      # 4. Build Binary
+      - name: Build Binaries
+        run: make build
+
+      - name: Determine Version
+        id: get_version
+        shell: bash
+        run: |
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            # Strip 'refs/tags/v' to get '0.2.0'
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            # Fallback for non-tag builds (e.g. 0.0.0-dev-a1b2c3d)
+            VERSION=0.0.0-dev-${GITHUB_SHA::7}
+          fi
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      # 5. Create Deb File
+      - name: Package Deb
+        run: make deb VERSION=${{ env.VERSION }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: "*.deb"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Upload the .deb file when tagged
+      - name: Upload Deb Artifact
+        uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          name: deb-package
+          path: "*.deb"
+          if-no-files-found: error
