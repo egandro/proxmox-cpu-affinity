@@ -18,6 +18,14 @@ import (
 	"github.com/egandro/proxmox-cpu-affinity/pkg/service"
 )
 
+func isLocalhostAddr(host string) bool {
+	switch host {
+	case "127.0.0.1", "localhost", "::1", "":
+		return true
+	}
+	return false
+}
+
 func main() {
 	configFile := flag.String("config", config.DefaultConfigFilename, "Path to config file")
 	hostFlag := flag.String("host", "", "HTTP service host")
@@ -25,6 +33,7 @@ func main() {
 	logFileFlag := flag.String("log-file", "", "Path to log file")
 	logLevelFlag := flag.String("log-level", "", "Log level (debug, info, notice, warn, error)")
 	toStdout := flag.Bool("stdout", false, "Log to stdout")
+	insecureBind := flag.Bool("insecure-allow-remote", false, "Allow binding to non-localhost addresses (DANGEROUS: exposes unauthenticated API)")
 
 	flag.Parse()
 
@@ -42,6 +51,23 @@ func main() {
 	}
 	if *logLevelFlag != "" {
 		cfg.LogLevel = *logLevelFlag
+	}
+
+	// Security check: prevent accidental exposure of unauthenticated API
+	if !isLocalhostAddr(cfg.ServiceHost) {
+		if !*insecureBind {
+			fmt.Fprintf(os.Stderr, `Error: Binding to non-localhost address %q exposes an unauthenticated API.
+
+This service has no authentication. Binding to a network-accessible address
+allows any host on the network to trigger CPU affinity changes on your VMs.
+
+If you understand the risks and want to proceed anyway, use:
+    --insecure-allow-remote
+
+`, cfg.ServiceHost)
+			os.Exit(1)
+		}
+		fmt.Fprintf(os.Stderr, "WARNING: Binding to %q - unauthenticated API will be network-accessible!\n", cfg.ServiceHost)
 	}
 
 	var logF *os.File
