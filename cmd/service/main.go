@@ -72,9 +72,10 @@ func main() {
 	}
 
 	// Configure slog level
-	level, err := logger.ParseLevel(cfg.LogLevel)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v, defaulting to INFO\n", err)
+	var level slog.Level
+	if err := level.UnmarshalText([]byte(cfg.LogLevel)); err != nil {
+		fmt.Fprintf(os.Stderr, "Invalid log level '%s': %v, defaulting to INFO\n", cfg.LogLevel, err)
+		level = slog.LevelInfo
 	}
 
 	handler := &logger.SimpleHandler{Output: output, Level: level}
