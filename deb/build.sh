@@ -23,14 +23,22 @@ install -s -m 755 bin/proxmox-cpu-affinity-hook dist/var/lib/vz/snippets/proxmox
 cp deb/proxmox-cpu-affinity.service dist/etc/systemd/system/
 
 # Create default config file
-cp deb/proxmox-cpu-affinity.default dist/etc/default/proxmox-cpu-affinity
+install -m 644 deb/proxmox-cpu-affinity.default dist/etc/default/proxmox-cpu-affinity
 
 # Create control file
-sed -e "s/__VERSION__/${VERSION}/g" -e "s/__ARCH__/${ARCH}/g" deb/control.yaml > dist/DEBIAN/control
+sed -e "s/__VERSION__/${VERSION}/g" -e "s/__ARCH__/${ARCH}/g" deb/control > dist/DEBIAN/control
+
+# Create conffiles to preserve configuration on upgrade
+echo "/etc/default/proxmox-cpu-affinity" > dist/DEBIAN/conffiles
+chmod 644 dist/DEBIAN/conffiles
 
 # Create postinst script to reload systemd
 cp deb/postinst dist/DEBIAN/
 chmod 755 dist/DEBIAN/postinst
+
+# Create prerm script to stop service
+cp deb/prerm dist/DEBIAN/
+chmod 755 dist/DEBIAN/prerm
 
 # Build package
 dpkg-deb --root-owner-group --build dist "proxmox-cpu-affinity_${VERSION}_${ARCH}.deb"
