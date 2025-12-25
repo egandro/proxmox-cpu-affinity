@@ -1,0 +1,22 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+    remove|purge)
+        rm -f "/usr/share/bash-completion/completions/proxmox-cpu-affinity"
+        rm -f "/usr/share/zsh/vendor-completions/_proxmox-cpu-affinity"
+        rm -f "/usr/share/fish/vendor_completions.d/proxmox-cpu-affinity.fish"
+    ;;
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0

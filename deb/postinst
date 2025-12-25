@@ -1,7 +1,41 @@
 #!/bin/sh
 set -e
-if [ "$1" = "configure" ]; then
-    systemctl daemon-reload
-    systemctl enable proxmox-cpu-affinity
-    systemctl restart proxmox-cpu-affinity
-fi
+
+BINARY="/usr/bin/proxmox-cpu-affinity"
+
+case "$1" in
+    configure)
+        systemctl daemon-reload
+        systemctl enable proxmox-cpu-affinity
+        systemctl restart proxmox-cpu-affinity
+
+        if [ -x "$BINARY" ]; then
+            # Bash Completion
+            if [ -d "/usr/share/bash-completion/completions" ]; then
+                "$BINARY" completion bash > "/usr/share/bash-completion/completions/proxmox-cpu-affinity"
+            fi
+
+            # Zsh Completion
+            if [ -d "/usr/share/zsh/vendor-completions" ]; then
+                "$BINARY" completion zsh > "/usr/share/zsh/vendor-completions/_proxmox-cpu-affinity"
+            fi
+
+            # Fish Completion
+            if [ -d "/usr/share/fish/vendor_completions.d" ]; then
+                "$BINARY" completion fish > "/usr/share/fish/vendor_completions.d/proxmox-cpu-affinity.fish"
+            fi
+        fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0

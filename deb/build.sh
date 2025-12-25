@@ -48,6 +48,9 @@ install -m 755 deb/postinst dist/DEBIAN/
 # Create prerm script to stop service
 install -m 755 deb/prerm dist/DEBIAN/
 
+# Create postrm script to remove the completion files
+install -m 755 deb/postrm dist/DEBIAN/
+
 # Build package
 dpkg-deb --root-owner-group --build dist "proxmox-cpu-affinity_${VERSION}_${ARCH}.deb"
 rm -rf dist
