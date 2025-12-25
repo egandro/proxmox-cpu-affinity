@@ -141,7 +141,7 @@ The hookscript is automatically assigned. This is not installed in the `.deb` pa
 
 - The number of CPUs/Sockets etc. might change during the runtime of your host.
   This is currently not supported. Probably just detect changes in the `/sys/devices/system/cpu`
-  directory and recalculate the latencies again.
+  directory and recalculate the latencies.
 - Current UI `tail -f /var/log/proxmox-cpu-affinity.log`
 
 ## License
