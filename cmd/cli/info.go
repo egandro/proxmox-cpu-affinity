@@ -42,7 +42,7 @@ func newInfoCmd() *cobra.Command {
 				vmid, _ := strconv.ParseUint(args[0], 10, 64)
 				checkVM(vmid, verbose, true)
 			} else {
-				files, _ := filepath.Glob(filepath.Join(config.DefaultQemuServerPidDir, "*.pid"))
+				files, _ := filepath.Glob(filepath.Join(config.ConstantQemuServerPidDir, "*.pid"))
 				if len(files) == 0 {
 					fmt.Println("No running VMs found.")
 					return
@@ -61,7 +61,7 @@ func newInfoCmd() *cobra.Command {
 }
 
 func checkVM(vmid uint64, verbose bool, explicit bool) {
-	pidFile := filepath.Join(config.DefaultQemuServerPidDir, fmt.Sprintf("%d.pid", vmid))
+	pidFile := filepath.Join(config.ConstantQemuServerPidDir, fmt.Sprintf("%d.pid", vmid))
 	pidBytes, err := os.ReadFile(pidFile) // #nosec G304 -- vmid is uint64, path is safe
 	if err != nil {
 		if explicit {
@@ -77,8 +77,8 @@ func checkVM(vmid uint64, verbose bool, explicit bool) {
 
 	// Check hookscript
 	hookMsg := "    "
-	out, _ := exec.Command(config.DefaultProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
-	if strings.Contains(string(out), "hookscript: ") && strings.Contains(string(out), config.DefaultHookScriptFilename) {
+	out, _ := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
+	if strings.Contains(string(out), "hookscript: ") && strings.Contains(string(out), config.ConstantHookScriptFilename) {
 		hookMsg = " (*)"
 	}
 

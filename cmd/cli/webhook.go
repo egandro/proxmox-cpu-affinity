@@ -56,7 +56,7 @@ func newWebhookStatusCmd() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			vmid, _ := strconv.ParseUint(args[0], 10, 64)
 			// #nosec G204 -- vmid is uint64
-			if err := exec.Command(config.DefaultProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Run(); err != nil {
+			if err := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Run(); err != nil {
 				fmt.Printf("Error: VM %d not found.\n", vmid)
 				os.Exit(1)
 			}
@@ -164,13 +164,13 @@ func updateVMHook(vmid uint64, enable bool, storage string) {
 		hookPath := getHookPath(storage)
 		fmt.Printf("Enabling proxmox-cpu-affinity hook for VM %d (storage: %s)...\n", vmid, storage)
 		// #nosec G204 -- vmid is uint64, hookPath is validated
-		if err := exec.Command(config.DefaultProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--hookscript", hookPath).Run(); err != nil {
+		if err := exec.Command(config.ConstantProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--hookscript", hookPath).Run(); err != nil {
 			fmt.Printf("Error enabling hook for VM %d: %v\n", vmid, err)
 		}
 	} else {
 		fmt.Printf("Disabling proxmox-cpu-affinity hook for VM %d...\n", vmid)
 		// #nosec G204 -- vmid is uint64
-		if err := exec.Command(config.DefaultProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--delete", "hookscript").Run(); err != nil {
+		if err := exec.Command(config.ConstantProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--delete", "hookscript").Run(); err != nil {
 			fmt.Printf("Error disabling hook for VM %d: %v\n", vmid, err)
 		}
 	}
@@ -194,7 +194,7 @@ func processAllVMs(enable bool, storage string, force bool) {
 
 		if enable {
 			if strings.Contains(vmConf, "hookscript:") {
-				if !strings.Contains(vmConf, config.DefaultHookScriptFilename) {
+				if !strings.Contains(vmConf, config.ConstantHookScriptFilename) {
 					if !force {
 						fmt.Printf("Skipping VM %d (other hookscript set)...\n", vmid)
 						continue
@@ -203,7 +203,7 @@ func processAllVMs(enable bool, storage string, force bool) {
 			}
 			updateVMHook(vmid, true, storage)
 		} else {
-			if !strings.Contains(vmConf, "hookscript: ") || !strings.Contains(vmConf, config.DefaultHookScriptFilename) {
+			if !strings.Contains(vmConf, "hookscript: ") || !strings.Contains(vmConf, config.ConstantHookScriptFilename) {
 				continue
 			}
 			updateVMHook(vmid, false, "")
@@ -212,7 +212,7 @@ func processAllVMs(enable bool, storage string, force bool) {
 }
 
 func getAllVMIDs() []uint64 {
-	out, _ := exec.Command(config.DefaultProxmoxQM, "list").Output() // #nosec G204 -- trusted path from config
+	out, _ := exec.Command(config.ConstantProxmoxQM, "list").Output() // #nosec G204 -- trusted path from config
 	lines := strings.Split(string(out), "\n")
 	var vmids []uint64
 	for _, line := range lines {
@@ -233,7 +233,7 @@ var (
 
 func isHAVM(vmid uint64) bool {
 	if !haConfigLoaded {
-		out, _ := exec.Command(config.DefaultProxmoxHaManager, "config").Output() // #nosec G204 -- trusted path from config
+		out, _ := exec.Command(config.ConstantProxmoxHaManager, "config").Output() // #nosec G204 -- trusted path from config
 		haConfigCache = string(out)
 		haConfigLoaded = true
 	}
@@ -242,12 +242,12 @@ func isHAVM(vmid uint64) bool {
 }
 
 func hasAffinitySet(vmid uint64) bool {
-	out, _ := exec.Command(config.DefaultProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
+	out, _ := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
 	return strings.Contains(string(out), "affinity:")
 }
 
 func getVMConfig(vmid uint64) string {
-	out, _ := exec.Command(config.DefaultProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
+	out, _ := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
 	return string(out)
 }
 
@@ -275,7 +275,7 @@ func printVMList(vmids []uint64) {
 				notes += ", "
 			}
 			notes += "Manual Affinity Set"
-		} else if strings.Contains(vmConf, "hookscript: ") && strings.Contains(vmConf, config.DefaultHookScriptFilename) {
+		} else if strings.Contains(vmConf, "hookscript: ") && strings.Contains(vmConf, config.ConstantHookScriptFilename) {
 			status = "ENABLED"
 		}
 

@@ -10,7 +10,7 @@ import (
 )
 
 func getHookPath(storage string) string {
-	return fmt.Sprintf("%s:snippets/%s", storage, config.DefaultHookScriptFilename)
+	return fmt.Sprintf("%s:snippets/%s", storage, config.ConstantHookScriptFilename)
 }
 
 func isValidStorage(s string) bool {
@@ -28,8 +28,8 @@ func isNumeric(s string) bool {
 }
 
 func ensureProxmoxHost() error {
-	if _, err := os.Stat(config.DefaultProxmoxConfigDir); os.IsNotExist(err) {
-		return fmt.Errorf("this tool must be run on a Proxmox VE host (%s not found)", config.DefaultProxmoxConfigDir)
+	if _, err := os.Stat(config.ConstantProxmoxConfigDir); os.IsNotExist(err) {
+		return fmt.Errorf("this tool must be run on a Proxmox VE host (%s not found)", config.ConstantProxmoxConfigDir)
 	}
 	return nil
 }

@@ -142,7 +142,7 @@ func TestHotplug_Integration(t *testing.T) {
 
 	mockCPU := new(MockProvider)
 	// Expect CalculateRanking to be called with config values
-	mockCPU.On("CalculateRanking", 10, 100, config.MaxCalculationRankingDuration).Return(nil)
+	mockCPU.On("CalculateRanking", 10, 100, config.ConstantMaxCalculationRankingDuration).Return(nil)
 
 	cfg := &config.Config{Rounds: 10, Iterations: 100}
 	hc := NewHotplug(mockCPU, cfg)
@@ -156,7 +156,7 @@ func TestHotplug_Integration(t *testing.T) {
 	h.reactor.ingest(CPUEvent{CPU: "cpu0", Action: ActionAdd})
 
 	// Wait for BatchWindow + buffer
-	time.Sleep(config.CPUHotplugBatchWindow + 100*time.Millisecond)
+	time.Sleep(config.ConstantCPUHotplugBatchWindow + 100*time.Millisecond)
 
 	mockCPU.AssertExpectations(t)
 }

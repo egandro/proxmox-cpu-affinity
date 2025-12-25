@@ -117,7 +117,7 @@ func (p *proxmox) GetVmConfig(ctx context.Context, vmid int) (*VmConfig, error) 
 
 // GetVmPid checks if the VM is running and returns its PID. Returns -1 if not running.
 func (p *proxmox) GetVmPid(_ context.Context, vmid int) (int, error) {
-	pidPath := fmt.Sprintf("%s/%d.pid", config.DefaultQemuServerPidDir, vmid)
+	pidPath := fmt.Sprintf("%s/%d.pid", config.ConstantQemuServerPidDir, vmid)
 
 	content, err := p.sys.ReadFile(pidPath)
 	if os.IsNotExist(err) {

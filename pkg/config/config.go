@@ -12,6 +12,26 @@ import (
 )
 
 const (
+	// Logging defaults
+	ConstantLogDir      = "/var/log"
+	ConstantLogFilename = "proxmox-cpu-affinity.log"
+	ConstantLogFile     = ConstantLogDir + "/" + ConstantLogFilename
+
+	// Proxmox defaults
+	ConstantQemuServerPidDir   = "/var/run/qemu-server"
+	ConstantConfigFilename     = "/etc/default/proxmox-cpu-affinity"
+	ConstantProxmoxQM          = "/usr/sbin/qm"
+	ConstantProxmoxHaManager   = "/usr/sbin/ha-manager"
+	ConstantProxmoxConfigDir   = "/etc/pve"
+	ConstantHookScriptFilename = "proxmox-cpu-affinity-hook"
+
+	// ConstantCPUHotplugBatchWindow is the time window to group hotplug events.
+	// When a CPU event occurs, we wait this long for subsequent events
+	// to arrive (debouncing) before triggering a topology recalculation.
+	ConstantCPUHotplugBatchWindow = 5 * time.Second
+
+	ConstantMaxCalculationRankingDuration = 2 * time.Minute
+
 	// CPUInfo defaults
 	// DefaultRounds is set to 10 to average out noise from the OS scheduler and
 	// background processes. This provides a stable latency measurement without
@@ -28,34 +48,15 @@ const (
 	DefaultServiceHost         = "127.0.0.1"
 	DefaultInsecureAllowRemote = false
 
-	// Logging defaults
-	DefaultLogDir      = "/var/log"
-	DefaultLogFilename = "proxmox-cpu-affinity.log"
-	DefaultLogFile     = DefaultLogDir + "/" + DefaultLogFilename
-
 	// logger
 	DefaultLogLevel = "info"
 
-	// Proxmox defaults
-	DefaultQemuServerPidDir   = "/var/run/qemu-server"
-	DefaultConfigFilename     = "/etc/default/proxmox-cpu-affinity"
-	DefaultProxmoxQM          = "/usr/sbin/qm"
-	DefaultProxmoxHaManager   = "/usr/sbin/ha-manager"
-	DefaultProxmoxConfigDir   = "/etc/pve"
-	DefaultHookScriptFilename = "proxmox-cpu-affinity-hook"
-
 	// Webhook defaults
-	DefaultWebhookRetry           = 10
-	DefaultWebhookSleep           = 10 // in seconds
-	DefaultWebhookTimeout         = 30 // in seconds
-	DefaultWebhookPingOnPreStart  = true
-	DefaultCPUHotplugWatchdog     = true
-	MaxCalculationRankingDuration = 2 * time.Minute
-
-	// CPUHotplugBatchWindow is the time window to group hotplug events.
-	// When a CPU event occurs, we wait this long for subsequent events
-	// to arrive (debouncing) before triggering a topology recalculation.
-	CPUHotplugBatchWindow = 5 * time.Second
+	DefaultWebhookRetry          = 10
+	DefaultWebhookSleep          = 10 // in seconds
+	DefaultWebhookTimeout        = 30 // in seconds
+	DefaultWebhookPingOnPreStart = true
+	DefaultCPUHotplugWatchdog    = true
 )
 
 // AdaptiveCpuInfoParameters calculates measurement parameters based on CPU count.
@@ -126,7 +127,7 @@ func isLocalhostAddr(host string) bool {
 
 func Load(filename string) *Config {
 	if filename == "" {
-		filename = DefaultConfigFilename
+		filename = ConstantConfigFilename
 	}
 	_ = godotenv.Load(filename)
 
@@ -139,7 +140,7 @@ func Load(filename string) *Config {
 		ServicePort:           getEnvInt("PCA_PORT", DefaultServicePort),
 		InsecureAllowRemote:   getEnvBool("PCA_INSECURE_ALLOW_REMOTE", DefaultInsecureAllowRemote),
 		LogLevel:              getEnv("PCA_LOG_LEVEL", DefaultLogLevel),
-		LogFile:               getEnv("PCA_LOG_FILE", DefaultLogFile),
+		LogFile:               getEnv("PCA_LOG_FILE", ConstantLogFile),
 		Rounds:                getEnvInt("PCA_ROUNDS", defaultRounds),
 		Iterations:            getEnvInt("PCA_ITERATIONS", defaultIterations),
 		WebhookRetry:          getEnvInt("PCA_WEBHOOK_RETRY", DefaultWebhookRetry),

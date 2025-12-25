@@ -69,9 +69,9 @@ func NewHotplug(cpuInfo Provider, cfg *config.Config) HotplugController {
 func (h *Hotplug) StartWatchdog() error {
 	h.logger.Info("[cpu-hotplug] Starting watchdog")
 
-	h.reactor = newHotplugReactor(config.CPUHotplugBatchWindow, func(batch []string) {
+	h.reactor = newHotplugReactor(config.ConstantCPUHotplugBatchWindow, func(batch []string) {
 		h.logger.Info("[cpu-hotplug] Event detected - recalculating ranking", "batch_size", len(batch))
-		if err := h.cpuInfo.CalculateRanking(h.cfg.Rounds, h.cfg.Iterations, config.MaxCalculationRankingDuration); err != nil {
+		if err := h.cpuInfo.CalculateRanking(h.cfg.Rounds, h.cfg.Iterations, config.ConstantMaxCalculationRankingDuration); err != nil {
 			h.logger.Error("[cpu-hotplug] Failed to recalculate ranking after hotplug", "error", err)
 		}
 	}, h.logger)

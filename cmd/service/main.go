@@ -86,7 +86,7 @@ func main() {
 
 	cpuInfo := cpuinfo.New()
 
-	if err := cpuInfo.CalculateRanking(cfg.Rounds, cfg.Iterations, config.MaxCalculationRankingDuration); err != nil {
+	if err := cpuInfo.CalculateRanking(cfg.Rounds, cfg.Iterations, config.ConstantMaxCalculationRankingDuration); err != nil {
 		slog.Error("Failed to calculate ranking", "error", err)
 		os.Exit(1)
 	}
