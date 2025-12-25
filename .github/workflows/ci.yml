@@ -23,7 +23,7 @@ jobs:
           git config --global --add safe.directory '*'
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Go
         uses: actions/setup-go@v6
