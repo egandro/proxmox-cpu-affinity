@@ -1,7 +1,6 @@
 package config
 
 import (
-	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,7 +18,7 @@ func TestAdaptiveCpuInfoParameters_DeveloperHack(t *testing.T) {
 	t.Skip("Skipping developer adaptive cpuinfo parameters test.")
 
 	rounds, iterations := AdaptiveCpuInfoParameters()
-	cpuCount := runtime.NumCPU()
+	cpuCount := numCPU()
 
 	// Verify we get valid positive values
 	assert.Greater(t, rounds, 0, "rounds should be positive")

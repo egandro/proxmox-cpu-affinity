@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"time"
@@ -61,7 +62,7 @@ const (
 // Larger systems use reduced parameters to avoid excessive benchmark time.
 // Returns (rounds, iterations).
 func AdaptiveCpuInfoParameters() (int, int) {
-	cpuCount := runtime.NumCPU()
+	cpuCount := numCPU()
 
 	limits := []struct {
 		cores      int
@@ -130,6 +131,7 @@ func Load(filename string) *Config {
 	_ = godotenv.Load(filename)
 
 	// Get adaptive defaults based on CPU count, allowing user overrides
+	// TODO: reload this after a CPU hotplug event
 	defaultRounds, defaultIterations := AdaptiveCpuInfoParameters()
 
 	return &Config{
@@ -153,6 +155,16 @@ func getEnv(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+// numCPU returns the number of physical CPUs found in sysfs.
+// We duplicate this logic here to avoid a circular dependency with pkg/cpuinfo.
+func numCPU() int {
+	matches, err := filepath.Glob("/sys/devices/system/cpu/cpu[0-9]*")
+	if err != nil || len(matches) == 0 {
+		return runtime.NumCPU()
+	}
+	return len(matches)
 }
 
 func getEnvBool(key string, fallback bool) bool {

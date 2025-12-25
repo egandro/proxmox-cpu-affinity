@@ -159,6 +159,7 @@ The hookscript is automatically assigned. This is not installed in the `.deb` pa
 ## TODO
 
 - Current UI `tail -f /var/log/proxmox-cpu-affinity.log`
+- Recalculate `AdaptiveCpuInfoParameters` after a CPU hotplug event.
 
 ## License
 

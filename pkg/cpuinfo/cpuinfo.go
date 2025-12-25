@@ -244,12 +244,34 @@ func (c *CPUInfo) DetectTopology() ([]CoreInfo, error) {
 	return c.detector()
 }
 
+// NumCPU returns the number of physical CPUs found in sysfs.
+// It is a replacement for runtime.NumCPU() which only returns logical CPUs available to the process.
+// we need this to mitigate for a CPU hotplug event
+func NumCPU() int {
+	matches, err := filepath.Glob("/sys/devices/system/cpu/cpu[0-9]*")
+	if err != nil || len(matches) == 0 {
+		return runtime.NumCPU()
+	}
+	return len(matches)
+}
+
 func detectTopologySystem() ([]CoreInfo, error) {
 	var cores []CoreInfo
-	// Iterate through logical CPUs available to the OS
-	maxProcs := runtime.NumCPU()
 
-	for i := 0; i < maxProcs; i++ {
+	// We look at the sysfs directly to find all present CPUs.
+	matches, err := filepath.Glob("/sys/devices/system/cpu/cpu[0-9]*")
+	if err != nil {
+		return nil, err
+	}
+
+	for _, path := range matches {
+		// Extract CPU ID from path (e.g. /sys/devices/system/cpu/cpu0 -> 0)
+		cpuIDStr := strings.TrimPrefix(filepath.Base(path), "cpu")
+		i, err := strconv.Atoi(cpuIDStr)
+		if err != nil {
+			continue
+		}
+
 		// 1. Socket ID (physical_package_id)
 		socketID, err := readSysFSInt(fmt.Sprintf("/sys/devices/system/cpu/cpu%d/topology/physical_package_id", i))
 		if err != nil {
@@ -269,6 +291,12 @@ func detectTopologySystem() ([]CoreInfo, error) {
 			Core:   coreID,
 		})
 	}
+
+	// Ensure deterministic order
+	sort.Slice(cores, func(i, j int) bool {
+		return cores[i].CPU < cores[j].CPU
+	})
+
 	return cores, nil
 }
 
