@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -210,20 +211,12 @@ func getHookPath(storage string) string {
 }
 
 func isValidStorage(s string) bool {
-	if len(s) == 0 {
+	// Fails if s is empty, is ".", "..", or contains a separator
+	if s == "" || s == "." || s == ".." {
 		return false
 	}
-	for _, c := range s {
-		switch {
-		case c >= 'a' && c <= 'z':
-		case c >= 'A' && c <= 'Z':
-		case c >= '0' && c <= '9':
-		case c == '-', c == '_', c == '.':
-		default:
-			return false
-		}
-	}
-	return true
+	// If Base(s) changes the string, it meant there were separators
+	return filepath.Base(s) == s
 }
 
 func enableVM(vmid uint64, storage string) {
@@ -263,15 +256,8 @@ func getAllVMIDs() []uint64 {
 }
 
 func isNumeric(s string) bool {
-	if len(s) == 0 {
-		return false
-	}
-	for _, c := range s {
-		if c < '0' || c > '9' {
-			return false
-		}
-	}
-	return true
+	_, err := strconv.ParseUint(s, 10, 64)
+	return err == nil
 }
 
 var (
