@@ -17,7 +17,7 @@ func newCPUInfoCmd() *cobra.Command {
 	var iterations int
 
 	// Load config to get defaults
-	defaultCfg := config.Load(config.DefaultConfigFilename)
+	defaultCfg := config.Load(config.ConstantConfigFilename)
 
 	cmd := &cobra.Command{
 		Use:   "cpuinfo",

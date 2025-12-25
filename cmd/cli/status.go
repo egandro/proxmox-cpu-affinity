@@ -15,7 +15,7 @@ func newStatusCmd() *cobra.Command {
 		Use:   "status",
 		Short: "Check the status of the service",
 		Run: func(cmd *cobra.Command, args []string) {
-			cfg := config.Load(config.DefaultConfigFilename)
+			cfg := config.Load(config.ConstantConfigFilename)
 
 			host := cfg.ServiceHost
 			if host == "" || host == "0.0.0.0" {

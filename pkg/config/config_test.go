@@ -51,7 +51,7 @@ func TestLoad(t *testing.T) {
 	assert.Equal(t, DefaultServiceHost, cfg.ServiceHost)
 	assert.Equal(t, DefaultServicePort, cfg.ServicePort)
 	assert.Equal(t, DefaultLogLevel, cfg.LogLevel)
-	assert.Equal(t, DefaultLogFile, cfg.LogFile)
+	assert.Equal(t, ConstantLogFile, cfg.LogFile)
 
 	// Rounds and iterations should match adaptive defaults
 	expectedRounds, expectedIterations := AdaptiveCpuInfoParameters()
