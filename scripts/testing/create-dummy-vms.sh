@@ -2,8 +2,21 @@
 
 set -e
 
-#SOURCE_VMID="${1:-902}"
-SOURCE_VMID="${1:-1234}"
+TEMPLATE_NAME="dummy-pve-affinity-template"
+
+if [ -n "$1" ]; then
+    SOURCE_VMID="$1"
+else
+    EXISTING_ID=$(qm list | awk -v name="$TEMPLATE_NAME" '$2 == name {print $1}' | head -n 1)
+
+    if [ -n "$EXISTING_ID" ]; then
+        echo "Found existing template '$TEMPLATE_NAME' with VMID $EXISTING_ID."
+        SOURCE_VMID="$EXISTING_ID"
+    else
+        SOURCE_VMID=$(pvesh get /cluster/nextid)
+    fi
+fi
+
 NUM_VMS=10
 CORES=4
 MEMORY=1024
@@ -12,8 +25,10 @@ HOOKSCRIPT="local:snippets/proxmox-cpu-affinity-hook"
 AFFINITY="1,3,4,5"
 
 if ! qm status "$SOURCE_VMID" >/dev/null 2>&1; then
-    echo "Source VM $SOURCE_VMID does not exist. Creating a new dummy template..."
-    qm create "$SOURCE_VMID" --name "dummy-template-$SOURCE_VMID" --memory 128 --net0 virtio,bridge=vmbr0
+    echo "Source VM $SOURCE_VMID does not exist. Creating a new dummy template '$TEMPLATE_NAME'..."
+    qm create "$SOURCE_VMID" --name "$TEMPLATE_NAME" --memory 128 --net0 virtio,bridge=vmbr0
+    # we disable the booting - the default net0 boot will just eat CPU time
+    qm set "$SOURCE_VMID" --delete boot
     qm template "$SOURCE_VMID"
 fi
 
