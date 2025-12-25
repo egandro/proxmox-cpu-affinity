@@ -135,3 +135,54 @@ func TestSelectCores_Race(t *testing.T) {
 	close(done)
 	wg.Wait()
 }
+
+func TestUpdate_TopologyResize(t *testing.T) {
+	// 1. Setup Mock CPUInfo with controlled behavior
+	c := &CPUInfo{
+		lastIndex: 8, // Simulate we are at index 8 (e.g. previously had >= 9 cores)
+	}
+
+	// Mock Measurer: Always return 10ns so Update succeeds quickly
+	c.measurer = func(cpuA, cpuB, iter int) (float64, error) {
+		return 10.0, nil
+	}
+
+	// Case 1: Shrink - Return 5 cores (Shrunk from hypothetical larger topology)
+	c.detector = func() ([]CoreInfo, error) {
+		var cores []CoreInfo
+		for i := 0; i < 5; i++ {
+			cores = append(cores, CoreInfo{CPU: i, Socket: 0, Core: i})
+		}
+		return cores, nil
+	}
+
+	// Run Update
+	// This should reset lastIndex to be within bounds of 5 (0..4)
+	// 8 % 5 = 3
+	err := c.Update(1, 1, nil)
+	assert.NoError(t, err)
+
+	// Verify Shrink
+	c.mu.RLock()
+	assert.Len(t, c.cache, 5)
+	assert.Equal(t, 3, c.lastIndex, "lastIndex should be modulated to fit new cache size")
+	c.mu.RUnlock()
+
+	// Case 2: Grow - Return 10 cores
+	c.detector = func() ([]CoreInfo, error) {
+		var cores []CoreInfo
+		for i := 0; i < 10; i++ {
+			cores = append(cores, CoreInfo{CPU: i, Socket: 0, Core: i})
+		}
+		return cores, nil
+	}
+
+	err = c.Update(1, 1, nil)
+	assert.NoError(t, err)
+
+	// Verify Grow
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	assert.Len(t, c.cache, 10)
+	assert.Equal(t, 3, c.lastIndex, "lastIndex should be preserved when growing (3 % 10 = 3)")
+}

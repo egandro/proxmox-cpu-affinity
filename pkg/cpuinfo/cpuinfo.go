@@ -28,16 +28,27 @@ type Provider interface {
 	SelectCores(requestedCores int) ([]int, error)
 }
 
+// topologyDetector is a function that returns the current CPU topology.
+type topologyDetector func() ([]CoreInfo, error)
+
+// latencyMeasurer is a function that measures latency between two CPUs.
+type latencyMeasurer func(cpuA, cpuB, iter int) (float64, error)
+
 // CPUInfo handles CPU topology detection and latency measurement.
 type CPUInfo struct {
 	mu        sync.RWMutex
 	cache     []CoreRanking
 	lastIndex int
+	detector  topologyDetector
+	measurer  latencyMeasurer
 }
 
 // New creates a new CPUInfo instance.
 func New() Provider {
-	return &CPUInfo{}
+	return &CPUInfo{
+		detector: detectTopologySystem,
+		measurer: measureSingleLink,
+	}
 }
 
 // CoreInfo represents the CPU topology using standard Linux terminology
@@ -105,7 +116,7 @@ func (c *CPUInfo) CalculateRanking(rounds, iterations int, timeout time.Duration
 // onProgress: Optional callback function invoked before each round (round, total).
 func (c *CPUInfo) Update(rounds int, iterations int, onProgress func(int, int)) error {
 	// 1. Discover Topology
-	topology, err := c.DetectTopology()
+	topology, err := c.detector()
 	if err != nil {
 		return fmt.Errorf("error detecting topology: %w", err)
 	}
@@ -125,7 +136,7 @@ func (c *CPUInfo) Update(rounds int, iterations int, onProgress func(int, int)) 
 					continue
 				}
 				// Measure latency between logical CPU i and logical CPU j
-				lat, err := measureSingleLink(src.CPU, dst.CPU, iterations)
+				lat, err := c.measurer(src.CPU, dst.CPU, iterations)
 				if err != nil {
 					return fmt.Errorf("failed to measure latency between CPU %d and %d: %w", src.CPU, dst.CPU, err)
 				}
@@ -230,6 +241,10 @@ func (c *CPUInfo) SelectCores(requestedCores int) ([]int, error) {
 
 // DetectTopology reads Linux sysfs to find CPU topology.
 func (c *CPUInfo) DetectTopology() ([]CoreInfo, error) {
+	return c.detector()
+}
+
+func detectTopologySystem() ([]CoreInfo, error) {
 	var cores []CoreInfo
 	// Iterate through logical CPUs available to the OS
 	maxProcs := runtime.NumCPU()
