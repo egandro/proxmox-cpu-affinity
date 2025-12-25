@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Install System Dependencies
         run: |
-          apt-get update && apt-get install -y git make curl bash binutils
+          apt-get update && apt-get install -y git make curl bash binutils build-essential
           git config --global --add safe.directory '*'
 
       - name: Checkout code
@@ -48,11 +48,13 @@ jobs:
           go install golang.org/x/vuln/cmd/govulncheck@latest
           govulncheck ./...
 
-      # Testing
+      # Testing (with race detector)
       - name: Run Tests
         run: |
-          go test -v -coverprofile=coverage.out ./...
+          go test -v -race -coverprofile=coverage.out ./...
           go tool cover -func=coverage.out
+        env:
+          CGO_ENABLED: 1
 
       # Build Binary
       - name: Build Binaries
