@@ -66,7 +66,7 @@ proxmox-cpu-affinity status
 Runs the cpuinfo and shows the core-to-core latency.
 
 ```bash
-proxmox-cpu-affinity cpuinfo [-v] [--summery]
+proxmox-cpu-affinity cpuinfo [-v] [--summary]
 ```
 
 ## Manual VM Configuration
