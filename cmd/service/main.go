@@ -90,7 +90,7 @@ func main() {
 	cpuInfo := cpuinfo.New(onProgress)
 
 	start := time.Now()
-	slog.Info("Calculating core-to-core ranking")
+	slog.Info("Calculating core-to-core ranking", "rounds", cfg.Rounds, "iterations", cfg.Iterations)
 
 	done := make(chan error, 1)
 	go func() {
