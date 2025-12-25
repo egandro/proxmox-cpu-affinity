@@ -37,7 +37,7 @@ func newListCmd() *cobra.Command {
 		Use:   "list",
 		Short: "List all VMs and their hook status",
 		Run: func(cmd *cobra.Command, args []string) {
-			printVMList(getAllVMIDs(), true)
+			printVMList(getAllVMIDs())
 		},
 	}
 }
@@ -62,7 +62,7 @@ func newWebhookStatusCmd() *cobra.Command {
 				fmt.Printf("Error: VM %d not found.\n", vmid)
 				os.Exit(1)
 			}
-			printVMList([]uint64{vmid}, false)
+			printVMList([]uint64{vmid})
 		},
 	}
 }
@@ -253,11 +253,9 @@ func getVMConfig(vmid uint64) string {
 	return string(out)
 }
 
-func printVMList(vmids []uint64, showHeader bool) {
-	if showHeader {
-		fmt.Printf("%-8s %-12s %-30s\n", "VMID", "HOOK-STATUS", "NOTES")
-		fmt.Printf("%-8s %-12s %-30s\n", "----", "-----------", "-----")
-	}
+func printVMList(vmids []uint64) {
+	fmt.Printf("%-8s %-12s %-30s\n", "VMID", "HOOK-STATUS", "NOTES")
+	fmt.Printf("%-8s %-12s %-30s\n", "----", "-----------", "-----")
 	for _, vmid := range vmids {
 		status := "DISABLED"
 		notes := ""
