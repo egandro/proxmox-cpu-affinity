@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"context"
 	"errors"
 	"testing"
 
@@ -191,7 +192,7 @@ func TestApplyAffinity(t *testing.T) {
 				tt.setupMockSys(mockSys)
 			}
 
-			res, err := p.ApplyAffinity(tt.vmid, tt.pid, tt.config)
+			res, err := p.ApplyAffinity(context.Background(), tt.vmid, tt.pid, tt.config)
 
 			if tt.expectError {
 				// xxx

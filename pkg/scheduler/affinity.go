@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"os"
@@ -19,7 +20,7 @@ import (
 
 // affinityProvider defines the internal interface for affinity operations.
 type affinityProvider interface {
-	ApplyAffinity(vmid int, pid int, config *proxmox.VmConfig) (string, error)
+	ApplyAffinity(ctx context.Context, vmid int, pid int, config *proxmox.VmConfig) (string, error)
 }
 
 type cpuInfoProvider interface {
@@ -90,7 +91,7 @@ func newAffinityProvider(cfg *config.Config, cpuInfo cpuInfoProvider) affinityPr
 	}
 }
 
-func (a *defaultAffinityProvider) ApplyAffinity(vmid int, pid int, config *proxmox.VmConfig) (string, error) {
+func (a *defaultAffinityProvider) ApplyAffinity(_ context.Context, vmid int, pid int, config *proxmox.VmConfig) (string, error) {
 	a.affinityMu.Lock()
 	defer a.affinityMu.Unlock()
 

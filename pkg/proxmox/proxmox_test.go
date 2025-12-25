@@ -1,6 +1,7 @@
 package proxmox
 
 import (
+	"context"
 	"embed"
 	"fmt"
 	"os"
@@ -14,12 +15,12 @@ var testData embed.FS
 
 // MockExecutor implements Executor for testing purposes.
 type MockExecutor struct {
-	OutputFunc func(name string, arg ...string) ([]byte, error)
+	OutputFunc func(ctx context.Context, name string, arg ...string) ([]byte, error)
 }
 
-func (m *MockExecutor) Output(name string, arg ...string) ([]byte, error) {
+func (m *MockExecutor) Output(ctx context.Context, name string, arg ...string) ([]byte, error) {
 	if m.OutputFunc != nil {
-		return m.OutputFunc(name, arg...)
+		return m.OutputFunc(ctx, name, arg...)
 	}
 	return nil, fmt.Errorf("MockExecutor.OutputFunc not implemented")
 }
@@ -97,7 +98,7 @@ func TestGetVmConfig(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mock := &MockExecutor{
-				OutputFunc: func(name string, arg ...string) ([]byte, error) {
+				OutputFunc: func(ctx context.Context, name string, arg ...string) ([]byte, error) {
 					if tt.mockError != nil {
 						return nil, tt.mockError
 					}
@@ -107,7 +108,7 @@ func TestGetVmConfig(t *testing.T) {
 
 			p := &proxmox{executor: mock}
 
-			config, err := p.GetVmConfig(tt.vmid)
+			config, err := p.GetVmConfig(context.Background(), tt.vmid)
 			if tt.expectError {
 				assert.Error(t, err)
 			} else {
@@ -168,7 +169,7 @@ func TestGetVmPid(t *testing.T) {
 				ProcessExistsFunc: tt.mockProcExist,
 			}
 			p := &proxmox{sys: mockSys}
-			got, err := p.GetVmPid(tt.vmid)
+			got, err := p.GetVmPid(context.Background(), tt.vmid)
 			if tt.expectError {
 				assert.Error(t, err)
 			} else {

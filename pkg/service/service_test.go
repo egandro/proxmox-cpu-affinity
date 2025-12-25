@@ -19,8 +19,8 @@ type MockScheduler struct {
 	mock.Mock
 }
 
-func (m *MockScheduler) VmStarted(vmid int) (interface{}, error) {
-	args := m.Called(vmid)
+func (m *MockScheduler) VmStarted(ctx context.Context, vmid int) (interface{}, error) {
+	args := m.Called(ctx, vmid)
 	return args.Get(0), args.Error(1)
 }
 
@@ -103,7 +103,7 @@ func TestService_VmStarted(t *testing.T) {
 		"action": "start",
 		"mocked": true,
 	}
-	mockSched.On("VmStarted", 100).Return(expectedResult, nil)
+	mockSched.On("VmStarted", mock.Anything, 100).Return(expectedResult, nil)
 
 	url := fmt.Sprintf("%s/api/vmstarted/100", baseURL)
 	resp, err := http.Get(url)

@@ -65,7 +65,7 @@ func (s *service) handleVmStarted(w http.ResponseWriter, r *http.Request) {
 		s.respond(w, http.StatusBadRequest, map[string]string{"error": "Invalid VMID"})
 		return
 	}
-	result, err := s.scheduler.VmStarted(vmid)
+	result, err := s.scheduler.VmStarted(r.Context(), vmid)
 	if err != nil {
 		s.respond(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
