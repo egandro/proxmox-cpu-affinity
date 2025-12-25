@@ -102,7 +102,7 @@ func newEnableCmd() *cobra.Command {
 				fmt.Printf("Error: VM %d has manual CPU affinity set. Cannot modify hookscript.\n", vmid)
 				os.Exit(1)
 			}
-			enableVM(vmid, storage)
+			updateVMHook(vmid, true, storage)
 		},
 	}
 }
@@ -130,7 +130,7 @@ func newDisableCmd() *cobra.Command {
 				fmt.Printf("Error: VM %d has manual CPU affinity set. Cannot modify hookscript.\n", vmid)
 				os.Exit(1)
 			}
-			disableVM(vmid)
+			updateVMHook(vmid, false, "")
 		},
 	}
 }
@@ -147,30 +147,7 @@ func newEnableAllCmd() *cobra.Command {
 				storage = args[0]
 			}
 
-			for _, vmid := range getAllVMIDs() {
-				if isHAVM(vmid) {
-					fmt.Printf("Skipping HA-managed VM %d...\n", vmid)
-					continue
-				}
-				vmConf := getVMConfig(vmid)
-				if strings.Contains(vmConf, "template: 1") {
-					fmt.Printf("Skipping VM Template %d...\n", vmid)
-					continue
-				}
-				if strings.Contains(vmConf, "affinity:") {
-					fmt.Printf("Skipping VM %d (manual affinity set)...\n", vmid)
-					continue
-				}
-				if strings.Contains(vmConf, "hookscript:") {
-					if !strings.Contains(vmConf, hookscriptFile) {
-						if !force {
-							fmt.Printf("Skipping VM %d (other hookscript set)...\n", vmid)
-							continue
-						}
-					}
-				}
-				enableVM(vmid, storage)
-			}
+			processAllVMs(true, storage, force)
 		},
 	}
 	cmd.Flags().BoolVar(&force, "force", false, "Force enable even if other hookscripts are present")
@@ -182,25 +159,7 @@ func newDisableAllCmd() *cobra.Command {
 		Use:   "disable-all",
 		Short: "Disable hook for ALL VMs",
 		Run: func(cmd *cobra.Command, args []string) {
-			for _, vmid := range getAllVMIDs() {
-				if isHAVM(vmid) {
-					fmt.Printf("Skipping HA-managed VM %d...\n", vmid)
-					continue
-				}
-				vmConf := getVMConfig(vmid)
-				if strings.Contains(vmConf, "template: 1") {
-					fmt.Printf("Skipping VM Template %d...\n", vmid)
-					continue
-				}
-				if strings.Contains(vmConf, "affinity:") {
-					fmt.Printf("Skipping VM %d (manual affinity set)...\n", vmid)
-					continue
-				}
-				if !strings.Contains(vmConf, "hookscript: ") || !strings.Contains(vmConf, hookscriptFile) {
-					continue
-				}
-				disableVM(vmid)
-			}
+			processAllVMs(false, "", false)
 		},
 	}
 }
@@ -219,24 +178,59 @@ func isValidStorage(s string) bool {
 	return filepath.Base(s) == s
 }
 
-func enableVM(vmid uint64, storage string) {
-	if !isValidStorage(storage) {
-		fmt.Printf("Error: Invalid storage %s\n", storage)
-		return
-	}
-	hookPath := getHookPath(storage)
-	fmt.Printf("Enabling proxmox-cpu-affinity hook for VM %d (storage: %s)...\n", vmid, storage)
-	// #nosec G204 -- vmid is uint64, hookPath is validated
-	if err := exec.Command("/usr/sbin/qm", "set", strconv.FormatUint(vmid, 10), "--hookscript", hookPath).Run(); err != nil {
-		fmt.Printf("Error enabling hook for VM %d: %v\n", vmid, err)
+func updateVMHook(vmid uint64, enable bool, storage string) {
+	if enable {
+		if !isValidStorage(storage) {
+			fmt.Printf("Error: Invalid storage %s\n", storage)
+			return
+		}
+		hookPath := getHookPath(storage)
+		fmt.Printf("Enabling proxmox-cpu-affinity hook for VM %d (storage: %s)...\n", vmid, storage)
+		// #nosec G204 -- vmid is uint64, hookPath is validated
+		if err := exec.Command("/usr/sbin/qm", "set", strconv.FormatUint(vmid, 10), "--hookscript", hookPath).Run(); err != nil {
+			fmt.Printf("Error enabling hook for VM %d: %v\n", vmid, err)
+		}
+	} else {
+		fmt.Printf("Disabling proxmox-cpu-affinity hook for VM %d...\n", vmid)
+		// #nosec G204 -- vmid is uint64
+		if err := exec.Command("/usr/sbin/qm", "set", strconv.FormatUint(vmid, 10), "--delete", "hookscript").Run(); err != nil {
+			fmt.Printf("Error disabling hook for VM %d: %v\n", vmid, err)
+		}
 	}
 }
 
-func disableVM(vmid uint64) {
-	fmt.Printf("Disabling proxmox-cpu-affinity hook for VM %d...\n", vmid)
-	// #nosec G204 -- vmid is uint64
-	if err := exec.Command("/usr/sbin/qm", "set", strconv.FormatUint(vmid, 10), "--delete", "hookscript").Run(); err != nil {
-		fmt.Printf("Error disabling hook for VM %d: %v\n", vmid, err)
+func processAllVMs(enable bool, storage string, force bool) {
+	for _, vmid := range getAllVMIDs() {
+		if isHAVM(vmid) {
+			fmt.Printf("Skipping HA-managed VM %d...\n", vmid)
+			continue
+		}
+		vmConf := getVMConfig(vmid)
+		if strings.Contains(vmConf, "template: 1") {
+			fmt.Printf("Skipping VM Template %d...\n", vmid)
+			continue
+		}
+		if strings.Contains(vmConf, "affinity:") {
+			fmt.Printf("Skipping VM %d (manual affinity set)...\n", vmid)
+			continue
+		}
+
+		if enable {
+			if strings.Contains(vmConf, "hookscript:") {
+				if !strings.Contains(vmConf, hookscriptFile) {
+					if !force {
+						fmt.Printf("Skipping VM %d (other hookscript set)...\n", vmid)
+						continue
+					}
+				}
+			}
+			updateVMHook(vmid, true, storage)
+		} else {
+			if !strings.Contains(vmConf, "hookscript: ") || !strings.Contains(vmConf, hookscriptFile) {
+				continue
+			}
+			updateVMHook(vmid, false, "")
+		}
 	}
 }
 
