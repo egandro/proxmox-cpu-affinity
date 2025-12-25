@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-	configFile := flag.String("config", config.DefaultConfigFilename, "Path to config file")
+	configFile := flag.String("config", config.ConstantConfigFilename, "Path to config file")
 	hostFlag := flag.String("host", "", "HTTP service host")
 	portFlag := flag.Int("port", 0, "HTTP service port")
 	logFileFlag := flag.String("log-file", "", "Path to log file")
