@@ -30,7 +30,7 @@ dpkg -i proxmox-cpu-affinity_*.deb
 
 ## CLI Tool
 
-The project includes a CLI tool `proxmox-cpu-affinity-cli` to manage the service and webhooks.
+The project includes a CLI tool `proxmox-cpu-affinity` to manage the service and webhooks.
 
 ### webhook
 
@@ -38,10 +38,10 @@ Manage hookscript activation. Handles HA and manual affinity checks automaticall
 (HA machines are ignored. Templates are ignored. Existing scripts are not overwritten)
 
 ```bash
-proxmox-cpu-affinity-cli webhook list
-proxmox-cpu-affinity-cli webhook enable <VMID> [storage]
-proxmox-cpu-affinity-cli webhook enable-all [storage]
-proxmox-cpu-affinity-cli webhook disable-all
+proxmox-cpu-affinity webhook list
+proxmox-cpu-affinity webhook enable <VMID> [storage]
+proxmox-cpu-affinity webhook enable-all [storage]
+proxmox-cpu-affinity webhook disable-all
 ```
 
 ### info
@@ -49,8 +49,8 @@ proxmox-cpu-affinity-cli webhook disable-all
 Show current CPU affinity for running VMs.
 
 ```bash
-proxmox-cpu-affinity-cli info [-v]
-proxmox-cpu-affinity-cli info <VMID> [-v]
+proxmox-cpu-affinity info [-v]
+proxmox-cpu-affinity info <VMID> [-v]
 ```
 
 ### status
@@ -58,7 +58,7 @@ proxmox-cpu-affinity-cli info <VMID> [-v]
 Show current status of the service.
 
 ```bash
-proxmox-cpu-affinity-cli status
+proxmox-cpu-affinity status
 ```
 
 ### cpuinfo
@@ -66,7 +66,7 @@ proxmox-cpu-affinity-cli status
 Runs the cpuinfo and shows the core-to-core latency.
 
 ```bash
-proxmox-cpu-affinity-cli cpuinfo [-v] [--summery]
+proxmox-cpu-affinity cpuinfo [-v] [--summery]
 ```
 
 ## Manual VM Configuration
