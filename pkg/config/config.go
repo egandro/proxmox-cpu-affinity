@@ -35,8 +35,12 @@ const (
 	DefaultLogLevel = "info"
 
 	// Proxmox defaults
-	DefaultQemuServerPidDir = "/var/run/qemu-server"
-	DefaultConfigFilename   = "/etc/default/proxmox-cpu-affinity"
+	DefaultQemuServerPidDir   = "/var/run/qemu-server"
+	DefaultConfigFilename     = "/etc/default/proxmox-cpu-affinity"
+	DefaultProxmoxQM          = "/usr/sbin/qm"
+	DefaultProxmoxHaManager   = "/usr/sbin/ha-manager"
+	DefaultProxmoxConfigDir   = "/etc/pve"
+	DefaultHookScriptFilename = "proxmox-cpu-affinity-hook"
 
 	// Webhook defaults
 	DefaultWebhookRetry          = 10

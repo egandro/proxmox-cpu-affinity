@@ -15,7 +15,7 @@ build:
 	mkdir -p bin
 	go build -o bin/proxmox-cpu-affinity-hook ./cmd/hook
 	go build -o bin/proxmox-cpu-affinity-service ./cmd/service
-	go build -o bin/proxmox-cpu-affinity-cpuinfo ./cmd/cpuinfo
+	go build -o bin/proxmox-cpu-affinity ./cmd/cli
 
 clean:
 	rm -rf bin dist *.deb coverage.out coverage.html

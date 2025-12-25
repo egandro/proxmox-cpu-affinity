@@ -1,6 +1,8 @@
 # proxmox-cpu-affinity
 
-Automated CPU affinity management for Proxmox VE VMs. Uses a background service and hookscript to optimize CPU placement on VM startup.
+Automated CPU affinity management for Proxmox VE VMs. Uses a background service and a Proxmox hookscript (webhook) to optimize CPU placement on VM startup.
+
+When a VM starts, the hookscript triggers the background service, which then calculates and applies the optimal CPU affinity for that VM.
 
 Written in Go.
 
@@ -10,19 +12,6 @@ Written in Go.
 - There is no guarantee that this project will increase performance. This is an experiment.
 - Performance gains are only noticeable on bare-metal hardware. Virtual environments have random CPU latencies.
 - Best results are expected on multi-socket servers where socket-to-socket latency is significant.
-
-## Components
-
-*   **proxmox-cpu-affinity-service**: Systemd service that monitors VM starts and applies CPU affinity rules (Go HTTP REST Server on `127.0.0.1:8245`).
-*   **proxmox-cpu-affinity-hook**: Proxmox hookscript that notifies the service when a VM starts.
-*   **proxmox-cpu-affinity-cpuinfo**: Utility to gather CPU topology information.
-
-## Algorithm
-
-The algorithm analyzes the host's CPU topology to identify core groups with the lowest inter-core latency.
-For every CPU, a vector of neighbors is calculated, ordered from lowest to highest latency. When a VM starts and
-requests *n* CPUs (where *n* = cores * sockets), the service assigns a starting CPU and its *n*-1 nearest neighbors.
-The starting CPU is selected in a round-robin fashion from the list of all available CPUs to ensure even distribution.
 
 ## Installation
 
@@ -39,14 +28,48 @@ make deb
 dpkg -i proxmox-cpu-affinity_*.deb
 ```
 
-## Files
+## CLI Tool
 
-1.  Binaries are in `/usr/sbin/` and `/usr/bin/`.
-2.  Proxmox VM hookscript `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`.
-3.  Service `systemctl status proxmox-cpu-affinity.service`
-4.  Configuration file `/etc/default/proxmox-cpu-affinity`.
+The project includes a CLI tool `proxmox-cpu-affinity` to manage the service and webhooks.
 
-### VM Configuration
+### webhook
+
+Manage hookscript activation. Handles HA and manual affinity checks automatically.
+(HA machines are ignored. Templates are ignored. Existing scripts are not overwritten)
+
+```bash
+proxmox-cpu-affinity webhook list
+proxmox-cpu-affinity webhook enable <VMID> [storage]
+proxmox-cpu-affinity webhook enable-all [storage]
+proxmox-cpu-affinity webhook disable-all
+```
+
+### info
+
+Show current CPU affinity for running VMs.
+
+```bash
+proxmox-cpu-affinity info [-v]
+proxmox-cpu-affinity info <VMID> [-v]
+```
+
+### status
+
+Show current status of the service.
+
+```bash
+proxmox-cpu-affinity status
+```
+
+### cpuinfo
+
+Runs the cpuinfo and shows the core-to-core latency.
+
+```bash
+proxmox-cpu-affinity cpuinfo [-v] [--summery]
+```
+
+## Manual VM Configuration
 
 To enable the affinity management for a specific VM, set the hookscript:
 
@@ -83,29 +106,26 @@ ln -s /var/lib/vz/snippets/proxmox-cpu-affinity-hook /raid/snippets/proxmox-cpu-
 # qm set <VMID> --hookscript raid:snippets/proxmox-cpu-affinity-hook
 ```
 
-## Helper Tools
+## Components
 
-Located in `/usr/share/proxmox-cpu-affinity/bin/`.
+*   **proxmox-cpu-affinity-service**: Systemd service that monitors VM starts and applies CPU affinity rules (Go HTTP REST Server on `127.0.0.1:8245`).
+*   **proxmox-cpu-affinity-hook**: Proxmox hookscript that notifies the service when a VM starts.
+*   **proxmox-cpu-affinity**: CLI tool to manage the service, webhooks, view status and CPU topology.
 
-### webhooks
+## Algorithm
 
-Manage hookscript activation. Handles HA and manual affinity checks automatically.
+The algorithm analyzes the host's CPU topology to identify core groups with the lowest inter-core latency.
+For every CPU, a vector of neighbors is calculated, ordered from lowest to highest latency. When a VM starts and
+requests *n* CPUs (where *n* = cores * sockets), the service assigns a starting CPU and its *n*-1 nearest neighbors.
 
-```bash
-/usr/share/proxmox-cpu-affinity/bin/webhooks list
-/usr/share/proxmox-cpu-affinity/bin/webhooks enable <VMID>
-/usr/share/proxmox-cpu-affinity/bin/webhooks enable-all
-/usr/share/proxmox-cpu-affinity/bin/webhooks disable-all
-```
+The starting CPU is selected in a round-robin fashion from the list of all available CPUs to ensure even distribution.
 
-### info
+## Files
 
-Show current CPU affinity for running VMs.
-
-```bash
-/usr/share/proxmox-cpu-affinity/bin/info [-v]
-/usr/share/proxmox-cpu-affinity/bin/info <VMID> [-v]
-```
+1.  Binaries are in `/usr/sbin/` and `/usr/bin/`.
+2.  Proxmox VM hookscript `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`.
+3.  Service `systemctl status proxmox-cpu-affinity.service`
+4.  Configuration file `/etc/default/proxmox-cpu-affinity`.
 
 ## Resources
 
@@ -114,7 +134,7 @@ Show current CPU affinity for running VMs.
 
 ## Testing scripts
 
-The `scripts/testing` folder has some dummy scripts to create, delete, start, and stop VMs.
+The `scripts` folder has some dummy scripts to create, delete, start, and stop VMs.
 The hookscript is automatically assigned. This is not installed in the `.deb` package.
 
 ## TODO
