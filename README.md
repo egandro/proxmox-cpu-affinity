@@ -35,7 +35,7 @@ The project includes a CLI tool `proxmox-cpu-affinity` to manage the service and
 ### webhook
 
 Manage hookscript activation. Handles HA and manual affinity checks automatically.
-(HA machines are ignored. Templates are ignored. Existing scripts are not overwritten)
+(HA machines are ignored. Templates are ignored. Existing scripts are not overwritten.)
 
 ```bash
 proxmox-cpu-affinity webhook list
@@ -66,7 +66,7 @@ proxmox-cpu-affinity status
 Runs the cpuinfo and shows the core-to-core latency.
 
 ```bash
-proxmox-cpu-affinity cpuinfo [-v] [--summery]
+proxmox-cpu-affinity cpuinfo [-v] [--summary]
 ```
 
 ## Manual VM Configuration
@@ -89,7 +89,7 @@ qm set <VMID> --delete hookscript
 - you removed proxmox-cpu-affinity and didn't change the configuration
 - you have a cluster and don't have proxmox-cpu-affinity installed on every node
 
-### Edge case "local" Proxmox Storage is disabled.
+### Edge case "local" Proxmox Storage is disabled
 
 The webhook is installed in `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`. This is the default **local** storage.
 
@@ -105,6 +105,8 @@ ln -s /var/lib/vz/snippets/proxmox-cpu-affinity-hook /raid/snippets/proxmox-cpu-
 # you can now use it from "raid"
 # qm set <VMID> --hookscript raid:snippets/proxmox-cpu-affinity-hook
 ```
+
+**Info** This might be a bug in Proxmox. Regardless the status of "local" you can enable / use a hookscript (even if the storage disabled).
 
 ## Components
 
@@ -122,10 +124,8 @@ The starting CPU is selected in a round-robin fashion from the list of all avail
 
 ## Files
 
-1.  Binaries are in `/usr/sbin/` and `/usr/bin/`.
-2.  Proxmox VM hookscript `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`.
-3.  Service `systemctl status proxmox-cpu-affinity.service`
-4.  Configuration file `/etc/default/proxmox-cpu-affinity`.
+1.  Proxmox VM hookscript `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`.
+2.  Configuration file `/etc/default/proxmox-cpu-affinity`.
 
 ## Resources
 
@@ -139,8 +139,10 @@ The hookscript is automatically assigned. This is not installed in the `.deb` pa
 
 ## TODO
 
-- The number of CPUs/Sockets etc. might change during the runtime of your host. This is currently not supported (but might be an easy fix).
-- `tail -f /var/log/proxmox-cpu-affinity.log` is your UI.
+- The number of CPUs/Sockets etc. might change during the runtime of your host.
+  This is currently not supported. Probably just detect changes in the `/sys/devices/system/cpu`
+  directory and recalculate the latencies.
+- Current UI `tail -f /var/log/proxmox-cpu-affinity.log`
 
 ## License
 
