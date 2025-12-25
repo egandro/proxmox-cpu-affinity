@@ -31,6 +31,11 @@ func (m *MockCpuInfoProvider) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
 	return args.Get(0).([]cpuinfo.CoreRanking), args.Error(1)
 }
 
+func (m *MockCpuInfoProvider) SelectCores(requestedCores int) ([]int, error) {
+	args := m.Called(requestedCores)
+	return args.Get(0).([]int), args.Error(1)
+}
+
 // MockSystemAffinityOps mocks the SystemAffinityOps interface.
 type MockSystemAffinityOps struct {
 	mock.Mock
@@ -58,42 +63,16 @@ func (m *MockSystemAffinityOps) GetChildProcesses(pid int) ([]int, error) {
 }
 
 func TestApplyAffinity(t *testing.T) {
-	// Define sample rankings: 3 CPUs (0, 1, 2)
-	rankings := []cpuinfo.CoreRanking{
-		{
-			CPU: 0,
-			Ranking: []cpuinfo.Neighbor{
-				{CPU: 1, LatencyNS: 10},
-				{CPU: 2, LatencyNS: 20},
-			},
-		},
-		{
-			CPU: 1,
-			Ranking: []cpuinfo.Neighbor{
-				{CPU: 0, LatencyNS: 10},
-				{CPU: 2, LatencyNS: 20},
-			},
-		},
-		{
-			CPU: 2,
-			Ranking: []cpuinfo.Neighbor{
-				{CPU: 0, LatencyNS: 20},
-				{CPU: 1, LatencyNS: 20},
-			},
-		},
-	}
-
 	tests := []struct {
 		name           string
 		vmid           int
 		pid            int
 		config         *proxmox.VmConfig
-		mockRankings   []cpuinfo.CoreRanking
-		mockRankingErr error
-		mockSysErr     error
 		expectedRes    string
 		expectError    bool
+		expectedErrMsg string
 		setupMockSys   func(*MockSystemAffinityOps)
+		setupMockCpu   func(*MockCpuInfoProvider)
 	}{
 		{
 			name: "Success - 2 Cores",
@@ -103,9 +82,10 @@ func TestApplyAffinity(t *testing.T) {
 				Cores:   2,
 				Sockets: 1,
 			},
-			mockRankings: rankings,
-			// lastIndex starts at 0, increments to 1. CPU 1 + neighbor 0.
 			expectedRes: "1,0",
+			setupMockCpu: func(m *MockCpuInfoProvider) {
+				m.On("SelectCores", 2).Return([]int{1, 0}, nil)
+			},
 			setupMockSys: func(m *MockSystemAffinityOps) {
 				m.On("GetProcessThreads", 12345).Return([]int{12345}, nil)
 				m.On("GetChildProcesses", 12345).Return([]int{}, nil)
@@ -115,35 +95,19 @@ func TestApplyAffinity(t *testing.T) {
 			},
 		},
 		{
-			name: "Error - Ranking Failed",
+			name: "Affinity Error (invalid config)",
 			vmid: 102,
 			pid:  12347,
 			config: &proxmox.VmConfig{
-				Cores: 2,
+				Cores:   0,
+				Sockets: 0,
 			},
-			mockRankingErr: errors.New("ranking failed"),
 			expectError:    true,
-		},
-		{
-			name: "Error - Empty Ranking",
-			vmid: 103,
-			pid:  12348,
-			config: &proxmox.VmConfig{
-				Cores: 2,
+			expectedErrMsg: "invalid VM configuration",
+			expectedRes:    "",
+			setupMockCpu: func(m *MockCpuInfoProvider) {
+				// Should not be called
 			},
-			mockRankings: []cpuinfo.CoreRanking{},
-			expectError:  true,
-		},
-		{
-			name: "Skip - Not Enough Cores",
-			vmid: 104,
-			pid:  12349,
-			config: &proxmox.VmConfig{
-				Cores:   4, // Request 4, have 3
-				Sockets: 1,
-			},
-			mockRankings: rankings,
-			expectedRes:  "",
 			setupMockSys: func(m *MockSystemAffinityOps) {
 				// Should not be called
 			},
@@ -156,10 +120,11 @@ func TestApplyAffinity(t *testing.T) {
 				Cores:   1,
 				Sockets: 1,
 			},
-			mockRankings: rankings,
-			mockSysErr:   errors.New("sys error"),
-			expectError:  false,
-			expectedRes:  "1",
+			expectError: false,
+			expectedRes: "1",
+			setupMockCpu: func(m *MockCpuInfoProvider) {
+				m.On("SelectCores", 1).Return([]int{1}, nil)
+			},
 			setupMockSys: func(m *MockSystemAffinityOps) {
 				m.On("GetProcessThreads", 12350).Return([]int{12350}, nil)
 				m.On("GetChildProcesses", 12350).Return([]int{}, nil)
@@ -174,17 +139,14 @@ func TestApplyAffinity(t *testing.T) {
 			mockSys := new(MockSystemAffinityOps)
 
 			p := &defaultAffinityProvider{
-				cpuInfo:   mockCpu,
-				sys:       mockSys,
-				lastIndex: 0,
-				config:    &config.Config{Rounds: 1, Iterations: 1},
+				cpuInfo: mockCpu,
+				sys:     mockSys,
+				config:  &config.Config{Rounds: 1, Iterations: 1},
 			}
 
 			// Setup Ranking Mock
-			if tt.mockRankingErr != nil {
-				mockCpu.On("GetCoreRanking").Return(nil, tt.mockRankingErr)
-			} else {
-				mockCpu.On("GetCoreRanking").Return(tt.mockRankings, nil)
+			if tt.setupMockCpu != nil {
+				tt.setupMockCpu(mockCpu)
 			}
 
 			// Setup Sys Mock
@@ -195,8 +157,10 @@ func TestApplyAffinity(t *testing.T) {
 			res, err := p.ApplyAffinity(context.Background(), tt.vmid, tt.pid, tt.config)
 
 			if tt.expectError {
-				// xxx
 				assert.Error(t, err)
+				if tt.expectedErrMsg != "" {
+					assert.Contains(t, err.Error(), tt.expectedErrMsg)
+				}
 			} else {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.expectedRes, res)

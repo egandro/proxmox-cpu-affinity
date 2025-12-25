@@ -3,8 +3,10 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -43,17 +45,24 @@ const (
 	DefaultHookScriptFilename = "proxmox-cpu-affinity-hook"
 
 	// Webhook defaults
-	DefaultWebhookRetry          = 10
-	DefaultWebhookSleep          = 10 // in seconds
-	DefaultWebhookTimeout        = 30 // in seconds
-	DefaultWebhookPingOnPreStart = true
+	DefaultWebhookRetry           = 10
+	DefaultWebhookSleep           = 10 // in seconds
+	DefaultWebhookTimeout         = 30 // in seconds
+	DefaultWebhookPingOnPreStart  = true
+	DefaultCPUHotplugWatchdog     = true
+	MaxCalculationRankingDuration = 2 * time.Minute
+
+	// CPUHotplugBatchWindow is the time window to group hotplug events.
+	// When a CPU event occurs, we wait this long for subsequent events
+	// to arrive (debouncing) before triggering a topology recalculation.
+	CPUHotplugBatchWindow = 5 * time.Second
 )
 
 // AdaptiveCpuInfoParameters calculates measurement parameters based on CPU count.
 // Larger systems use reduced parameters to avoid excessive benchmark time.
 // Returns (rounds, iterations).
 func AdaptiveCpuInfoParameters() (int, int) {
-	cpuCount := runtime.NumCPU()
+	cpuCount := numCPU()
 
 	limits := []struct {
 		cores      int
@@ -87,6 +96,7 @@ type Config struct {
 	WebhookSleep          int // in seconds
 	WebhookPingOnPreStart bool
 	WebhookTimeout        int // in seconds
+	CPUHotplugWatchdog    bool
 }
 
 func (c *Config) Validate() error {
@@ -121,6 +131,7 @@ func Load(filename string) *Config {
 	_ = godotenv.Load(filename)
 
 	// Get adaptive defaults based on CPU count, allowing user overrides
+	// TODO: reload this after a CPU hotplug event
 	defaultRounds, defaultIterations := AdaptiveCpuInfoParameters()
 
 	return &Config{
@@ -135,6 +146,7 @@ func Load(filename string) *Config {
 		WebhookSleep:          getEnvInt("PCA_WEBHOOK_SLEEP", DefaultWebhookSleep),
 		WebhookTimeout:        getEnvInt("PCA_WEBHOOK_TIMEOUT", DefaultWebhookTimeout),
 		WebhookPingOnPreStart: getEnvBool("PCA_WEBHOOK_PING_ON_PRESTART", DefaultWebhookPingOnPreStart),
+		CPUHotplugWatchdog:    getEnvBool("PCA_CPU_HOTPLUG_WATCHDOG", DefaultCPUHotplugWatchdog),
 	}
 }
 
@@ -143,6 +155,16 @@ func getEnv(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+// numCPU returns the number of physical CPUs found in sysfs.
+// We duplicate this logic here to avoid a circular dependency with pkg/cpuinfo.
+func numCPU() int {
+	matches, err := filepath.Glob("/sys/devices/system/cpu/cpu[0-9]*")
+	if err != nil || len(matches) == 0 {
+		return runtime.NumCPU()
+	}
+	return len(matches)
 }
 
 func getEnvBool(key string, fallback bool) bool {

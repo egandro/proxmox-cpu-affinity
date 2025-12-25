@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -20,8 +19,6 @@ import (
 	"github.com/egandro/proxmox-cpu-affinity/pkg/service"
 )
 
-const MaxCalculationDuration = 2 * time.Minute
-
 func main() {
 	configFile := flag.String("config", config.DefaultConfigFilename, "Path to config file")
 	hostFlag := flag.String("host", "", "HTTP service host")
@@ -30,6 +27,7 @@ func main() {
 	logLevelFlag := flag.String("log-level", "", "Log level (debug, info, notice, warn, error)")
 	toStdout := flag.Bool("stdout", false, "Log to stdout")
 	insecureBind := flag.Bool("insecure-allow-remote", false, "Allow binding to non-localhost addresses (DANGEROUS: exposes unauthenticated API)")
+	disableCpuHotplugWatchdog := flag.Bool("disable-cpu-hotplug-watchdog", false, "Disable CPU hotplug watchdog")
 
 	flag.Parse()
 
@@ -50,6 +48,9 @@ func main() {
 	}
 	if *insecureBind {
 		cfg.InsecureAllowRemote = true
+	}
+	if *disableCpuHotplugWatchdog {
+		cfg.CPUHotplugWatchdog = false
 	}
 
 	// security check for insecure bind
@@ -83,44 +84,20 @@ func main() {
 
 	slog.Info("Proxmox CPU affinity service starting")
 
-	onProgress := func(round, total int) {
-		slog.Debug("Ranking calculation progress", "round", round, "total", total)
+	cpuInfo := cpuinfo.New()
+
+	if err := cpuInfo.CalculateRanking(cfg.Rounds, cfg.Iterations, config.MaxCalculationRankingDuration); err != nil {
+		slog.Error("Failed to calculate ranking", "error", err)
+		os.Exit(1)
 	}
 
-	cpuInfo := cpuinfo.New(onProgress)
-
-	start := time.Now()
-	slog.Info("Calculating core-to-core ranking", "rounds", cfg.Rounds, "iterations", cfg.Iterations)
-
-	done := make(chan error, 1)
-	go func() {
-		done <- cpuInfo.Update(cfg.Rounds, cfg.Iterations)
-	}()
-
-	select {
-	case err := <-done:
-		if err != nil {
-			slog.Error("Error calculating ranking", "error", err)
-			os.Exit(1)
+	var hotplugController cpuinfo.HotplugController
+	if cfg.CPUHotplugWatchdog {
+		hotplugController = cpuinfo.NewHotplug(cpuInfo, cfg)
+		if err := hotplugController.StartWatchdog(); err != nil {
+			slog.Warn("Failed to start CPU hotplug watchdog", "error", err)
 		}
-	case <-time.After(MaxCalculationDuration):
-		slog.Error("Calculation timed out",
-			"timeout", MaxCalculationDuration,
-			"rounds", cfg.Rounds,
-			"iterations", cfg.Iterations,
-			"msg", "This might be a bug/timing issue. Please adjust PCA_ROUNDS/PCA_ITERATIONS in /etc/default/proxmox-cpu-affinity",
-		)
-		os.Exit(1)
 	}
-
-	rankings, err := cpuInfo.GetCoreRanking()
-	if err != nil {
-		slog.Error("Error getting cpuinfo core  ranking", "error", err)
-		os.Exit(1)
-	}
-
-	statsJSON, _ := json.Marshal(cpuinfo.SummarizeRankings(rankings))
-	slog.Info("CPU topology ranking calculated", "duration", time.Since(start).Round(time.Millisecond), "summary", string(statsJSON))
 
 	sched, err := scheduler.New(cfg, cpuInfo)
 	if err != nil {
@@ -160,6 +137,11 @@ func main() {
 			}
 		case syscall.SIGINT, syscall.SIGTERM:
 			slog.Info("Shutting down service...")
+			if hotplugController != nil {
+				if err := hotplugController.StopWatchdog(); err != nil {
+					slog.Error("Failed to stop hotplug watchdog", "error", err)
+				}
+			}
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 			if err := s.Shutdown(ctx); err != nil {

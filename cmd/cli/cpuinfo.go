@@ -34,9 +34,9 @@ func newCPUInfoCmd() *cobra.Command {
 				fmt.Fprintf(os.Stderr, "Starting calculation (Rounds: %d, Iterations: %d)...\n", rounds, iterations)
 			}
 
-			ci := cpuinfo.New(onProgress)
+			ci := cpuinfo.New()
 
-			if err := ci.Update(rounds, iterations); err != nil {
+			if err := ci.Update(rounds, iterations, onProgress); err != nil {
 				return err
 			}
 			if verbose {
