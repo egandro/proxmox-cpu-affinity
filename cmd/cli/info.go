@@ -11,8 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const hookscriptFile = "proxmox-cpu-affinity-hook"
-
 func newInfoCmd() *cobra.Command {
 	var verbose bool
 	cmd := &cobra.Command{
