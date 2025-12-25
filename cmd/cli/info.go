@@ -8,7 +8,14 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/spf13/cobra"
+)
+
+const (
+	systemPS      = "/usr/bin/ps"
+	systemTaskSet = "/usr/bin/taskset"
+	systemPGrep   = "/usr/bin/pgrep"
 )
 
 func newInfoCmd() *cobra.Command {
@@ -26,8 +33,8 @@ func newInfoCmd() *cobra.Command {
 			return nil
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			if _, err := os.Stat("/etc/pve"); os.IsNotExist(err) {
-				fmt.Println("Error: This tool must be run on a Proxmox VE host (/etc/pve not found).")
+			if err := ensureProxmoxHost(); err != nil {
+				fmt.Printf("Error: %v\n", err)
 				os.Exit(1)
 			}
 
@@ -35,7 +42,7 @@ func newInfoCmd() *cobra.Command {
 				vmid, _ := strconv.ParseUint(args[0], 10, 64)
 				checkVM(vmid, verbose, true)
 			} else {
-				files, _ := filepath.Glob("/var/run/qemu-server/*.pid")
+				files, _ := filepath.Glob(filepath.Join(config.DefaultQemuServerPidDir, "*.pid"))
 				if len(files) == 0 {
 					fmt.Println("No running VMs found.")
 					return
@@ -54,7 +61,7 @@ func newInfoCmd() *cobra.Command {
 }
 
 func checkVM(vmid uint64, verbose bool, explicit bool) {
-	pidFile := fmt.Sprintf("/var/run/qemu-server/%d.pid", vmid)
+	pidFile := filepath.Join(config.DefaultQemuServerPidDir, fmt.Sprintf("%d.pid", vmid))
 	pidBytes, err := os.ReadFile(pidFile) // #nosec G304 -- vmid is uint64, path is safe
 	if err != nil {
 		if explicit {
@@ -70,24 +77,24 @@ func checkVM(vmid uint64, verbose bool, explicit bool) {
 
 	// Check hookscript
 	hookMsg := "    "
-	out, _ := exec.Command("/usr/sbin/qm", "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
-	if strings.Contains(string(out), "hookscript: ") && strings.Contains(string(out), hookscriptFile) {
+	out, _ := exec.Command(config.DefaultProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
+	if strings.Contains(string(out), "hookscript: ") && strings.Contains(string(out), config.DefaultHookScriptFilename) {
 		hookMsg = " (*)"
 	}
 
 	// Check if process exists
 	// #nosec G204 -- pid is uint64
-	if err := exec.Command("/usr/bin/ps", "-p", strconv.FormatUint(pid, 10)).Run(); err == nil {
+	if err := exec.Command(systemPS, "-p", strconv.FormatUint(pid, 10)).Run(); err == nil {
 		fmt.Printf("VM %d%s: ", vmid, hookMsg)
 
 		// taskset -cp "$pid"
-		tsOut, _ := exec.Command("/usr/bin/taskset", "-cp", strconv.FormatUint(pid, 10)).CombinedOutput() // #nosec G204 -- pid is uint64
+		tsOut, _ := exec.Command(systemTaskSet, "-cp", strconv.FormatUint(pid, 10)).CombinedOutput() // #nosec G204 -- pid is uint64
 		fmt.Print(string(tsOut))
 
 		if verbose {
 			fmt.Println("  Threads (TID PSR COMMAND):")
 			// ps -L -p "$pid" -o tid,psr,comm
-			psOut, _ := exec.Command("/usr/bin/ps", "-L", "-p", strconv.FormatUint(pid, 10), "-o", "tid,psr,comm").Output() // #nosec G204 -- pid is uint64
+			psOut, _ := exec.Command(systemPS, "-L", "-p", strconv.FormatUint(pid, 10), "-o", "tid,psr,comm").Output() // #nosec G204 -- pid is uint64
 			lines := strings.Split(string(psOut), "\n")
 			for i, line := range lines {
 				if i == 0 || line == "" {
@@ -97,7 +104,7 @@ func checkVM(vmid uint64, verbose bool, explicit bool) {
 			}
 
 			// Child processes
-			pgrepOut, _ := exec.Command("/usr/bin/pgrep", "-P", strconv.FormatUint(pid, 10)).Output() // #nosec G204 -- pid is uint64
+			pgrepOut, _ := exec.Command(systemPGrep, "-P", strconv.FormatUint(pid, 10)).Output() // #nosec G204 -- pid is uint64
 			children := strings.ReplaceAll(strings.TrimSpace(string(pgrepOut)), "\n", ",")
 
 			validChildren := children != ""
@@ -113,7 +120,7 @@ func checkVM(vmid uint64, verbose bool, explicit bool) {
 			if validChildren {
 				fmt.Println("  Child Processes (PID PSR COMMAND):")
 				// ps -p "$children" -o pid,psr,comm
-				psChildOut, _ := exec.Command("/usr/bin/ps", "-p", children, "-o", "pid,psr,comm").Output() // #nosec G204 -- children is validated
+				psChildOut, _ := exec.Command(systemPS, "-p", children, "-o", "pid,psr,comm").Output() // #nosec G204 -- children is validated
 				cLines := strings.Split(string(psChildOut), "\n")
 				for i, line := range cLines {
 					if i == 0 || line == "" {

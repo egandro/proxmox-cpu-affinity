@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strconv"
+
+	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 )
 
-const hookscriptFile = "proxmox-cpu-affinity-hook"
-
 func getHookPath(storage string) string {
-	return fmt.Sprintf("%s:snippets/%s", storage, hookscriptFile)
+	return fmt.Sprintf("%s:snippets/%s", storage, config.DefaultHookScriptFilename)
 }
 
 func isValidStorage(s string) bool {
@@ -24,4 +25,11 @@ func isValidStorage(s string) bool {
 func isNumeric(s string) bool {
 	_, err := strconv.ParseUint(s, 10, 64)
 	return err == nil
+}
+
+func ensureProxmoxHost() error {
+	if _, err := os.Stat(config.DefaultProxmoxConfigDir); os.IsNotExist(err) {
+		return fmt.Errorf("this tool must be run on a Proxmox VE host (%s not found)", config.DefaultProxmoxConfigDir)
+	}
+	return nil
 }
