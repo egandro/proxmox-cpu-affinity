@@ -1,7 +1,9 @@
 package cpuinfo
 
 import (
+	"encoding/json"
 	"fmt"
+	"log/slog"
 	"math"
 	"os"
 	"path/filepath"
@@ -19,21 +21,23 @@ import (
 
 // Provider defines the interface for CPU topology and ranking operations.
 type Provider interface {
-	Update(rounds int, iterations int) error
+	Update(rounds int, iterations int, onProgress func(int, int)) error
 	GetCoreRanking() ([]CoreRanking, error)
+	CalculateRanking(rounds, iterations int, timeout time.Duration) error
 	DetectTopology() ([]CoreInfo, error)
+	SelectCores(requestedCores int) ([]int, error)
 }
 
 // CPUInfo handles CPU topology detection and latency measurement.
 type CPUInfo struct {
-	onProgress func(round, total int)
-	mu         sync.RWMutex
-	cache      []CoreRanking
+	mu        sync.RWMutex
+	cache     []CoreRanking
+	lastIndex int
 }
 
 // New creates a new CPUInfo instance.
-func New(onProgress func(round, total int)) Provider {
-	return &CPUInfo{onProgress: onProgress}
+func New() Provider {
+	return &CPUInfo{}
 }
 
 // CoreInfo represents the CPU topology using standard Linux terminology
@@ -61,14 +65,45 @@ type CoreRanking struct {
 	Ranking []Neighbor `json:"ranking"`
 }
 
+// CalculateRanking performs the update with a timeout and logs the summary.
+func (c *CPUInfo) CalculateRanking(rounds, iterations int, timeout time.Duration) error {
+	start := time.Now()
+	slog.Info("Calculating core-to-core ranking", "rounds", rounds, "iterations", iterations)
+
+	done := make(chan error, 1)
+
+	onProgress := func(round, total int) {
+		slog.Debug("Ranking calculation progress", "round", round, "total", total)
+	}
+
+	go func() {
+		done <- c.Update(rounds, iterations, onProgress)
+	}()
+
+	select {
+	case err := <-done:
+		if err != nil {
+			return fmt.Errorf("error calculating ranking: %w", err)
+		}
+	case <-time.After(timeout):
+		return fmt.Errorf("calculation timed out after %v (rounds=%d, iterations=%d). This might be a bug/timing issue. Please adjust PCA_ROUNDS/PCA_ITERATIONS", timeout, rounds, iterations)
+	}
+
+	rankings, err := c.GetCoreRanking()
+	if err != nil {
+		return fmt.Errorf("error getting cpuinfo core ranking: %w", err)
+	}
+
+	statsJSON, _ := json.Marshal(SummarizeRankings(rankings))
+	slog.Info("CPU topology ranking calculated", "duration", time.Since(start).Round(time.Millisecond), "summary", string(statsJSON))
+	return nil
+}
+
 // Update measures the latency between cores and updates the internal cache.
 // rounds: Number of full measurement passes to average.
 // iterations: Ping-pongs per measurement.
 // onProgress: Optional callback function invoked before each round (round, total).
-func (c *CPUInfo) Update(rounds int, iterations int) error {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
+func (c *CPUInfo) Update(rounds int, iterations int, onProgress func(int, int)) error {
 	// 1. Discover Topology
 	topology, err := c.DetectTopology()
 	if err != nil {
@@ -81,8 +116,8 @@ func (c *CPUInfo) Update(rounds int, iterations int) error {
 
 	// 2. Measure Accumulator (Linearized Matrix)
 	for r := 0; r < rounds; r++ {
-		if c.onProgress != nil {
-			c.onProgress(r+1, rounds)
+		if onProgress != nil {
+			onProgress(r+1, rounds)
 		}
 		for i, src := range topology {
 			for j, dst := range topology {
@@ -138,7 +173,15 @@ func (c *CPUInfo) Update(rounds int, iterations int) error {
 		})
 	}
 
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	c.cache = finalResults
+	// Ensure lastIndex is within bounds if topology shrank
+	if len(c.cache) > 0 {
+		c.lastIndex = c.lastIndex % len(c.cache)
+	} else {
+		c.lastIndex = 0
+	}
 	return nil
 }
 
@@ -150,6 +193,39 @@ func (c *CPUInfo) GetCoreRanking() ([]CoreRanking, error) {
 		return nil, fmt.Errorf("cache is empty, you have to call Update() first")
 	}
 	return c.cache, nil
+}
+
+// SelectCores returns a list of CPU IDs for the next VM, rotating through available cores.
+// This method is thread-safe to handle concurrent access, specifically when CPU hotplug
+// events trigger a topology update (changing the cache) while affinity is being requested.
+func (c *CPUInfo) SelectCores(requestedCores int) ([]int, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if len(c.cache) == 0 {
+		return nil, fmt.Errorf("core ranking cache is empty")
+	}
+
+	if requestedCores <= 0 {
+		return nil, fmt.Errorf("requested cores must be greater than 0")
+	}
+
+	max := len(c.cache)
+	if requestedCores > max {
+		return nil, fmt.Errorf("requested cores %d exceed available %d", requestedCores, max)
+	}
+
+	c.lastIndex = (c.lastIndex + 1) % max
+
+	primary := c.cache[c.lastIndex]
+	res := make([]int, 0, requestedCores)
+	res = append(res, primary.CPU)
+
+	for i := 0; i < requestedCores-1 && i < len(primary.Ranking); i++ {
+		res = append(res, primary.Ranking[i].CPU)
+	}
+
+	return res, nil
 }
 
 // DetectTopology reads Linux sysfs to find CPU topology.
@@ -248,7 +324,6 @@ func measureSingleLink(cpuA, cpuB, iter int) (float64, error) {
 
 	return float64(duration.Nanoseconds()) / float64(iter*2), nil
 }
-
 
 func readSysFSInt(path string) (int, error) {
 	realPath, err := filepath.EvalSymlinks(path)

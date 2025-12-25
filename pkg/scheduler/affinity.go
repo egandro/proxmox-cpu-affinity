@@ -8,7 +8,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
@@ -25,6 +24,7 @@ type affinityProvider interface {
 
 type cpuInfoProvider interface {
 	GetCoreRanking() ([]cpuinfo.CoreRanking, error)
+	SelectCores(requestedCores int) ([]int, error)
 }
 
 // SystemAffinityOps defines an interface for system-level affinity operations.
@@ -75,66 +75,38 @@ func (s *defaultSystemAffinityOps) GetChildProcesses(pid int) ([]int, error) {
 }
 
 type defaultAffinityProvider struct {
-	cpuInfo    cpuInfoProvider
-	sys        SystemAffinityOps
-	affinityMu sync.Mutex
-	lastIndex  int
-	config     *config.Config
+	cpuInfo cpuInfoProvider
+	sys     SystemAffinityOps
+	config  *config.Config
 }
 
 func newAffinityProvider(cfg *config.Config, cpuInfo cpuInfoProvider) affinityProvider {
 	return &defaultAffinityProvider{
-		cpuInfo:   cpuInfo,
-		sys:       &defaultSystemAffinityOps{},
-		lastIndex: 0,
-		config:    cfg,
+		cpuInfo: cpuInfo,
+		sys:     &defaultSystemAffinityOps{},
+		config:  cfg,
 	}
 }
 
 func (a *defaultAffinityProvider) ApplyAffinity(_ context.Context, vmid int, pid int, config *proxmox.VmConfig) (string, error) {
-	a.affinityMu.Lock()
-	defer a.affinityMu.Unlock()
-
-	r, err := a.cpuInfo.GetCoreRanking()
-	if err != nil {
-		return "", fmt.Errorf("failed to get core ranking: %w", err)
-	}
-	if len(r) == 0 {
-		return "", fmt.Errorf("core ranking calculation returned empty results, cannot apply affinity")
-	}
-
 	count := config.Cores * config.Sockets
 	if count == 0 {
 		return "", fmt.Errorf("invalid VM configuration: cores * sockets is 0")
 	}
-	max := len(r)
-	if count >= max {
-		slog.Warn("Skipping affinity: requested cores exceed available", "vmid", vmid, "requested", count, "available", max)
-		return "", nil
-	}
 
-	a.lastIndex++
-	if a.lastIndex >= max {
-		a.lastIndex = 0
+	// SelectCores is thread-safe when cpu hotplug updates are running
+	cpus, err := a.cpuInfo.SelectCores(count)
+	if err != nil {
+		slog.Warn("Skipping affinity", "vmid", vmid, "reason", err)
+		return "", nil
 	}
 
 	var res []string
 	var mask CPUSet
 
-	primary := r[a.lastIndex]
-	res = append(res, strconv.Itoa(primary.CPU))
-	mask.Set(primary.CPU)
-
-	slog.Info("Calculating affinity", "vmid", vmid, "primary_index", a.lastIndex, "primary_cpu", primary.CPU, "requested_cores", count)
-
-	for i := 0; i < count-1; i++ {
-		if i >= len(primary.Ranking) {
-			break
-		}
-		neighbor := primary.Ranking[i]
-		res = append(res, strconv.Itoa(neighbor.CPU))
-		mask.Set(neighbor.CPU)
-		slog.Info("Selected neighbor", "vmid", vmid, "cpu", neighbor.CPU, "latency_ns", neighbor.LatencyNS)
+	for _, cpuID := range cpus {
+		res = append(res, strconv.Itoa(cpuID))
+		mask.Set(cpuID)
 	}
 
 	slog.Info("Applying affinity", "vmid", vmid, "cpus", res)

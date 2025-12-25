@@ -122,6 +122,25 @@ requests *n* CPUs (where *n* = cores * sockets), the service assigns a starting 
 
 The starting CPU is selected in a round-robin fashion from the list of all available CPUs to ensure even distribution.
 
+## CPU Hotplug Watchdog
+
+The service monitors CPU hotplug events. When CPUs are added or removed, it automatically recalculates the core-to-core latency matrix.
+
+This ensures that the affinity logic always uses the current CPU topology without requiring a service restart.
+
+To test this (e.g. nested Proxmox):
+
+```bash
+qm set <VMID> --numa 1 --hotplug disk,network,usb,memory,cpu # numa + cpu hotplug must be enabled
+qm set <VMID> --sockets 4 --cores 4 --vcpus 4 # start with 4 CPUs
+
+# start the nested proxmox with proxmox-cpu-affinity
+# open the logfile
+
+# Add or remove CPUs at runtime (here increment)
+qm set <VMID> -vcpus 6
+```
+
 ## Files
 
 1.  Proxmox VM hookscript `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`.
@@ -139,9 +158,6 @@ The hookscript is automatically assigned. This is not installed in the `.deb` pa
 
 ## TODO
 
-- The number of CPUs/Sockets etc. might change during the runtime of your host.
-  This is currently not supported. Probably just detect changes in the `/sys/devices/system/cpu`
-  directory and recalculate the latencies.
 - Current UI `tail -f /var/log/proxmox-cpu-affinity.log`
 
 ## License

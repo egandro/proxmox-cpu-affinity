@@ -29,8 +29,13 @@ type MockCpuInfo struct {
 	mock.Mock
 }
 
-func (m *MockCpuInfo) Update(rounds int, iterations int) error {
-	args := m.Called(rounds, iterations)
+func (m *MockCpuInfo) Update(rounds int, iterations int, onProgress func(int, int)) error {
+	args := m.Called(rounds, iterations, onProgress)
+	return args.Error(0)
+}
+
+func (m *MockCpuInfo) CalculateRanking(rounds, iterations int, timeout time.Duration) error {
+	args := m.Called(rounds, iterations, timeout)
 	return args.Error(0)
 }
 
@@ -40,6 +45,11 @@ func (m *MockCpuInfo) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]cpuinfo.CoreRanking), args.Error(1)
+}
+
+func (m *MockCpuInfo) SelectCores(requestedCores int) ([]int, error) {
+	args := m.Called(requestedCores)
+	return args.Get(0).([]int), args.Error(1)
 }
 
 func (m *MockCpuInfo) DetectTopology() ([]cpuinfo.CoreInfo, error) {

@@ -5,6 +5,7 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -43,10 +44,17 @@ const (
 	DefaultHookScriptFilename = "proxmox-cpu-affinity-hook"
 
 	// Webhook defaults
-	DefaultWebhookRetry          = 10
-	DefaultWebhookSleep          = 10 // in seconds
-	DefaultWebhookTimeout        = 30 // in seconds
-	DefaultWebhookPingOnPreStart = true
+	DefaultWebhookRetry           = 10
+	DefaultWebhookSleep           = 10 // in seconds
+	DefaultWebhookTimeout         = 30 // in seconds
+	DefaultWebhookPingOnPreStart  = true
+	DefaultCPUHotplugWatchdog     = true
+	MaxCalculationRankingDuration = 2 * time.Minute
+
+	// CPUHotplugBatchWindow is the time window to group hotplug events.
+	// When a CPU event occurs, we wait this long for subsequent events
+	// to arrive (debouncing) before triggering a topology recalculation.
+	CPUHotplugBatchWindow = 5 * time.Second
 )
 
 // AdaptiveCpuInfoParameters calculates measurement parameters based on CPU count.
@@ -87,6 +95,7 @@ type Config struct {
 	WebhookSleep          int // in seconds
 	WebhookPingOnPreStart bool
 	WebhookTimeout        int // in seconds
+	CPUHotplugWatchdog    bool
 }
 
 func (c *Config) Validate() error {
@@ -135,6 +144,7 @@ func Load(filename string) *Config {
 		WebhookSleep:          getEnvInt("PCA_WEBHOOK_SLEEP", DefaultWebhookSleep),
 		WebhookTimeout:        getEnvInt("PCA_WEBHOOK_TIMEOUT", DefaultWebhookTimeout),
 		WebhookPingOnPreStart: getEnvBool("PCA_WEBHOOK_PING_ON_PRESTART", DefaultWebhookPingOnPreStart),
+		CPUHotplugWatchdog:    getEnvBool("PCA_CPU_HOTPLUG_WATCHDOG", DefaultCPUHotplugWatchdog),
 	}
 }
 
