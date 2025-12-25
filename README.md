@@ -2,20 +2,20 @@
 
 Automated CPU affinity management for Proxmox VE VMs. Uses a background service and hookscript to optimize CPU placement on VM startup.
 
-The project is written in Go.
+Written in Go.
 
 **WARNING**:
 
 - This is alpha code.
-- There is absolutely no guarantee that this project will increase the performance. This is an experiment.
-- Performance gain is only noticeable on real hardware. You can use a virtual Proxmox server for testing/development. The emulated CPU has random latencies.
-- Please test this on multi-socket CPU servers. The socket-to-socket latency is very high, so you can benefit the most.
+- There is no guarantee that this project will increase performance. This is an experiment.
+- Performance gains are only noticeable on bare-metal hardware. Virtual environments have random CPU latencies.
+- Best results are expected on multi-socket servers where socket-to-socket latency is significant.
 
 ## Components
 
-*   **proxmox-cpu-affinity-service**: A systemd service that monitors VM starts and applies CPU affinity rules (Go HTTP Rest Server - on `127.0.0.1:8245`)
-*   **proxmox-cpu-affinity-hook**: A Proxmox hookscript that notifies the service when a VM starts.
-*   **proxmox-cpu-affinity-cpuinfo**: A utility to gather CPU topology information.
+*   **proxmox-cpu-affinity-service**: Systemd service that monitors VM starts and applies CPU affinity rules (Go HTTP REST Server on `127.0.0.1:8245`).
+*   **proxmox-cpu-affinity-hook**: Proxmox hookscript that notifies the service when a VM starts.
+*   **proxmox-cpu-affinity-cpuinfo**: Utility to gather CPU topology information.
 
 ## Algorithm
 
@@ -26,48 +26,85 @@ The starting CPU is selected in a round-robin fashion from the list of all avail
 
 ## Installation
 
-### Building the Package
+### Release
 
-You need Go installed to build the project.
+Download the latest `.deb` package from Releases.
+
+### Source
+
+Requires Go.
 
 ```bash
 make deb
-```
-
-This will create a `.deb` package in the root directory.
-
-### Installing
-
-Copy the `.deb` file to your Proxmox host and install it:
-
-```bash
 dpkg -i proxmox-cpu-affinity_*.deb
 ```
 
-This will:
-1.  Install binaries to `/usr/sbin/` and `/usr/bin/`.
-2.  Install the hookscript to `/var/lib/vz/snippets/`.
-3.  Set up and start the systemd service.
-4.  Create a default configuration file at `/etc/default/proxmox-cpu-affinity`.
+## Files
 
-## Configuration
-
-Service Configuration: `/etc/default/proxmox-cpu-affinity`
-
-Restart the service after changes:
-```bash
-systemctl restart proxmox-cpu-affinity
-```
+1.  Binaries are in `/usr/sbin/` and `/usr/bin/`.
+2.  Proxmox VM hookscript `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`.
+3.  Service `systemctl status proxmox-cpu-affinity.service`
+4.  Configuration file `/etc/default/proxmox-cpu-affinity`.
 
 ### VM Configuration
 
 To enable the affinity management for a specific VM, set the hookscript:
 
-**Hint**: If you have no `local` storage, copy the file `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`
-to your preferred storage snippets folder.
+```bash
+# "local" is a Proxmox Storage ID
+qm set <VMID> --hookscript local:snippets/proxmox-cpu-affinity-hook
+```
+
+Disable the hookscript
 
 ```bash
-qm set <VMID> --hookscript local:snippets/proxmox-cpu-affinity-hook
+qm set <VMID> --delete hookscript
+```
+
+**Warning**: Your machine will fail to start, in case the hookscript does not exist!
+
+- you removed proxmox-cpu-affinity and didn't change the configuration
+- you have a cluster and don't have proxmox-cpu-affinity installed on every node
+
+### Edge case "local" Proxmox Storage is disabled.
+
+The webhook is installed in `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`. This is the default **local** storage.
+
+In case you disabled your **local** storage you have to link it to a custom storage.
+
+```bash
+cat /etc/pve/storage.cfg  | grep raid
+dir: raid
+        path /raid
+mkdir -p /raid/snippets/
+ln -s /var/lib/vz/snippets/proxmox-cpu-affinity-hook /raid/snippets/proxmox-cpu-affinity-hook
+
+# you can now use it from "raid"
+# qm set <VMID> --hookscript raid:snippets/proxmox-cpu-affinity-hook
+```
+
+## Helper Tools
+
+Located in `/usr/share/proxmox-cpu-affinity/bin/`.
+
+### webhooks
+
+Manage hookscript activation. Handles HA and manual affinity checks automatically.
+
+```bash
+/usr/share/proxmox-cpu-affinity/bin/webhooks list
+/usr/share/proxmox-cpu-affinity/bin/webhooks enable <VMID>
+/usr/share/proxmox-cpu-affinity/bin/webhooks enable-all
+/usr/share/proxmox-cpu-affinity/bin/webhooks disable-all
+```
+
+### info
+
+Show current CPU affinity for running VMs.
+
+```bash
+/usr/share/proxmox-cpu-affinity/bin/info [-v]
+/usr/share/proxmox-cpu-affinity/bin/info <VMID> [-v]
 ```
 
 ## Resources
@@ -77,8 +114,8 @@ qm set <VMID> --hookscript local:snippets/proxmox-cpu-affinity-hook
 
 ## Testing scripts
 
-The `scripts` folder has some dummy scripts to create, delete, start, and stop VMs.
-The hookscript is automatically assigned.
+The `scripts/testing` folder has some dummy scripts to create, delete, start, and stop VMs.
+The hookscript is automatically assigned. This is not installed in the `.deb` package.
 
 ## TODO
 

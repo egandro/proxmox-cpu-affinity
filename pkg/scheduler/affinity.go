@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"os"
@@ -9,16 +10,17 @@ import (
 	"strings"
 	"sync"
 
-	"golang.org/x/sys/unix"
-
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/proxmox"
 )
 
+// CPUSet and schedSetaffinity are defined in affinity_linux.go for Linux
+// and affinity_other.go for other platforms.
+
 // affinityProvider defines the internal interface for affinity operations.
 type affinityProvider interface {
-	ApplyAffinity(vmid int, pid int, config *proxmox.VmConfig) (string, error)
+	ApplyAffinity(ctx context.Context, vmid int, pid int, config *proxmox.VmConfig) (string, error)
 }
 
 type cpuInfoProvider interface {
@@ -27,21 +29,21 @@ type cpuInfoProvider interface {
 
 // SystemAffinityOps defines an interface for system-level affinity operations.
 type SystemAffinityOps interface {
-	SchedSetaffinity(pid int, mask *unix.CPUSet) error
+	SchedSetaffinity(pid int, mask *CPUSet) error
 	GetProcessThreads(pid int) ([]int, error)
 	GetChildProcesses(pid int) ([]int, error)
 }
 
 type defaultSystemAffinityOps struct{}
 
-func (s *defaultSystemAffinityOps) SchedSetaffinity(pid int, mask *unix.CPUSet) error {
-	return unix.SchedSetaffinity(pid, mask)
+func (s *defaultSystemAffinityOps) SchedSetaffinity(pid int, mask *CPUSet) error {
+	return schedSetaffinity(pid, mask)
 }
 
 func (s *defaultSystemAffinityOps) GetProcessThreads(pid int) ([]int, error) {
 	entries, err := os.ReadDir(fmt.Sprintf("/proc/%d/task", pid))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to read process threads for pid %d: %w", pid, err)
 	}
 	var tids []int
 	for _, e := range entries {
@@ -55,7 +57,7 @@ func (s *defaultSystemAffinityOps) GetProcessThreads(pid int) ([]int, error) {
 func (s *defaultSystemAffinityOps) GetChildProcesses(pid int) ([]int, error) {
 	tids, err := s.GetProcessThreads(pid)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to get child processes for pid %d: %w", pid, err)
 	}
 	var children []int
 	for _, tid := range tids {
@@ -89,13 +91,13 @@ func newAffinityProvider(cfg *config.Config, cpuInfo cpuInfoProvider) affinityPr
 	}
 }
 
-func (a *defaultAffinityProvider) ApplyAffinity(vmid int, pid int, config *proxmox.VmConfig) (string, error) {
+func (a *defaultAffinityProvider) ApplyAffinity(_ context.Context, vmid int, pid int, config *proxmox.VmConfig) (string, error) {
 	a.affinityMu.Lock()
 	defer a.affinityMu.Unlock()
 
 	r, err := a.cpuInfo.GetCoreRanking()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to get core ranking: %w", err)
 	}
 	if len(r) == 0 {
 		return "", fmt.Errorf("core ranking calculation returned empty results, cannot apply affinity")
@@ -117,7 +119,7 @@ func (a *defaultAffinityProvider) ApplyAffinity(vmid int, pid int, config *proxm
 	}
 
 	var res []string
-	var mask unix.CPUSet
+	var mask CPUSet
 
 	primary := r[a.lastIndex]
 	res = append(res, strconv.Itoa(primary.CPU))

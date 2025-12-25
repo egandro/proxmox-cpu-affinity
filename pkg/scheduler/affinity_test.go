@@ -1,12 +1,12 @@
 package scheduler
 
 import (
+	"context"
 	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"golang.org/x/sys/unix"
 
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
@@ -36,7 +36,7 @@ type MockSystemAffinityOps struct {
 	mock.Mock
 }
 
-func (m *MockSystemAffinityOps) SchedSetaffinity(pid int, mask *unix.CPUSet) error {
+func (m *MockSystemAffinityOps) SchedSetaffinity(pid int, mask *CPUSet) error {
 	args := m.Called(pid, mask)
 	return args.Error(0)
 }
@@ -109,7 +109,7 @@ func TestApplyAffinity(t *testing.T) {
 			setupMockSys: func(m *MockSystemAffinityOps) {
 				m.On("GetProcessThreads", 12345).Return([]int{12345}, nil)
 				m.On("GetChildProcesses", 12345).Return([]int{}, nil)
-				m.On("SchedSetaffinity", 12345, mock.MatchedBy(func(mask *unix.CPUSet) bool {
+				m.On("SchedSetaffinity", 12345, mock.MatchedBy(func(mask *CPUSet) bool {
 					return mask.IsSet(1) && mask.IsSet(0) && !mask.IsSet(2)
 				})).Return(nil)
 			},
@@ -192,7 +192,7 @@ func TestApplyAffinity(t *testing.T) {
 				tt.setupMockSys(mockSys)
 			}
 
-			res, err := p.ApplyAffinity(tt.vmid, tt.pid, tt.config)
+			res, err := p.ApplyAffinity(context.Background(), tt.vmid, tt.pid, tt.config)
 
 			if tt.expectError {
 				// xxx

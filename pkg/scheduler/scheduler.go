@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 
@@ -11,13 +12,13 @@ import (
 
 // Scheduler defines the interface for VM scheduling operations.
 type Scheduler interface {
-	VmStarted(vmid int) (interface{}, error)
+	VmStarted(ctx context.Context, vmid int) (interface{}, error)
 }
 
 // ProxmoxClient defines the interface for Proxmox operations.
 type ProxmoxClient interface {
-	GetVmConfig(vmid int) (*proxmox.VmConfig, error)
-	GetVmPid(vmid int) (int, error)
+	GetVmConfig(ctx context.Context, vmid int) (*proxmox.VmConfig, error)
+	GetVmPid(ctx context.Context, vmid int) (int, error)
 }
 
 // scheduler implements the Scheduler interface.
@@ -39,16 +40,16 @@ func New(cfg *config.Config, cpuInfo cpuinfo.Provider) (Scheduler, error) {
 }
 
 // VmStarted handles the logic for starting a VM with affinity.
-func (s *scheduler) VmStarted(vmid int) (interface{}, error) {
+func (s *scheduler) VmStarted(ctx context.Context, vmid int) (interface{}, error) {
 	slog.Info("VmStarted called", "vmid", vmid)
 
-	config, err := s.proxmox.GetVmConfig(vmid)
+	config, err := s.proxmox.GetVmConfig(ctx, vmid)
 	if err != nil {
 		slog.Error("Error getting VM config", "vmid", vmid, "error", err)
 		return nil, err
 	}
 
-	pid, err := s.proxmox.GetVmPid(vmid)
+	pid, err := s.proxmox.GetVmPid(ctx, vmid)
 	if err != nil {
 		slog.Error("Error checking if VM is running", "vmid", vmid, "error", err)
 		return nil, err
@@ -66,7 +67,7 @@ func (s *scheduler) VmStarted(vmid int) (interface{}, error) {
 		return map[string]interface{}{"action": fmt.Sprintf("vm has an affinity configuration %s", config.Affinity)}, nil
 	}
 
-	affinity, err := s.affinity.ApplyAffinity(vmid, pid, config)
+	affinity, err := s.affinity.ApplyAffinity(ctx, vmid, pid, config)
 	if err != nil {
 		slog.Error("Error setting affinity", "vmid", vmid, "error", err)
 		return nil, err
