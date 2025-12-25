@@ -37,11 +37,7 @@ func newListCmd() *cobra.Command {
 		Use:   "list",
 		Short: "List all VMs and their hook status",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("%-8s %-12s %-30s\n", "VMID", "HOOK-STATUS", "NOTES")
-			fmt.Printf("%-8s %-12s %-30s\n", "----", "-----------", "-----")
-			for _, vmid := range getAllVMIDs() {
-				printVMStatusRow(vmid)
-			}
+			printVMList(getAllVMIDs(), true)
 		},
 	}
 }
@@ -66,9 +62,7 @@ func newWebhookStatusCmd() *cobra.Command {
 				fmt.Printf("Error: VM %d not found.\n", vmid)
 				os.Exit(1)
 			}
-			fmt.Printf("%-8s %-12s %-30s\n", "VMID", "HOOK-STATUS", "NOTES")
-			fmt.Printf("%-8s %-12s %-30s\n", "----", "-----------", "-----")
-			printVMStatusRow(vmid)
+			printVMList([]uint64{vmid}, false)
 		},
 	}
 }
@@ -259,30 +253,36 @@ func getVMConfig(vmid uint64) string {
 	return string(out)
 }
 
-func printVMStatusRow(vmid uint64) {
-	status := "DISABLED"
-	notes := ""
-	vmConf := getVMConfig(vmid)
-
-	if strings.Contains(vmConf, "template: 1") {
-		notes = "VM Template"
+func printVMList(vmids []uint64, showHeader bool) {
+	if showHeader {
+		fmt.Printf("%-8s %-12s %-30s\n", "VMID", "HOOK-STATUS", "NOTES")
+		fmt.Printf("%-8s %-12s %-30s\n", "----", "-----------", "-----")
 	}
+	for _, vmid := range vmids {
+		status := "DISABLED"
+		notes := ""
+		vmConf := getVMConfig(vmid)
 
-	if isHAVM(vmid) {
-		status = "SKIPPED"
-		if notes != "" {
-			notes += ", "
+		if strings.Contains(vmConf, "template: 1") {
+			notes = "VM Template"
 		}
-		notes += "HA Managed"
-	} else if strings.Contains(vmConf, "affinity:") {
-		status = "SKIPPED"
-		if notes != "" {
-			notes += ", "
+
+		if isHAVM(vmid) {
+			status = "SKIPPED"
+			if notes != "" {
+				notes += ", "
+			}
+			notes += "HA Managed"
+		} else if strings.Contains(vmConf, "affinity:") {
+			status = "SKIPPED"
+			if notes != "" {
+				notes += ", "
+			}
+			notes += "Manual Affinity Set"
+		} else if strings.Contains(vmConf, "hookscript: ") && strings.Contains(vmConf, hookscriptFile) {
+			status = "ENABLED"
 		}
-		notes += "Manual Affinity Set"
-	} else if strings.Contains(vmConf, "hookscript: ") && strings.Contains(vmConf, hookscriptFile) {
-		status = "ENABLED"
+
+		fmt.Printf("%-8d %-12s %-30s\n", vmid, status, notes)
 	}
-
-	fmt.Printf("%-8d %-12s %-30s\n", vmid, status, notes)
 }
