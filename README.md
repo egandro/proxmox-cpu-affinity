@@ -46,7 +46,6 @@ dpkg -i proxmox-cpu-affinity_*.deb
 3.  Service `systemctl status proxmox-cpu-affinity.service`
 4.  Configuration file `/etc/default/proxmox-cpu-affinity`.
 
-
 ### VM Configuration
 
 To enable the affinity management for a specific VM, set the hookscript:
@@ -84,6 +83,30 @@ ln -s /var/lib/vz/snippets/proxmox-cpu-affinity-hook /raid/snippets/proxmox-cpu-
 # qm set <VMID> --hookscript raid:snippets/proxmox-cpu-affinity-hook
 ```
 
+## Helper Tools
+
+Located in `/usr/share/proxmox-cpu-affinity/bin/`.
+
+### webhooks
+
+Manage hookscript activation. Handles HA and manual affinity checks automatically.
+
+```bash
+/usr/share/proxmox-cpu-affinity/bin/webhooks list
+/usr/share/proxmox-cpu-affinity/bin/webhooks enable <VMID>
+/usr/share/proxmox-cpu-affinity/bin/webhooks enable-all
+/usr/share/proxmox-cpu-affinity/bin/webhooks disable-all
+```
+
+### info
+
+Show current CPU affinity for running VMs.
+
+```bash
+/usr/share/proxmox-cpu-affinity/bin/info [-v]
+/usr/share/proxmox-cpu-affinity/bin/info <VMID> [-v]
+```
+
 ## Resources
 
 - PVE Hook Scripts <https://pve.proxmox.com/pve-docs/pve-admin-guide.html#_hookscripts>
@@ -91,8 +114,8 @@ ln -s /var/lib/vz/snippets/proxmox-cpu-affinity-hook /raid/snippets/proxmox-cpu-
 
 ## Testing scripts
 
-The `scripts` folder has some dummy scripts to create, delete, start, and stop VMs.
-The hookscript is automatically assigned.
+The `scripts/testing` folder has some dummy scripts to create, delete, start, and stop VMs.
+The hookscript is automatically assigned. This is not installed in the `.deb` package.
 
 ## TODO
 

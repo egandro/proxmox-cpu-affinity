@@ -13,11 +13,27 @@ mkdir -p dist/usr/sbin
 mkdir -p dist/var/lib/vz/snippets
 mkdir -p dist/etc/systemd/system
 mkdir -p dist/etc/default
+mkdir -p dist/usr/share/proxmox-cpu-affinity/bin
 
 # Install stripped binaries from build
 install -s -m 755 bin/proxmox-cpu-affinity-service dist/usr/sbin/proxmox-cpu-affinity-service
 install -s -m 755 bin/proxmox-cpu-affinity-cpuinfo dist/usr/bin/proxmox-cpu-affinity-cpuinfo
 install -s -m 755 bin/proxmox-cpu-affinity-hook dist/var/lib/vz/snippets/proxmox-cpu-affinity-hook
+
+# Scripts
+install -m 755 scripts/webhooks.sh dist/usr/share/proxmox-cpu-affinity/bin/webhooks
+install -m 755 scripts/info.sh dist/usr/share/proxmox-cpu-affinity/bin/info
+
+if [ "$GITHUB_ACTIONS" != "true" ]; then
+    echo "Developer build detected: Installing testing scripts..."
+    mkdir -p dist/usr/share/proxmox-cpu-affinity/testing
+    install -m 755 scripts/testing/create-dummy-vms.sh dist/usr/share/proxmox-cpu-affinity/testing
+    install -m 755 scripts/testing/destroy-dummy-vms.sh dist/usr/share/proxmox-cpu-affinity/testing
+    install -m 755 scripts/testing/start-dummy-vms.sh dist/usr/share/proxmox-cpu-affinity/testing
+    install -m 755 scripts/testing/stop-dummy-vms.sh dist/usr/share/proxmox-cpu-affinity/testing
+else
+    echo "GitHub Actions detected: Skipping installation of testing scripts."
+fi
 
 # Create systemd service
 cp deb/proxmox-cpu-affinity.service dist/etc/systemd/system/

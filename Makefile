@@ -37,11 +37,6 @@ tidy:
 
 # FORCE_PURGE=1 make deploy
 deploy: deb
-	ssh $(DEPLOY_HOST) "rm -rf /tmp/pa-scripts"
-	scp -r scripts $(DEPLOY_HOST):/tmp/pa-scripts
-	ssh $(DEPLOY_HOST) "sudo mkdir -p /opt/proxmox-cpu-affinity/scripts"
-	ssh $(DEPLOY_HOST) "sudo cp -r /tmp/pa-scripts/* /opt/proxmox-cpu-affinity/scripts/ && sudo chmod +x /opt/proxmox-cpu-affinity/scripts/* && rm -rf /tmp/pa-scripts"
-
 	scp proxmox-cpu-affinity_$(VERSION)_$(ARCH).deb $(DEPLOY_HOST):/tmp/proxmox-cpu-affinity.deb
 	ssh $(DEPLOY_HOST) "sudo apt $(if $(FORCE_PURGE),purge,remove) proxmox-cpu-affinity -y || true"
 	ssh $(DEPLOY_HOST) "sudo dpkg -i /tmp/proxmox-cpu-affinity.deb"
