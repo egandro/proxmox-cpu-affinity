@@ -24,6 +24,7 @@ func main() {
 	rootCmd.AddCommand(newCPUInfoCmd())
 	rootCmd.AddCommand(newPSCmd())
 	rootCmd.AddCommand(newHookscriptCmd())
+	rootCmd.AddCommand(newHelloWorldCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
