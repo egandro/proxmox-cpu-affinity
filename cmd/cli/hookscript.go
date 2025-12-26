@@ -15,6 +15,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const defaultStorage = "local"
+
 func newHookscriptCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "hookscript",
@@ -79,9 +81,10 @@ func newHookscriptStatusCmd() *cobra.Command {
 
 func newEnableCmd() *cobra.Command {
 	var dryRun bool
+	var force bool
 	cmd := &cobra.Command{
 		Use:   "enable <vmid> [storage]",
-		Short: "Enable hook for specific VM (default storage: local)",
+		Short: fmt.Sprintf("Enable hook for specific VM (default storage: %s)", defaultStorage),
 		Args: func(cmd *cobra.Command, args []string) error {
 			if err := cobra.RangeArgs(1, 2)(cmd, args); err != nil {
 				return err
@@ -93,9 +96,17 @@ func newEnableCmd() *cobra.Command {
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			vmid, _ := strconv.ParseUint(args[0], 10, 64)
-			storage := "local"
+			storage := defaultStorage
 			if len(args) > 1 {
 				storage = args[1]
+			}
+
+			if err := checkStorage(storage); err != nil {
+				if !force {
+					fmt.Printf("Error: %v (use --force to override)\n", err)
+					os.Exit(1)
+				}
+				fmt.Printf("Warning: %v (proceeding due to --force)\n", err)
 			}
 
 			if isHAVM(vmid) {
@@ -110,6 +121,7 @@ func newEnableCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
+	cmd.Flags().BoolVar(&force, "force", false, "Force enable even if storage check fails")
 	return cmd
 }
 
@@ -149,18 +161,26 @@ func newEnableAllCmd() *cobra.Command {
 	var dryRun bool
 	cmd := &cobra.Command{
 		Use:   "enable-all [storage]",
-		Short: "Enable hook for ALL VMs (default storage: local)",
+		Short: fmt.Sprintf("Enable hook for ALL VMs (default storage: %s)", defaultStorage),
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			storage := "local"
+			storage := defaultStorage
 			if len(args) > 0 {
 				storage = args[0]
+			}
+
+			if err := checkStorage(storage); err != nil {
+				if !force {
+					fmt.Printf("Error: %v (use --force to override)\n", err)
+					os.Exit(1)
+				}
+				fmt.Printf("Warning: %v (proceeding due to --force)\n", err)
 			}
 
 			processAllVMs(true, storage, force, dryRun)
 		},
 	}
-	cmd.Flags().BoolVar(&force, "force", false, "Force enable even if other hookscripts are present")
+	cmd.Flags().BoolVar(&force, "force", false, "Force enable even if other hookscripts are present or storage check fails")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
 	return cmd
 }
@@ -350,4 +370,26 @@ func printVMList(vmids []uint64, jsonOutput bool, quiet bool) {
 	for _, item := range list {
 		fmt.Printf("%-8d %-12s %-30s\n", item.VMID, item.Status, item.Notes)
 	}
+}
+
+func checkStorage(storageName string) error {
+	cmd := exec.Command("/usr/sbin/pvesm", "status")
+	output, err := cmd.Output()
+	if err != nil {
+		return fmt.Errorf("failed to execute pvesm status: %w", err)
+	}
+
+	lines := strings.Split(string(output), "\n")
+	for _, line := range lines {
+		fields := strings.Fields(line)
+		// Expected format: <Name> <Type> <Status> ...
+		if len(fields) >= 3 && fields[0] == storageName {
+			if fields[2] == "active" {
+				return nil
+			}
+			return fmt.Errorf("storage '%s' is not active (status: %s)", storageName, fields[2])
+		}
+	}
+
+	return fmt.Errorf("storage '%s' not found", storageName)
 }

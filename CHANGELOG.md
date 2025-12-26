@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - CLI: `ps` command now displays VM cores, sockets, and NUMA configuration.
-- Docs: Showcase
+- CLI: `hookscript` commands now verify storage existence and status (override with `--force`).
 
 ## [0.0.4] - 2025-12-26
 
