@@ -26,6 +26,9 @@ type PSInfo struct {
 	VMID       uint64     `json:"vmid"`
 	PID        uint64     `json:"pid,omitempty"`
 	HookStatus string     `json:"hook_status"`
+	Cores      int        `json:"cores"`
+	Sockets    int        `json:"sockets"`
+	Numa       bool       `json:"numa"`
 	Affinity   string     `json:"affinity,omitempty"`
 	Threads    []PSThread `json:"threads,omitempty"`
 	Children   []PSChild  `json:"children,omitempty"`
@@ -126,8 +129,8 @@ func newPSCmd() *cobra.Command {
 }
 
 func printPSHeader() {
-	fmt.Printf("%-8s %-10s %-12s %-20s\n", "VMID", "PID", "Hook-Status", "Affinity")
-	fmt.Printf("%-8s %-10s %-12s %-20s\n", "----", "---", "-----------", "--------")
+	fmt.Printf("%-8s %-10s %-6s %-8s %-5s %-12s %-20s\n", "VMID", "PID", "Cores", "Sockets", "NUMA", "Hook-Status", "Affinity")
+	fmt.Printf("%-8s %-10s %-6s %-8s %-5s %-12s %-20s\n", "----", "---", "-----", "-------", "----", "-----------", "--------")
 }
 
 func getVMProcessInfo(vmid uint64, verbose bool, explicit bool) *PSInfo {
@@ -148,14 +151,48 @@ func getVMProcessInfo(vmid uint64, verbose bool, explicit bool) *PSInfo {
 		return nil
 	}
 
-	// Check hookscript
+	// Get VM config
 	hookStatus := "Disabled"
+	cores := 1
+	sockets := 1
+	numa := false
+
 	out, _ := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
-	if strings.Contains(string(out), "hookscript: ") && strings.Contains(string(out), config.ConstantHookScriptFilename) {
-		hookStatus = "Enabled"
+	lines := strings.Split(string(out), "\n")
+	for _, line := range lines {
+		parts := strings.SplitN(line, ":", 2)
+		if len(parts) == 2 {
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+			switch key {
+			case "hookscript":
+				if strings.Contains(value, config.ConstantHookScriptFilename) {
+					hookStatus = "Enabled"
+				}
+			case "cores":
+				if c, err := strconv.Atoi(value); err == nil {
+					cores = c
+				}
+			case "sockets":
+				if s, err := strconv.Atoi(value); err == nil {
+					sockets = s
+				}
+			case "numa":
+				if value == "1" {
+					numa = true
+				}
+			}
+		}
 	}
 
-	info := &PSInfo{VMID: vmid, PID: pid, HookStatus: hookStatus}
+	info := &PSInfo{
+		VMID:       vmid,
+		PID:        pid,
+		HookStatus: hookStatus,
+		Cores:      cores,
+		Sockets:    sockets,
+		Numa:       numa,
+	}
 
 	// Check if process exists
 	// #nosec G204 -- pid is uint64
@@ -228,7 +265,11 @@ func printVMProcessInfo(info PSInfo, verbose bool) {
 		fmt.Printf("Error: VM %d: %s\n", info.VMID, info.Error)
 		return
 	}
-	fmt.Printf("%-8d %-10d %-12s %s\n", info.VMID, info.PID, info.HookStatus, info.Affinity)
+	numaDisplay := "0"
+	if info.Numa {
+		numaDisplay = "1"
+	}
+	fmt.Printf("%-8d %-10d %-6d %-8d %-5s %-12s %s\n", info.VMID, info.PID, info.Cores, info.Sockets, numaDisplay, info.HookStatus, info.Affinity)
 	if verbose {
 		if len(info.Threads) > 0 {
 			fmt.Println("  Threads (TID PSR COMMAND):")
