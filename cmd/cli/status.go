@@ -42,6 +42,7 @@ func newPingCmd(socketFile *string) *cobra.Command {
 			resp, err := sendSocketRequest(targetSocket, SocketRequest{Command: "ping"})
 			if err != nil {
 				fmt.Printf("Error: %v\n", err)
+				fmt.Println("Hint: The proxmox-cpu-affinity-service might not be running or is currently starting.")
 				os.Exit(1)
 			}
 			if resp.Status != "ok" {
