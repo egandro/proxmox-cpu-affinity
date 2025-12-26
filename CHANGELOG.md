@@ -1,6 +1,10 @@
 # Changelog
 
-## [0.0.8] - TBD
+## [0.0.9] - TBD
+
+- Feature: POC Proxmox UI Plugin
+
+## [0.0.8] - 2025-12-26
 
 - Feature: New commands `core-ranking"`, `core-ranking-summary`, `core-vm-affinity`
 - CLI: Show the data of the new commands.
