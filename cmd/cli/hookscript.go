@@ -1,10 +1,10 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"sort"
 	"strconv"
 	"strings"
@@ -12,6 +12,7 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
+	"github.com/egandro/proxmox-cpu-affinity/pkg/executor"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +44,9 @@ func newListCmd() *cobra.Command {
 		Use:   "list",
 		Short: "List all VMs and their hook status",
 		Run: func(cmd *cobra.Command, args []string) {
-			printVMList(getAllVMIDs(), jsonOutput, quiet)
+			ctx := cmd.Context()
+			exec := &executor.DefaultExecutor{}
+			printVMList(ctx, exec, getAllVMIDs(ctx, exec), jsonOutput, quiet)
 		},
 	}
 	cmd.Flags().BoolVar(&jsonOutput, "json", false, "Output in JSON format")
@@ -66,13 +69,15 @@ func newHookscriptStatusCmd() *cobra.Command {
 			return nil
 		},
 		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			exec := &executor.DefaultExecutor{}
 			vmid, _ := strconv.ParseUint(args[0], 10, 64)
 			// #nosec G204 -- vmid is uint64
-			if err := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Run(); err != nil {
+			if err := exec.Run(ctx, config.CommandProxmoxQM, "config", strconv.FormatUint(vmid, 10)); err != nil {
 				fmt.Printf("Error: VM %d not found.\n", vmid)
 				os.Exit(1)
 			}
-			printVMList([]uint64{vmid}, jsonOutput, false)
+			printVMList(ctx, exec, []uint64{vmid}, jsonOutput, false)
 		},
 	}
 	cmd.Flags().BoolVar(&jsonOutput, "json", false, "Output in JSON format")
@@ -95,13 +100,16 @@ func newEnableCmd() *cobra.Command {
 			return nil
 		},
 		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			exec := &executor.DefaultExecutor{}
+
 			vmid, _ := strconv.ParseUint(args[0], 10, 64)
 			storage := defaultStorage
 			if len(args) > 1 {
 				storage = args[1]
 			}
 
-			if err := checkStorage(storage); err != nil {
+			if err := checkStorage(ctx, exec, storage); err != nil {
 				if !force {
 					fmt.Printf("Error: %v (use --force to override)\n", err)
 					os.Exit(1)
@@ -109,15 +117,15 @@ func newEnableCmd() *cobra.Command {
 				fmt.Printf("Warning: %v (proceeding due to --force)\n", err)
 			}
 
-			if isHAVM(vmid) {
+			if isHAVM(ctx, exec, vmid) {
 				fmt.Printf("Error: VM %d is managed by HA. Cannot modify hookscript manually.\n", vmid)
 				os.Exit(1)
 			}
-			if hasAffinitySet(vmid) {
+			if hasAffinitySet(ctx, exec, vmid) {
 				fmt.Printf("Error: VM %d has manual CPU affinity set. Cannot modify hookscript.\n", vmid)
 				os.Exit(1)
 			}
-			updateVMHook(vmid, true, storage, dryRun)
+			updateVMHook(ctx, exec, vmid, true, storage, dryRun)
 		},
 	}
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
@@ -140,16 +148,19 @@ func newDisableCmd() *cobra.Command {
 			return nil
 		},
 		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			exec := &executor.DefaultExecutor{}
+
 			vmid, _ := strconv.ParseUint(args[0], 10, 64)
-			if isHAVM(vmid) {
+			if isHAVM(ctx, exec, vmid) {
 				fmt.Printf("Error: VM %d is managed by HA. Cannot modify hookscript manually.\n", vmid)
 				os.Exit(1)
 			}
-			if hasAffinitySet(vmid) {
+			if hasAffinitySet(ctx, exec, vmid) {
 				fmt.Printf("Error: VM %d has manual CPU affinity set. Cannot modify hookscript.\n", vmid)
 				os.Exit(1)
 			}
-			updateVMHook(vmid, false, "", dryRun)
+			updateVMHook(ctx, exec, vmid, false, "", dryRun)
 		},
 	}
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
@@ -164,12 +175,15 @@ func newEnableAllCmd() *cobra.Command {
 		Short: fmt.Sprintf("Enable hook for ALL VMs (default storage: %s)", defaultStorage),
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			ctx := cmd.Context()
+			exec := &executor.DefaultExecutor{}
+
 			storage := defaultStorage
 			if len(args) > 0 {
 				storage = args[0]
 			}
 
-			if err := checkStorage(storage); err != nil {
+			if err := checkStorage(ctx, exec, storage); err != nil {
 				if !force {
 					fmt.Printf("Error: %v (use --force to override)\n", err)
 					os.Exit(1)
@@ -177,7 +191,7 @@ func newEnableAllCmd() *cobra.Command {
 				fmt.Printf("Warning: %v (proceeding due to --force)\n", err)
 			}
 
-			processAllVMs(true, storage, force, dryRun)
+			processAllVMs(ctx, exec, true, storage, force, dryRun)
 		},
 	}
 	cmd.Flags().BoolVar(&force, "force", false, "Force enable even if other hookscripts are present or storage check fails")
@@ -191,14 +205,16 @@ func newDisableAllCmd() *cobra.Command {
 		Use:   "disable-all",
 		Short: "Disable hook for ALL VMs",
 		Run: func(cmd *cobra.Command, args []string) {
-			processAllVMs(false, "", false, dryRun)
+			ctx := cmd.Context()
+			exec := &executor.DefaultExecutor{}
+			processAllVMs(ctx, exec, false, "", false, dryRun)
 		},
 	}
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
 	return cmd
 }
 
-func updateVMHook(vmid uint64, enable bool, storage string, dryRun bool) {
+func updateVMHook(ctx context.Context, exec executor.Executor, vmid uint64, enable bool, storage string, dryRun bool) {
 	if enable {
 		if !isValidStorage(storage) {
 			fmt.Printf("Error: Invalid storage %s\n", storage)
@@ -207,36 +223,36 @@ func updateVMHook(vmid uint64, enable bool, storage string, dryRun bool) {
 		hookPath := getHookPath(storage)
 
 		if dryRun {
-			fmt.Printf("[DryRun] Would execute: %s set %d --hookscript %s\n", config.ConstantProxmoxQM, vmid, hookPath)
+			fmt.Printf("[DryRun] Would execute: %s set %d --hookscript %s\n", config.CommandProxmoxQM, vmid, hookPath)
 			return
 		}
 
 		fmt.Printf("Enabling proxmox-cpu-affinity hook for VM %d (storage: %s)...\n", vmid, storage)
 		// #nosec G204 -- vmid is uint64, hookPath is validated
-		if err := exec.Command(config.ConstantProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--hookscript", hookPath).Run(); err != nil {
+		if err := exec.Run(ctx, config.CommandProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--hookscript", hookPath); err != nil {
 			fmt.Printf("Error enabling hook for VM %d: %v\n", vmid, err)
 		}
 	} else {
 		if dryRun {
-			fmt.Printf("[DryRun] Would execute: %s set %d --delete hookscript\n", config.ConstantProxmoxQM, vmid)
+			fmt.Printf("[DryRun] Would execute: %s set %d --delete hookscript\n", config.CommandProxmoxQM, vmid)
 			return
 		}
 
 		fmt.Printf("Disabling proxmox-cpu-affinity hook for VM %d...\n", vmid)
 		// #nosec G204 -- vmid is uint64
-		if err := exec.Command(config.ConstantProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--delete", "hookscript").Run(); err != nil {
+		if err := exec.Run(ctx, config.CommandProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--delete", "hookscript"); err != nil {
 			fmt.Printf("Error disabling hook for VM %d: %v\n", vmid, err)
 		}
 	}
 }
 
-func processAllVMs(enable bool, storage string, force bool, dryRun bool) {
-	for _, vmid := range getAllVMIDs() {
-		if isHAVM(vmid) {
+func processAllVMs(ctx context.Context, exec executor.Executor, enable bool, storage string, force bool, dryRun bool) {
+	for _, vmid := range getAllVMIDs(ctx, exec) {
+		if isHAVM(ctx, exec, vmid) {
 			fmt.Printf("Skipping HA-managed VM %d...\n", vmid)
 			continue
 		}
-		vmConf := getVMConfig(vmid)
+		vmConf := getVMConfig(ctx, exec, vmid)
 		if strings.Contains(vmConf, "template: 1") {
 			fmt.Printf("Skipping VM Template %d...\n", vmid)
 			continue
@@ -255,18 +271,18 @@ func processAllVMs(enable bool, storage string, force bool, dryRun bool) {
 					}
 				}
 			}
-			updateVMHook(vmid, true, storage, dryRun)
+			updateVMHook(ctx, exec, vmid, true, storage, dryRun)
 		} else {
 			if !strings.Contains(vmConf, "hookscript: ") || !strings.Contains(vmConf, config.ConstantHookScriptFilename) {
 				continue
 			}
-			updateVMHook(vmid, false, "", dryRun)
+			updateVMHook(ctx, exec, vmid, false, "", dryRun)
 		}
 	}
 }
 
-func getAllVMIDs() []uint64 {
-	out, _ := exec.Command(config.ConstantProxmoxQM, "list").Output() // #nosec G204 -- trusted path from config
+func getAllVMIDs(ctx context.Context, exec executor.Executor) []uint64 {
+	out, _ := exec.Output(ctx, config.CommandProxmoxQM, "list") // #nosec G204 -- trusted path from config
 	lines := strings.Split(string(out), "\n")
 	var vmids []uint64
 	for _, line := range lines {
@@ -286,9 +302,9 @@ var (
 	haConfigLoaded bool
 )
 
-func isHAVM(vmid uint64) bool {
+func isHAVM(ctx context.Context, exec executor.Executor, vmid uint64) bool {
 	if !haConfigLoaded {
-		out, _ := exec.Command(config.ConstantProxmoxHaManager, "config").Output() // #nosec G204 -- trusted path from config
+		out, _ := exec.Output(ctx, config.CommandProxmoxHaManager, "config") // #nosec G204 -- trusted path from config
 		haConfigCache = string(out)
 		haConfigLoaded = true
 	}
@@ -296,13 +312,13 @@ func isHAVM(vmid uint64) bool {
 	return strings.Contains(haConfigCache, fmt.Sprintf("vm: %d", vmid))
 }
 
-func hasAffinitySet(vmid uint64) bool {
-	out, _ := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
+func hasAffinitySet(ctx context.Context, exec executor.Executor, vmid uint64) bool {
+	out, _ := exec.Output(ctx, config.CommandProxmoxQM, "config", strconv.FormatUint(vmid, 10)) // #nosec G204 -- vmid is uint64
 	return strings.Contains(string(out), "affinity:")
 }
 
-func getVMConfig(vmid uint64) string {
-	out, _ := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
+func getVMConfig(ctx context.Context, exec executor.Executor, vmid uint64) string {
+	out, _ := exec.Output(ctx, config.CommandProxmoxQM, "config", strconv.FormatUint(vmid, 10)) // #nosec G204 -- vmid is uint64
 	return string(out)
 }
 
@@ -312,7 +328,7 @@ type HookStatusInfo struct {
 	Notes  string `json:"notes"`
 }
 
-func printVMList(vmids []uint64, jsonOutput bool, quiet bool) {
+func printVMList(ctx context.Context, exec executor.Executor, vmids []uint64, jsonOutput bool, quiet bool) {
 	var list []HookStatusInfo
 
 	var s *spinner.Spinner
@@ -325,13 +341,13 @@ func printVMList(vmids []uint64, jsonOutput bool, quiet bool) {
 	for _, vmid := range vmids {
 		status := "Disabled"
 		notes := ""
-		vmConf := getVMConfig(vmid)
+		vmConf := getVMConfig(ctx, exec, vmid)
 
 		if strings.Contains(vmConf, "template: 1") {
 			notes = "VM Template"
 		}
 
-		if isHAVM(vmid) {
+		if isHAVM(ctx, exec, vmid) {
 			status = "Skipped"
 			if notes != "" {
 				notes += ", "
@@ -372,9 +388,8 @@ func printVMList(vmids []uint64, jsonOutput bool, quiet bool) {
 	}
 }
 
-func checkStorage(storageName string) error {
-	cmd := exec.Command("/usr/sbin/pvesm", "status")
-	output, err := cmd.Output()
+func checkStorage(ctx context.Context, exec executor.Executor, storageName string) error {
+	output, err := exec.Output(ctx, "/usr/sbin/pvesm", "status")
 	if err != nil {
 		return fmt.Errorf("failed to execute pvesm status: %w", err)
 	}

@@ -20,10 +20,15 @@ const (
 	ConstantQemuServerPidDir   = "/var/run/qemu-server"
 	ConstantConfigFilename     = "/etc/default/proxmox-cpu-affinity"
 	ConstantSocketFile         = "/var/run/proxmox-cpu-affinity.sock"
-	ConstantProxmoxQM          = "/usr/sbin/qm"
-	ConstantProxmoxHaManager   = "/usr/sbin/ha-manager"
 	ConstantProxmoxConfigDir   = "/etc/pve"
 	ConstantHookScriptFilename = "proxmox-cpu-affinity-hook"
+
+	// Executor commands
+	CommandProxmoxQM        = "/usr/sbin/qm"
+	CommandProxmoxHaManager = "/usr/sbin/ha-manager"
+	CommandSystemPS         = "/usr/bin/ps"
+	CommandSystemTaskSet    = "/usr/bin/taskset"
+	CommandSystemPGrep      = "/usr/bin/pgrep"
 
 	// ConstantCPUHotplugBatchWindow is the time window to group hotplug events.
 	// When a CPU event occurs, we wait this long for subsequent events
