@@ -2,9 +2,13 @@
 
 ## [0.0.8] - TBD
 
-- Feature: New commands `core-ranking"` to `core-ranking-summary`.
+- Feature: New commands `core-ranking"`, `core-ranking-summary`, `core-vm-affinity`
+- CLI: Show the data of the new commands.
+- BUG: `pvesh` executable pointed to a wrong path - this broke `0.0.7`.
 
 ## [0.0.7] - 2025-12-26
+
+RELEASE (DELETED: this was broken)
 
 - Testing: Fuzz testing for all external commands
 - Testing: increased coverage
