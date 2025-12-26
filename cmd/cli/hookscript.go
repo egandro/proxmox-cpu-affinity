@@ -78,7 +78,8 @@ func newHookscriptStatusCmd() *cobra.Command {
 }
 
 func newEnableCmd() *cobra.Command {
-	return &cobra.Command{
+	var dryRun bool
+	cmd := &cobra.Command{
 		Use:   "enable <vmid> [storage]",
 		Short: "Enable hook for specific VM (default storage: local)",
 		Args: func(cmd *cobra.Command, args []string) error {
@@ -105,13 +106,16 @@ func newEnableCmd() *cobra.Command {
 				fmt.Printf("Error: VM %d has manual CPU affinity set. Cannot modify hookscript.\n", vmid)
 				os.Exit(1)
 			}
-			updateVMHook(vmid, true, storage)
+			updateVMHook(vmid, true, storage, dryRun)
 		},
 	}
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
+	return cmd
 }
 
 func newDisableCmd() *cobra.Command {
-	return &cobra.Command{
+	var dryRun bool
+	cmd := &cobra.Command{
 		Use:   "disable <vmid>",
 		Short: "Disable hook for specific VM",
 		Args: func(cmd *cobra.Command, args []string) error {
@@ -133,13 +137,16 @@ func newDisableCmd() *cobra.Command {
 				fmt.Printf("Error: VM %d has manual CPU affinity set. Cannot modify hookscript.\n", vmid)
 				os.Exit(1)
 			}
-			updateVMHook(vmid, false, "")
+			updateVMHook(vmid, false, "", dryRun)
 		},
 	}
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
+	return cmd
 }
 
 func newEnableAllCmd() *cobra.Command {
 	var force bool
+	var dryRun bool
 	cmd := &cobra.Command{
 		Use:   "enable-all [storage]",
 		Short: "Enable hook for ALL VMs (default storage: local)",
@@ -150,36 +157,51 @@ func newEnableAllCmd() *cobra.Command {
 				storage = args[0]
 			}
 
-			processAllVMs(true, storage, force)
+			processAllVMs(true, storage, force, dryRun)
 		},
 	}
 	cmd.Flags().BoolVar(&force, "force", false, "Force enable even if other hookscripts are present")
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
 	return cmd
 }
 
 func newDisableAllCmd() *cobra.Command {
-	return &cobra.Command{
+	var dryRun bool
+	cmd := &cobra.Command{
 		Use:   "disable-all",
 		Short: "Disable hook for ALL VMs",
 		Run: func(cmd *cobra.Command, args []string) {
-			processAllVMs(false, "", false)
+			processAllVMs(false, "", false, dryRun)
 		},
 	}
+	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
+	return cmd
 }
 
-func updateVMHook(vmid uint64, enable bool, storage string) {
+func updateVMHook(vmid uint64, enable bool, storage string, dryRun bool) {
 	if enable {
 		if !isValidStorage(storage) {
 			fmt.Printf("Error: Invalid storage %s\n", storage)
 			return
 		}
 		hookPath := getHookPath(storage)
+
+		if dryRun {
+			fmt.Printf("[DryRun] Would execute: %s set %d --hookscript %s\n", config.ConstantProxmoxQM, vmid, hookPath)
+			return
+		}
+
 		fmt.Printf("Enabling proxmox-cpu-affinity hook for VM %d (storage: %s)...\n", vmid, storage)
 		// #nosec G204 -- vmid is uint64, hookPath is validated
 		if err := exec.Command(config.ConstantProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--hookscript", hookPath).Run(); err != nil {
 			fmt.Printf("Error enabling hook for VM %d: %v\n", vmid, err)
 		}
 	} else {
+		if dryRun {
+			fmt.Printf("[DryRun] Would execute: %s set %d --delete hookscript\n", config.ConstantProxmoxQM, vmid)
+			return
+		}
+
 		fmt.Printf("Disabling proxmox-cpu-affinity hook for VM %d...\n", vmid)
 		// #nosec G204 -- vmid is uint64
 		if err := exec.Command(config.ConstantProxmoxQM, "set", strconv.FormatUint(vmid, 10), "--delete", "hookscript").Run(); err != nil {
@@ -188,7 +210,7 @@ func updateVMHook(vmid uint64, enable bool, storage string) {
 	}
 }
 
-func processAllVMs(enable bool, storage string, force bool) {
+func processAllVMs(enable bool, storage string, force bool, dryRun bool) {
 	for _, vmid := range getAllVMIDs() {
 		if isHAVM(vmid) {
 			fmt.Printf("Skipping HA-managed VM %d...\n", vmid)
@@ -213,12 +235,12 @@ func processAllVMs(enable bool, storage string, force bool) {
 					}
 				}
 			}
-			updateVMHook(vmid, true, storage)
+			updateVMHook(vmid, true, storage, dryRun)
 		} else {
 			if !strings.Contains(vmConf, "hookscript: ") || !strings.Contains(vmConf, config.ConstantHookScriptFilename) {
 				continue
 			}
-			updateVMHook(vmid, false, "")
+			updateVMHook(vmid, false, "", dryRun)
 		}
 	}
 }
