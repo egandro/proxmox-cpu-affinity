@@ -296,8 +296,8 @@ func printVMList(vmids []uint64, jsonOutput bool, quiet bool) {
 	var list []HookStatusInfo
 
 	var s *spinner.Spinner
-	if !jsonOutput && !quiet {
-		s = spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+	if !quiet {
+		s = spinner.New(spinner.CharSets[14], 100*time.Millisecond, spinner.WithWriter(os.Stderr))
 		s.Suffix = " Fetching VM status..."
 		s.Start()
 	}
