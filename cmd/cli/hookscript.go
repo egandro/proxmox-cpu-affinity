@@ -1,13 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/spf13/cobra"
 )
@@ -32,17 +35,23 @@ func newHookscriptCmd() *cobra.Command {
 }
 
 func newListCmd() *cobra.Command {
-	return &cobra.Command{
+	var jsonOutput bool
+	var quiet bool
+	cmd := &cobra.Command{
 		Use:   "list",
 		Short: "List all VMs and their hook status",
 		Run: func(cmd *cobra.Command, args []string) {
-			printVMList(getAllVMIDs())
+			printVMList(getAllVMIDs(), jsonOutput, quiet)
 		},
 	}
+	cmd.Flags().BoolVar(&jsonOutput, "json", false, "Output in JSON format")
+	cmd.Flags().BoolVarP(&quiet, "quiet", "q", false, "Disable progress spinner")
+	return cmd
 }
 
 func newHookscriptStatusCmd() *cobra.Command {
-	return &cobra.Command{
+	var jsonOutput bool
+	cmd := &cobra.Command{
 		Use:   "status <vmid>",
 		Short: "Show hook status for specific VM",
 		Args: func(cmd *cobra.Command, args []string) error {
@@ -61,9 +70,11 @@ func newHookscriptStatusCmd() *cobra.Command {
 				fmt.Printf("Error: VM %d not found.\n", vmid)
 				os.Exit(1)
 			}
-			printVMList([]uint64{vmid})
+			printVMList([]uint64{vmid}, jsonOutput, false)
 		},
 	}
+	cmd.Flags().BoolVar(&jsonOutput, "json", false, "Output in JSON format")
+	return cmd
 }
 
 func newEnableCmd() *cobra.Command {
@@ -253,9 +264,22 @@ func getVMConfig(vmid uint64) string {
 	return string(out)
 }
 
-func printVMList(vmids []uint64) {
-	fmt.Printf("%-8s %-12s %-30s\n", "VMID", "Hook-Status", "Notes")
-	fmt.Printf("%-8s %-12s %-30s\n", "----", "-----------", "-----")
+type HookStatusInfo struct {
+	VMID   uint64 `json:"vmid"`
+	Status string `json:"status"`
+	Notes  string `json:"notes"`
+}
+
+func printVMList(vmids []uint64, jsonOutput bool, quiet bool) {
+	var list []HookStatusInfo
+
+	var s *spinner.Spinner
+	if !jsonOutput && !quiet {
+		s = spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+		s.Suffix = " Fetching VM status..."
+		s.Start()
+	}
+
 	for _, vmid := range vmids {
 		status := "Disabled"
 		notes := ""
@@ -281,6 +305,27 @@ func printVMList(vmids []uint64) {
 			status = "Enabled"
 		}
 
-		fmt.Printf("%-8d %-12s %-30s\n", vmid, status, notes)
+		list = append(list, HookStatusInfo{
+			VMID:   vmid,
+			Status: status,
+			Notes:  notes,
+		})
+	}
+
+	if s != nil {
+		s.Stop()
+	}
+
+	if jsonOutput {
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+		_ = enc.Encode(list)
+		return
+	}
+
+	fmt.Printf("%-8s %-12s %-30s\n", "VMID", "Hook-Status", "Notes")
+	fmt.Printf("%-8s %-12s %-30s\n", "----", "-----------", "-----")
+	for _, item := range list {
+		fmt.Printf("%-8d %-12s %-30s\n", item.VMID, item.Status, item.Notes)
 	}
 }
