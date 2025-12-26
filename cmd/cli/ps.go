@@ -91,8 +91,8 @@ func newPSCmd() *cobra.Command {
 			var results []PSInfo
 
 			var s *spinner.Spinner
-			if !jsonOutput && !quiet {
-				s = spinner.New(spinner.CharSets[14], 100*time.Millisecond)
+			if !quiet {
+				s = spinner.New(spinner.CharSets[14], 100*time.Millisecond, spinner.WithWriter(os.Stderr))
 				s.Suffix = " Collecting process info..."
 				s.Start()
 			}
