@@ -39,8 +39,8 @@ func newCPUInfoCmd() *cobra.Command {
 
 			var s *spinner.Spinner
 			if !verbose && !quiet {
-				s = spinner.New(spinner.CharSets[14], 100*time.Millisecond)
-				s.Suffix = " Analyzing CPU topology..."
+				s = spinner.New(spinner.CharSets[14], 100*time.Millisecond, spinner.WithWriter(os.Stderr))
+				s.Suffix = fmt.Sprintf(" Analyzing CPU topology (Rounds: %d, Iterations: %d)...", rounds, iterations)
 				s.Start()
 			}
 
