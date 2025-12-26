@@ -83,7 +83,7 @@ jobs:
 
       # Build Binary
       - name: Build Binaries
-        run: make build ARCH=${{ matrix.arch }}
+        run: make build ARCH=${{ matrix.arch }} LDFLAGS="-s -w"
 
       - name: Determine Version
         id: get_version

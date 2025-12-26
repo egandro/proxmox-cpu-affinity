@@ -16,6 +16,7 @@ else
 endif
 
 ARCH ?= $(DETECTED_ARCH)
+LDFLAGS ?=
 
 all: build
 
@@ -26,9 +27,9 @@ deps:
 
 build:
 	mkdir -p bin/$(ARCH)
-	CGO_ENABLED=0 GOARCH=$(ARCH) go build -o bin/$(ARCH)/proxmox-cpu-affinity-hook ./cmd/hook
-	CGO_ENABLED=0 GOARCH=$(ARCH) go build -o bin/$(ARCH)/proxmox-cpu-affinity-service ./cmd/service
-	CGO_ENABLED=0 GOARCH=$(ARCH) go build -o bin/$(ARCH)/proxmox-cpu-affinity ./cmd/cli
+	CGO_ENABLED=0 GOARCH=$(ARCH) go build -ldflags="$(LDFLAGS)" -o bin/$(ARCH)/proxmox-cpu-affinity-hook ./cmd/hook
+	CGO_ENABLED=0 GOARCH=$(ARCH) go build -ldflags="$(LDFLAGS)" -o bin/$(ARCH)/proxmox-cpu-affinity-service ./cmd/service
+	CGO_ENABLED=0 GOARCH=$(ARCH) go build -ldflags="$(LDFLAGS)" -o bin/$(ARCH)/proxmox-cpu-affinity ./cmd/cli
 
 clean:
 	rm -rf bin dist local *.deb coverage.out coverage.html
