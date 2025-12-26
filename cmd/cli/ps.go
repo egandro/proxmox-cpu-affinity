@@ -85,11 +85,15 @@ func checkVM(vmid uint64, verbose bool, explicit bool) {
 	// Check if process exists
 	// #nosec G204 -- pid is uint64
 	if err := exec.Command(systemPS, "-p", strconv.FormatUint(pid, 10)).Run(); err == nil {
-		fmt.Printf("VM %d%s: ", vmid, hookMsg)
+		fmt.Printf("VM %-8d%s: ", vmid, hookMsg)
 
 		// taskset -cp "$pid"
 		tsOut, _ := exec.Command(systemTaskSet, "-cp", strconv.FormatUint(pid, 10)).CombinedOutput() // #nosec G204 -- pid is uint64
-		fmt.Print(string(tsOut))
+		affinity := strings.TrimSpace(string(tsOut))
+		if idx := strings.Index(affinity, ":"); idx != -1 {
+			affinity = strings.TrimSpace(affinity[idx+1:])
+		}
+		fmt.Printf("PID %-8d Affinity: %s\n", pid, affinity)
 
 		if verbose {
 			fmt.Println("  Threads (TID PSR COMMAND):")
