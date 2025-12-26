@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net"
 	"os"
 	"path/filepath"
@@ -65,7 +64,8 @@ func (m *MockCpuInfo) DetectTopology() ([]cpuinfo.CoreInfo, error) {
 func setupTestService(t *testing.T) (*MockScheduler, *MockCpuInfo, string) {
 	// 1. Create a temporary socket path
 	tmpDir := t.TempDir()
-	socketPath := filepath.Join(tmpDir, fmt.Sprintf("pca-test-%d.sock", time.Now().UnixNano()))
+	// t.TempDir() creates a unique directory for each test, so a fixed filename is safe.
+	socketPath := filepath.Join(tmpDir, "pca-test.sock")
 
 	// 2. Setup Mock Scheduler
 	mockSched := new(MockScheduler)
