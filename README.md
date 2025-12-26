@@ -4,6 +4,8 @@ Automated CPU affinity management for Proxmox VE VMs. Uses a background service 
 
 When a VM starts, the hookscript triggers the background service, which then calculates and applies the optimal CPU affinity for that VM.
 
+See [SHOWCASE.md](SHOWCASE.md) for an example session.
+
 Written in Go.
 
 **WARNING**:
