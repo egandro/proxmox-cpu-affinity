@@ -2,7 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.5] - (tbd)
+## [0.0.6] - (tbd)
+
+## [0.0.5] - 2025-12-26
 
 ### Added
 - CLI: `ps` command now displays VM cores, sockets, and NUMA configuration.
