@@ -167,6 +167,7 @@ The hookscript is automatically assigned. This is not installed in the `.deb` pa
 
 - Current UI `tail -f /var/log/proxmox-cpu-affinity.log`
 - Recalculate `AdaptiveCpuInfoParameters` after a CPU hotplug event.
+- Deal with `GetSelections` when VMs are stopped. Since we are not a realtime information - just a affinity selector, this might be accurate.
 - Try to get a [Proxmox Patch](PROXMOX-PATCH.md)  applied. This is a draft version: <https://github.com/egandro/qemu-server/pull/1>. It will help us get rid of hookscripts.
 
 ## License

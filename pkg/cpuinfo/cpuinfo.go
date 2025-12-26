@@ -253,6 +253,7 @@ func (c *CPUInfo) SelectCPUs(vmid int, requestedCPUs int) ([]int, error) {
 }
 
 // GetSelections returns a copy of the current CPU selections per VMID.
+// WARNING: this is not accurate as VMs are no longer running
 func (c *CPUInfo) GetSelections() map[int][]int {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
