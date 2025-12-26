@@ -1,6 +1,8 @@
 # Changelog
 
-## [0.0.7] - TBD
+## [0.0.8] - TBD
+
+## [0.0.7] - 2025-12-26
 
 - Testing: Fuzz testing for all external commands
 - Testing: increased coverage
