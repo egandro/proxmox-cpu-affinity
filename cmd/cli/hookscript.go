@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -223,6 +224,7 @@ func getAllVMIDs() []uint64 {
 			}
 		}
 	}
+	sort.Slice(vmids, func(i, j int) bool { return vmids[i] < vmids[j] })
 	return vmids
 }
 
@@ -252,10 +254,10 @@ func getVMConfig(vmid uint64) string {
 }
 
 func printVMList(vmids []uint64) {
-	fmt.Printf("%-8s %-12s %-30s\n", "VMID", "HOOK-STATUS", "NOTES")
+	fmt.Printf("%-8s %-12s %-30s\n", "VMID", "Hook-Status", "Notes")
 	fmt.Printf("%-8s %-12s %-30s\n", "----", "-----------", "-----")
 	for _, vmid := range vmids {
-		status := "DISABLED"
+		status := "Disabled"
 		notes := ""
 		vmConf := getVMConfig(vmid)
 
@@ -264,19 +266,19 @@ func printVMList(vmids []uint64) {
 		}
 
 		if isHAVM(vmid) {
-			status = "SKIPPED"
+			status = "Skipped"
 			if notes != "" {
 				notes += ", "
 			}
 			notes += "HA Managed"
 		} else if strings.Contains(vmConf, "affinity:") {
-			status = "SKIPPED"
+			status = "Skipped"
 			if notes != "" {
 				notes += ", "
 			}
 			notes += "Manual Affinity Set"
 		} else if strings.Contains(vmConf, "hookscript: ") && strings.Contains(vmConf, config.ConstantHookScriptFilename) {
-			status = "ENABLED"
+			status = "Enabled"
 		}
 
 		fmt.Printf("%-8d %-12s %-30s\n", vmid, status, notes)

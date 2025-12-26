@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -38,9 +39,13 @@ func newPSCmd() *cobra.Command {
 				os.Exit(1)
 			}
 
+			var vmids []uint64
+			var explicit bool
+
 			if len(args) > 0 {
 				vmid, _ := strconv.ParseUint(args[0], 10, 64)
-				checkVM(vmid, verbose, true)
+				vmids = []uint64{vmid}
+				explicit = true
 			} else {
 				files, _ := filepath.Glob(filepath.Join(config.ConstantQemuServerPidDir, "*.pid"))
 				if len(files) == 0 {
@@ -50,14 +55,25 @@ func newPSCmd() *cobra.Command {
 				for _, f := range files {
 					vmidStr := strings.TrimSuffix(filepath.Base(f), ".pid")
 					if vmid, err := strconv.ParseUint(vmidStr, 10, 64); err == nil {
-						checkVM(vmid, verbose, false)
+						vmids = append(vmids, vmid)
 					}
 				}
+				sort.Slice(vmids, func(i, j int) bool { return vmids[i] < vmids[j] })
+			}
+
+			printPSHeader()
+			for _, vmid := range vmids {
+				checkVM(vmid, verbose, explicit)
 			}
 		},
 	}
 	cmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "Show detailed thread and child process affinity")
 	return cmd
+}
+
+func printPSHeader() {
+	fmt.Printf("%-8s %-10s %-12s %-20s\n", "VMID", "PID", "Hook-Status", "Affinity")
+	fmt.Printf("%-8s %-10s %-12s %-20s\n", "----", "---", "-----------", "--------")
 }
 
 func checkVM(vmid uint64, verbose bool, explicit bool) {
@@ -76,24 +92,22 @@ func checkVM(vmid uint64, verbose bool, explicit bool) {
 	}
 
 	// Check hookscript
-	hookMsg := "    "
+	hookStatus := "Disabled"
 	out, _ := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
 	if strings.Contains(string(out), "hookscript: ") && strings.Contains(string(out), config.ConstantHookScriptFilename) {
-		hookMsg = " (*)"
+		hookStatus = "Enabled"
 	}
 
 	// Check if process exists
 	// #nosec G204 -- pid is uint64
 	if err := exec.Command(systemPS, "-p", strconv.FormatUint(pid, 10)).Run(); err == nil {
-		fmt.Printf("VM %-8d%s: ", vmid, hookMsg)
-
 		// taskset -cp "$pid"
 		tsOut, _ := exec.Command(systemTaskSet, "-cp", strconv.FormatUint(pid, 10)).CombinedOutput() // #nosec G204 -- pid is uint64
 		affinity := strings.TrimSpace(string(tsOut))
 		if idx := strings.Index(affinity, ":"); idx != -1 {
 			affinity = strings.TrimSpace(affinity[idx+1:])
 		}
-		fmt.Printf("PID %-8d Affinity: %s\n", pid, affinity)
+		fmt.Printf("%-8d %-10d %-12s %s\n", vmid, pid, hookStatus, affinity)
 
 		if verbose {
 			fmt.Println("  Threads (TID PSR COMMAND):")
