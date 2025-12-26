@@ -15,9 +15,9 @@ mkdir -p dist/etc/systemd/system
 mkdir -p dist/etc/default
 
 # Install stripped binaries from build
-install -s -m 755 bin/$(ARCH)/proxmox-cpu-affinity-service dist/usr/sbin/proxmox-cpu-affinity-service
-install -s -m 755 bin/$(ARCH)/proxmox-cpu-affinity dist/usr/bin/proxmox-cpu-affinity
-install -s -m 755 bin/$(ARCH)/proxmox-cpu-affinity-hook dist/var/lib/vz/snippets/proxmox-cpu-affinity-hook
+install -s -m 755 bin/${ARCH}/proxmox-cpu-affinity-service dist/usr/sbin/proxmox-cpu-affinity-service
+install -s -m 755 bin/${ARCH}/proxmox-cpu-affinity dist/usr/bin/proxmox-cpu-affinity
+install -s -m 755 bin/${ARCH}/proxmox-cpu-affinity-hook dist/var/lib/vz/snippets/proxmox-cpu-affinity-hook
 
 if [ "$GITHUB_ACTIONS" != "true" ]; then
     echo "Developer build detected: Installing testing scripts..."
