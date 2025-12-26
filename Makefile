@@ -2,7 +2,21 @@
 
 DEPLOY_HOST ?= testmox
 VERSION ?= 0.0.7
-ARCH ?= amd64
+
+# Detect architecture (default to amd64)
+UNAME_M := $(shell uname -m)
+ifeq ($(UNAME_M),x86_64)
+	DETECTED_ARCH := amd64
+else ifeq ($(UNAME_M),aarch64)
+	DETECTED_ARCH := arm64
+else ifeq ($(UNAME_M),arm64)
+	DETECTED_ARCH := arm64
+else
+	DETECTED_ARCH := amd64
+endif
+
+ARCH ?= $(DETECTED_ARCH)
+LDFLAGS ?=
 
 all: build
 
@@ -12,10 +26,10 @@ deps:
 	go install golang.org/x/vuln/cmd/govulncheck@latest
 
 build:
-	mkdir -p bin
-	go build -o bin/proxmox-cpu-affinity-hook ./cmd/hook
-	go build -o bin/proxmox-cpu-affinity-service ./cmd/service
-	go build -o bin/proxmox-cpu-affinity ./cmd/cli
+	mkdir -p bin/$(ARCH)
+	CGO_ENABLED=0 GOARCH=$(ARCH) go build -ldflags="$(LDFLAGS)" -o bin/$(ARCH)/proxmox-cpu-affinity-hook ./cmd/hook
+	CGO_ENABLED=0 GOARCH=$(ARCH) go build -ldflags="$(LDFLAGS)" -o bin/$(ARCH)/proxmox-cpu-affinity-service ./cmd/service
+	CGO_ENABLED=0 GOARCH=$(ARCH) go build -ldflags="$(LDFLAGS)" -o bin/$(ARCH)/proxmox-cpu-affinity ./cmd/cli
 
 clean:
 	rm -rf bin dist local *.deb coverage.out coverage.html
@@ -44,7 +58,8 @@ deploy: deb
 	ssh $(DEPLOY_HOST) "sudo dpkg -i /tmp/proxmox-cpu-affinity.deb"
 	ssh $(DEPLOY_HOST) "sudo rm -f /tmp/proxmox-cpu-affinity.deb"
 
-deb: build
+deb:
+	GOOS=linux $(MAKE) build
 	./deb/build.sh $(VERSION) $(ARCH)
 
 run-service: build
