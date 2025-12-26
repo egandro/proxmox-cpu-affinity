@@ -2,6 +2,8 @@
 
 ## [0.0.8] - TBD
 
+- Feature: New commands `core-ranking"` to `core-ranking-summary`.
+
 ## [0.0.7] - 2025-12-26
 
 - Testing: Fuzz testing for all external commands

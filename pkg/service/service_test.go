@@ -248,6 +248,40 @@ func TestService_CoreRanking(t *testing.T) {
 	mockCpuInfo.AssertExpectations(t)
 }
 
+func TestService_CoreRankingSummary(t *testing.T) {
+	_, mockCpuInfo, socketPath := setupTestService(t)
+
+	expectedRanking := []cpuinfo.CoreRanking{
+		{CPU: 0, Ranking: []cpuinfo.Neighbor{}},
+		{CPU: 1, Ranking: []cpuinfo.Neighbor{}},
+	}
+	mockCpuInfo.On("GetCoreRanking").Return(expectedRanking, nil)
+
+	conn, err := net.Dial("unix", socketPath)
+	assert.NoError(t, err)
+	defer func() { _ = conn.Close() }()
+
+	req := Request{Command: "core-ranking-summary"}
+	err = json.NewEncoder(conn).Encode(req)
+	assert.NoError(t, err)
+
+	var resp Response
+	err = json.NewDecoder(conn).Decode(&resp)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "ok", resp.Status)
+
+	// Verify Data matches expected summary
+	expectedSummary := cpuinfo.SummarizeRankings(expectedRanking)
+	dataBytes, err := json.Marshal(resp.Data)
+	assert.NoError(t, err)
+	expectedBytes, err := json.Marshal(expectedSummary)
+	assert.NoError(t, err)
+	assert.JSONEq(t, string(expectedBytes), string(dataBytes))
+
+	mockCpuInfo.AssertExpectations(t)
+}
+
 func TestService_UnknownCommand(t *testing.T) {
 	_, _, socketPath := setupTestService(t)
 
