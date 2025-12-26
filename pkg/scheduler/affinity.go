@@ -24,7 +24,7 @@ type affinityProvider interface {
 
 type cpuInfoProvider interface {
 	GetCoreRanking() ([]cpuinfo.CoreRanking, error)
-	SelectCores(requestedCores int) ([]int, error)
+	SelectCPUs(vmid int, requestedCPUs int) ([]int, error)
 }
 
 // SystemAffinityOps defines an interface for system-level affinity operations.
@@ -94,8 +94,8 @@ func (a *defaultAffinityProvider) ApplyAffinity(_ context.Context, vmid int, pid
 		return "", fmt.Errorf("invalid VM configuration: cores * sockets is 0")
 	}
 
-	// SelectCores is thread-safe when cpu hotplug updates are running
-	cpus, err := a.cpuInfo.SelectCores(count)
+	// SelectCPUs is thread-safe when cpu hotplug updates are running
+	cpus, err := a.cpuInfo.SelectCPUs(vmid, count)
 	if err != nil {
 		slog.Warn("Skipping affinity", "vmid", vmid, "reason", err)
 		return "", nil

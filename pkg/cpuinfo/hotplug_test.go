@@ -102,9 +102,14 @@ func (m *MockProvider) GetCoreRanking() ([]CoreRanking, error) {
 	return args.Get(0).([]CoreRanking), args.Error(1)
 }
 
-func (m *MockProvider) SelectCores(requestedCores int) ([]int, error) {
-	args := m.Called(requestedCores)
+func (m *MockProvider) SelectCPUs(vmid int, requestedCPUs int) ([]int, error) {
+	args := m.Called(vmid, requestedCPUs)
 	return args.Get(0).([]int), args.Error(1)
+}
+
+func (m *MockProvider) GetSelections() map[int][]int {
+	args := m.Called()
+	return args.Get(0).(map[int][]int)
 }
 
 func (m *MockProvider) CalculateRanking(rounds, iterations int, timeout time.Duration) error {

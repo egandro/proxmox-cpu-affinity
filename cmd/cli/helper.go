@@ -1,10 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"net"
 	"os"
 	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 )
@@ -32,4 +35,48 @@ func ensureProxmoxHost() error {
 		return fmt.Errorf("this tool must be run on a Proxmox VE host (%s not found)", config.ConstantProxmoxConfigDir)
 	}
 	return nil
+}
+
+// SocketRequest represents the JSON request structure for the service.
+type SocketRequest struct {
+	Command string `json:"command"`
+	VMID    int    `json:"vmid,omitempty"`
+}
+
+// SocketResponse represents the JSON response structure from the service.
+type SocketResponse struct {
+	Status string      `json:"status"`
+	Data   interface{} `json:"data,omitempty"`
+	Error  string      `json:"error,omitempty"`
+}
+
+func resolveSocketPath(flagSocket string) string {
+	if flagSocket != "" {
+		return flagSocket
+	}
+	cfg := config.Load(config.ConstantConfigFilename)
+	return cfg.SocketFile
+}
+
+func sendSocketRequest(socketPath string, req SocketRequest) (*SocketResponse, error) {
+	conn, err := net.DialTimeout("unix", socketPath, 2*time.Second)
+	if err != nil {
+		return nil, fmt.Errorf("service is not reachable: %w", err)
+	}
+	defer func() {
+		_ = conn.Close()
+	}()
+
+	_ = conn.SetDeadline(time.Now().Add(2 * time.Second))
+
+	if err := json.NewEncoder(conn).Encode(req); err != nil {
+		return nil, fmt.Errorf("failed to send request: %w", err)
+	}
+
+	var resp SocketResponse
+	if err := json.NewDecoder(conn).Decode(&resp); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %w", err)
+	}
+
+	return &resp, nil
 }

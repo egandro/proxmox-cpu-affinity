@@ -144,6 +144,19 @@ func (s *service) handleConnection(ctx context.Context, conn net.Conn) {
 			resp.Status = "ok"
 			resp.Data = ranking
 		}
+	case "core-ranking-summary":
+		ranking, err := s.cpuInfo.GetCoreRanking()
+		if err != nil {
+			resp.Status = "error"
+			resp.Error = err.Error()
+		} else {
+			resp.Status = "ok"
+			resp.Data = cpuinfo.SummarizeRankings(ranking)
+		}
+	case "core-vm-affinity":
+		selections := s.cpuInfo.GetSelections()
+		resp.Status = "ok"
+		resp.Data = selections
 	default:
 		resp.Status = "error"
 		resp.Error = fmt.Sprintf("unknown command: %s", req.Command)

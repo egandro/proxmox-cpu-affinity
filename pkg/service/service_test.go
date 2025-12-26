@@ -49,9 +49,14 @@ func (m *MockCpuInfo) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
 	return args.Get(0).([]cpuinfo.CoreRanking), args.Error(1)
 }
 
-func (m *MockCpuInfo) SelectCores(requestedCores int) ([]int, error) {
-	args := m.Called(requestedCores)
+func (m *MockCpuInfo) SelectCPUs(vmid int, requestedCPUs int) ([]int, error) {
+	args := m.Called(vmid, requestedCPUs)
 	return args.Get(0).([]int), args.Error(1)
+}
+
+func (m *MockCpuInfo) GetSelections() map[int][]int {
+	args := m.Called()
+	return args.Get(0).(map[int][]int)
 }
 
 func (m *MockCpuInfo) DetectTopology() ([]cpuinfo.CoreInfo, error) {
@@ -242,6 +247,73 @@ func TestService_CoreRanking(t *testing.T) {
 	dataBytes, err := json.Marshal(resp.Data)
 	assert.NoError(t, err)
 	expectedBytes, err := json.Marshal(expectedRanking)
+	assert.NoError(t, err)
+	assert.JSONEq(t, string(expectedBytes), string(dataBytes))
+
+	mockCpuInfo.AssertExpectations(t)
+}
+
+func TestService_CoreRankingSummary(t *testing.T) {
+	_, mockCpuInfo, socketPath := setupTestService(t)
+
+	expectedRanking := []cpuinfo.CoreRanking{
+		{CPU: 0, Ranking: []cpuinfo.Neighbor{}},
+		{CPU: 1, Ranking: []cpuinfo.Neighbor{}},
+	}
+	mockCpuInfo.On("GetCoreRanking").Return(expectedRanking, nil)
+
+	conn, err := net.Dial("unix", socketPath)
+	assert.NoError(t, err)
+	defer func() { _ = conn.Close() }()
+
+	req := Request{Command: "core-ranking-summary"}
+	err = json.NewEncoder(conn).Encode(req)
+	assert.NoError(t, err)
+
+	var resp Response
+	err = json.NewDecoder(conn).Decode(&resp)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "ok", resp.Status)
+
+	// Verify Data matches expected summary
+	expectedSummary := cpuinfo.SummarizeRankings(expectedRanking)
+	dataBytes, err := json.Marshal(resp.Data)
+	assert.NoError(t, err)
+	expectedBytes, err := json.Marshal(expectedSummary)
+	assert.NoError(t, err)
+	assert.JSONEq(t, string(expectedBytes), string(dataBytes))
+
+	mockCpuInfo.AssertExpectations(t)
+}
+
+func TestService_CoreVMAffinity(t *testing.T) {
+	_, mockCpuInfo, socketPath := setupTestService(t)
+
+	expectedSelections := map[int][]int{
+		100: {0, 1},
+		101: {2, 3},
+	}
+	mockCpuInfo.On("GetSelections").Return(expectedSelections)
+
+	conn, err := net.Dial("unix", socketPath)
+	assert.NoError(t, err)
+	defer func() { _ = conn.Close() }()
+
+	req := Request{Command: "core-vm-affinity"}
+	err = json.NewEncoder(conn).Encode(req)
+	assert.NoError(t, err)
+
+	var resp Response
+	err = json.NewDecoder(conn).Decode(&resp)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "ok", resp.Status)
+
+	// Verify Data matches expected selections
+	dataBytes, err := json.Marshal(resp.Data)
+	assert.NoError(t, err)
+	expectedBytes, err := json.Marshal(expectedSelections)
 	assert.NoError(t, err)
 	assert.JSONEq(t, string(expectedBytes), string(dataBytes))
 
