@@ -38,10 +38,11 @@ Manage hookscript activation. Handles HA and manual affinity checks automaticall
 (HA machines are ignored. Templates are ignored. Existing scripts are not overwritten.)
 
 ```bash
-proxmox-cpu-affinity hookscript list
-proxmox-cpu-affinity hookscript enable <VMID> [storage]
-proxmox-cpu-affinity hookscript enable-all [storage]
-proxmox-cpu-affinity hookscript disable-all
+proxmox-cpu-affinity hookscript list [--json] [--quiet]
+proxmox-cpu-affinity hookscript enable <VMID> [storage] [--dry-run]
+proxmox-cpu-affinity hookscript disable [--dry-run]
+proxmox-cpu-affinity hookscript enable-all [storage] [--dry-run]
+proxmox-cpu-affinity hookscript disable-all [--dry-run]
 ```
 
 ### ps
@@ -50,7 +51,7 @@ Show current CPU affinity for running VMs.
 
 ```bash
 proxmox-cpu-affinity ps [-v]
-proxmox-cpu-affinity ps <VMID> [-v]
+proxmox-cpu-affinity ps <VMID> [-v] [--json] [--quiet]
 ```
 
 ### status
@@ -66,7 +67,7 @@ proxmox-cpu-affinity status
 Runs the cpuinfo and shows the core-to-core latency.
 
 ```bash
-proxmox-cpu-affinity cpuinfo [-v] [--summary]
+proxmox-cpu-affinity cpuinfo [-v] [--summary] [--quiet]
 ```
 
 ## Manual VM Configuration
