@@ -63,7 +63,7 @@ func TestCalculateRanking_Timeout(t *testing.T) {
 	}
 }
 
-func TestSelectCores_EdgeCases(t *testing.T) {
+func TestSelectCPUs_EdgeCases(t *testing.T) {
 	c := New()
 	// Initialize with dummy data if possible, or run a quick update
 	// Since we can't easily inject cache without Update, we run a quick update
@@ -72,22 +72,22 @@ func TestSelectCores_EdgeCases(t *testing.T) {
 	}
 
 	// Request 1 core
-	cpus, err := c.SelectCores(1)
+	cpus, err := c.SelectCPUs(100, 1)
 	assert.NoError(t, err)
 	assert.Len(t, cpus, 1)
 
 	// Request too many
-	_, err = c.SelectCores(9999)
+	_, err = c.SelectCPUs(100, 9999)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "exceed available")
 
 	// Request 0 cores
-	_, err = c.SelectCores(0)
+	_, err = c.SelectCPUs(100, 0)
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "greater than 0")
 }
 
-func TestSelectCores_Race(t *testing.T) {
+func TestSelectCPUs_Race(t *testing.T) {
 	c := New()
 	// Initial update to ensure we have data
 	if err := c.Update(1, 1, nil); err != nil {
@@ -113,15 +113,15 @@ func TestSelectCores_Race(t *testing.T) {
 		}
 	}()
 
-	// Reader goroutines (SelectCores)
+	// Reader goroutines (SelectCPUs)
 	for i := 0; i < 5; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			for j := 0; j < 50; j++ {
-				cpus, err := c.SelectCores(1)
+				cpus, err := c.SelectCPUs(j, 1)
 				// It's possible Update fails on some platforms or transiently,
-				// but SelectCores should generally succeed if cache is populated.
+				// but SelectCPUs should generally succeed if cache is populated.
 				// We mainly care that it doesn't panic or race.
 				if err == nil {
 					assert.NotEmpty(t, cpus)
@@ -185,4 +185,28 @@ func TestUpdate_TopologyResize(t *testing.T) {
 	defer c.mu.RUnlock()
 	assert.Len(t, c.cache, 10)
 	assert.Equal(t, 3, c.lastIndex, "lastIndex should be preserved when growing (3 % 10 = 3)")
+}
+
+func TestGetSelections(t *testing.T) {
+	c := New()
+	// Initialize cache
+	if err := c.Update(1, 1, nil); err != nil {
+		t.Skipf("Skipping GetSelections test due to update failure: %v", err)
+	}
+
+	// Make a selection
+	cpus, err := c.SelectCPUs(100, 1)
+	assert.NoError(t, err)
+	assert.NotEmpty(t, cpus)
+
+	// Retrieve selections
+	selections := c.GetSelections()
+	assert.Contains(t, selections, 100)
+	assert.Equal(t, cpus, selections[100])
+
+	// Verify it returns a copy
+	selections[100][0] = -1
+	selections2 := c.GetSelections()
+	assert.NotEqual(t, -1, selections2[100][0])
+	assert.Equal(t, cpus[0], selections2[100][0])
 }

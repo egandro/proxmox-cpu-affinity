@@ -25,7 +25,8 @@ type Provider interface {
 	GetCoreRanking() ([]CoreRanking, error)
 	CalculateRanking(rounds, iterations int, timeout time.Duration) error
 	DetectTopology() ([]CoreInfo, error)
-	SelectCores(requestedCores int) ([]int, error)
+	SelectCPUs(vmid int, requestedCPUs int) ([]int, error)
+	GetSelections() map[int][]int
 }
 
 // topologyDetector is a function that returns the current CPU topology.
@@ -36,18 +37,20 @@ type latencyMeasurer func(cpuA, cpuB, iter int) (float64, error)
 
 // CPUInfo handles CPU topology detection and latency measurement.
 type CPUInfo struct {
-	mu        sync.RWMutex
-	cache     []CoreRanking
-	lastIndex int
-	detector  topologyDetector
-	measurer  latencyMeasurer
+	mu         sync.RWMutex
+	cache      []CoreRanking
+	lastIndex  int
+	detector   topologyDetector
+	measurer   latencyMeasurer
+	selections map[int][]int
 }
 
 // New creates a new CPUInfo instance.
 func New() Provider {
 	return &CPUInfo{
-		detector: detectTopologySystem,
-		measurer: measureSingleLink,
+		detector:   detectTopologySystem,
+		measurer:   measureSingleLink,
+		selections: make(map[int][]int),
 	}
 }
 
@@ -187,6 +190,7 @@ func (c *CPUInfo) Update(rounds int, iterations int, onProgress func(int, int)) 
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.cache = finalResults
+	c.selections = make(map[int][]int)
 	// Ensure lastIndex is within bounds if topology shrank
 	if len(c.cache) > 0 {
 		c.lastIndex = c.lastIndex % len(c.cache)
@@ -206,10 +210,10 @@ func (c *CPUInfo) GetCoreRanking() ([]CoreRanking, error) {
 	return c.cache, nil
 }
 
-// SelectCores returns a list of CPU IDs for the next VM, rotating through available cores.
+// SelectCPUs returns a list of CPU IDs for the next VM, rotating through available cores.
 // This method is thread-safe to handle concurrent access, specifically when CPU hotplug
 // events trigger a topology update (changing the cache) while affinity is being requested.
-func (c *CPUInfo) SelectCores(requestedCores int) ([]int, error) {
+func (c *CPUInfo) SelectCPUs(vmid int, requestedCPUs int) ([]int, error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -217,26 +221,49 @@ func (c *CPUInfo) SelectCores(requestedCores int) ([]int, error) {
 		return nil, fmt.Errorf("core ranking cache is empty")
 	}
 
-	if requestedCores <= 0 {
-		return nil, fmt.Errorf("requested cores must be greater than 0")
+	if cores, ok := c.selections[vmid]; ok {
+		// If we already have a selection for this VMID and the size matches, return it.
+		if len(cores) == requestedCPUs {
+			return cores, nil
+		}
+	}
+
+	if requestedCPUs <= 0 {
+		return nil, fmt.Errorf("requested CPUs must be greater than 0")
 	}
 
 	max := len(c.cache)
-	if requestedCores > max {
-		return nil, fmt.Errorf("requested cores %d exceed available %d", requestedCores, max)
+	if requestedCPUs > max {
+		return nil, fmt.Errorf("requested CPUs %d exceed available %d", requestedCPUs, max)
 	}
 
 	c.lastIndex = (c.lastIndex + 1) % max
 
 	primary := c.cache[c.lastIndex]
-	res := make([]int, 0, requestedCores)
+	res := make([]int, 0, requestedCPUs)
 	res = append(res, primary.CPU)
 
-	for i := 0; i < requestedCores-1 && i < len(primary.Ranking); i++ {
+	for i := 0; i < requestedCPUs-1 && i < len(primary.Ranking); i++ {
 		res = append(res, primary.Ranking[i].CPU)
 	}
 
+	c.selections[vmid] = res
+
 	return res, nil
+}
+
+// GetSelections returns a copy of the current CPU selections per VMID.
+func (c *CPUInfo) GetSelections() map[int][]int {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	result := make(map[int][]int, len(c.selections))
+	for vmid, cpus := range c.selections {
+		cpusCopy := make([]int, len(cpus))
+		copy(cpusCopy, cpus)
+		result[vmid] = cpusCopy
+	}
+	return result
 }
 
 // DetectTopology reads Linux sysfs to find CPU topology.

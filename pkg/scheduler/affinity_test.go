@@ -31,8 +31,8 @@ func (m *MockCpuInfoProvider) GetCoreRanking() ([]cpuinfo.CoreRanking, error) {
 	return args.Get(0).([]cpuinfo.CoreRanking), args.Error(1)
 }
 
-func (m *MockCpuInfoProvider) SelectCores(requestedCores int) ([]int, error) {
-	args := m.Called(requestedCores)
+func (m *MockCpuInfoProvider) SelectCPUs(vmid int, requestedCPUs int) ([]int, error) {
+	args := m.Called(vmid, requestedCPUs)
 	return args.Get(0).([]int), args.Error(1)
 }
 
@@ -84,7 +84,7 @@ func TestApplyAffinity(t *testing.T) {
 			},
 			expectedRes: "1,0",
 			setupMockCpu: func(m *MockCpuInfoProvider) {
-				m.On("SelectCores", 2).Return([]int{1, 0}, nil)
+				m.On("SelectCPUs", 100, 2).Return([]int{1, 0}, nil)
 			},
 			setupMockSys: func(m *MockSystemAffinityOps) {
 				m.On("GetProcessThreads", 12345).Return([]int{12345}, nil)
@@ -123,7 +123,7 @@ func TestApplyAffinity(t *testing.T) {
 			expectError: false,
 			expectedRes: "1",
 			setupMockCpu: func(m *MockCpuInfoProvider) {
-				m.On("SelectCores", 1).Return([]int{1}, nil)
+				m.On("SelectCPUs", 105, 1).Return([]int{1}, nil)
 			},
 			setupMockSys: func(m *MockSystemAffinityOps) {
 				m.On("GetProcessThreads", 12350).Return([]int{12350}, nil)
