@@ -62,6 +62,10 @@ Show current status of the service.
 
 ```bash
 proxmox-cpu-affinity status
+proxmox-cpu-affinity status ping [--json]
+proxmox-cpu-affinity status core-ranking [--json]
+proxmox-cpu-affinity status core-ranking-summary [--json]
+proxmox-cpu-affinity status core-vm-affinity [--json]
 ```
 
 ### cpuinfo
