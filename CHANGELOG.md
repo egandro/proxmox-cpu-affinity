@@ -2,10 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.6] - (tbd)
+## [0.0.6] - 2025-12-26
 
 ### Changed
 - Refactor: Renamed internal command `vm-started` to `update-affinity`.
+- Doc: added optional Proxmox Patch link
 
 ## [0.0.5] - 2025-12-26
 
