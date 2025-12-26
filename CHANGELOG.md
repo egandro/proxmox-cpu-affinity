@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [0.0.6] - (tbd)
 
+### Changed
+- Refactor: Renamed internal command `vm-started` to `update-affinity`.
+
 ## [0.0.5] - 2025-12-26
 
 ### Added

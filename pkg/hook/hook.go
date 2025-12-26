@@ -90,7 +90,7 @@ func (h *handler) OnPreStart(vmid int) error {
 
 // OnPostStart is executed after the guest successfully started.
 func (h *handler) OnPostStart(vmid int) error {
-	if err := h.callService("vm-started", vmid); err != nil {
+	if err := h.callService("update-affinity", vmid); err != nil {
 		_, _ = fmt.Fprintf(h.Output, "Error calling service: %v\n", err)
 	}
 	return nil

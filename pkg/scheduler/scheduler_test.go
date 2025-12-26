@@ -39,7 +39,7 @@ func (m *MockAffinityProvider) ApplyAffinity(ctx context.Context, vmid int, pid 
 	return args.String(0), args.Error(1)
 }
 
-func TestVmStarted(t *testing.T) {
+func TestUpdateAffinity(t *testing.T) {
 	tests := []struct {
 		name           string
 		vmid           int
@@ -144,7 +144,7 @@ func TestVmStarted(t *testing.T) {
 				affinity: mockAffinity,
 			}
 
-			result, err := s.VmStarted(ctx, tt.vmid)
+			result, err := s.UpdateAffinity(ctx, tt.vmid)
 
 			if tt.expectError {
 				assert.Error(t, err)

@@ -12,7 +12,7 @@ import (
 
 // Scheduler defines the interface for VM scheduling operations.
 type Scheduler interface {
-	VmStarted(ctx context.Context, vmid int) (interface{}, error)
+	UpdateAffinity(ctx context.Context, vmid int) (interface{}, error)
 }
 
 // ProxmoxClient defines the interface for Proxmox operations.
@@ -39,9 +39,9 @@ func New(cfg *config.Config, cpuInfo cpuinfo.Provider) (Scheduler, error) {
 	}, nil
 }
 
-// VmStarted handles the logic for starting a VM with affinity.
-func (s *scheduler) VmStarted(ctx context.Context, vmid int) (interface{}, error) {
-	slog.Info("VmStarted called", "vmid", vmid)
+// UpdateAffinity handles the logic for starting a VM with affinity.
+func (s *scheduler) UpdateAffinity(ctx context.Context, vmid int) (interface{}, error) {
+	slog.Info("UpdateAffinity called", "vmid", vmid)
 
 	config, err := s.proxmox.GetVmConfig(ctx, vmid)
 	if err != nil {

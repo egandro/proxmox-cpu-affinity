@@ -20,7 +20,7 @@ type MockScheduler struct {
 	mock.Mock
 }
 
-func (m *MockScheduler) VmStarted(ctx context.Context, vmid int) (interface{}, error) {
+func (m *MockScheduler) UpdateAffinity(ctx context.Context, vmid int) (interface{}, error) {
 	args := m.Called(ctx, vmid)
 	return args.Get(0), args.Error(1)
 }
@@ -105,7 +105,7 @@ func setupTestService(t *testing.T) (*MockScheduler, *MockCpuInfo, string) {
 	return mockSched, mockCpuInfo, socketPath
 }
 
-func TestService_VmStarted(t *testing.T) {
+func TestService_UpdateAffinity(t *testing.T) {
 	mockSched, _, socketPath := setupTestService(t)
 
 	expectedResult := map[string]interface{}{
@@ -113,7 +113,7 @@ func TestService_VmStarted(t *testing.T) {
 		"action": "start",
 		"mocked": true,
 	}
-	mockSched.On("VmStarted", mock.Anything, 100).Return(expectedResult, nil)
+	mockSched.On("UpdateAffinity", mock.Anything, 100).Return(expectedResult, nil)
 
 	// Dial
 	conn, err := net.Dial("unix", socketPath)
@@ -123,7 +123,7 @@ func TestService_VmStarted(t *testing.T) {
 	}()
 
 	// Send Request
-	req := Request{Command: "vm-started", VMID: 100}
+	req := Request{Command: "update-affinity", VMID: 100}
 	err = json.NewEncoder(conn).Encode(req)
 	assert.NoError(t, err)
 
@@ -136,7 +136,7 @@ func TestService_VmStarted(t *testing.T) {
 	mockSched.AssertExpectations(t)
 }
 
-func TestService_VmStarted_InvalidID(t *testing.T) {
+func TestService_UpdateAffinity_InvalidID(t *testing.T) {
 	// We don't need a full server start for this if we could test handler directly,
 	// but integration testing the router is safer.
 	// For brevity, relying on the previous test structure is fine.
