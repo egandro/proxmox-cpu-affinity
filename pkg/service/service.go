@@ -135,6 +135,15 @@ func (s *service) handleConnection(ctx context.Context, conn net.Conn) {
 		slog.Debug("ping received")
 		resp.Status = "ok"
 		resp.Data = "pong"
+	case "core-ranking":
+		ranking, err := s.cpuInfo.GetCoreRanking()
+		if err != nil {
+			resp.Status = "error"
+			resp.Error = err.Error()
+		} else {
+			resp.Status = "ok"
+			resp.Data = ranking
+		}
 	default:
 		resp.Status = "error"
 		resp.Error = fmt.Sprintf("unknown command: %s", req.Command)

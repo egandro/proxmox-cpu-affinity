@@ -195,3 +195,74 @@ func TestService_HandleConnection_EOF(t *testing.T) {
 	// Allow some time for server to process
 	time.Sleep(50 * time.Millisecond)
 }
+
+func TestService_Ping(t *testing.T) {
+	_, _, socketPath := setupTestService(t)
+
+	conn, err := net.Dial("unix", socketPath)
+	assert.NoError(t, err)
+	defer func() { _ = conn.Close() }()
+
+	req := Request{Command: "ping"}
+	err = json.NewEncoder(conn).Encode(req)
+	assert.NoError(t, err)
+
+	var resp Response
+	err = json.NewDecoder(conn).Decode(&resp)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "ok", resp.Status)
+	assert.Equal(t, "pong", resp.Data)
+}
+
+func TestService_CoreRanking(t *testing.T) {
+	_, mockCpuInfo, socketPath := setupTestService(t)
+
+	expectedRanking := []cpuinfo.CoreRanking{
+		{CPU: 0, Ranking: []cpuinfo.Neighbor{}},
+		{CPU: 1, Ranking: []cpuinfo.Neighbor{}},
+	}
+	mockCpuInfo.On("GetCoreRanking").Return(expectedRanking, nil)
+
+	conn, err := net.Dial("unix", socketPath)
+	assert.NoError(t, err)
+	defer func() { _ = conn.Close() }()
+
+	req := Request{Command: "core-ranking"}
+	err = json.NewEncoder(conn).Encode(req)
+	assert.NoError(t, err)
+
+	var resp Response
+	err = json.NewDecoder(conn).Decode(&resp)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "ok", resp.Status)
+
+	// Verify Data matches expectedRanking
+	dataBytes, err := json.Marshal(resp.Data)
+	assert.NoError(t, err)
+	expectedBytes, err := json.Marshal(expectedRanking)
+	assert.NoError(t, err)
+	assert.JSONEq(t, string(expectedBytes), string(dataBytes))
+
+	mockCpuInfo.AssertExpectations(t)
+}
+
+func TestService_UnknownCommand(t *testing.T) {
+	_, _, socketPath := setupTestService(t)
+
+	conn, err := net.Dial("unix", socketPath)
+	assert.NoError(t, err)
+	defer func() { _ = conn.Close() }()
+
+	req := Request{Command: "unknown-cmd"}
+	err = json.NewEncoder(conn).Encode(req)
+	assert.NoError(t, err)
+
+	var resp Response
+	err = json.NewDecoder(conn).Decode(&resp)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "error", resp.Status)
+	assert.Contains(t, resp.Error, "unknown command")
+}
