@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"net"
-	"net/http"
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -60,12 +61,11 @@ func (m *MockCpuInfo) DetectTopology() ([]cpuinfo.CoreInfo, error) {
 	return args.Get(0).([]cpuinfo.CoreInfo), args.Error(1)
 }
 
-func setupTestService(t *testing.T) (*MockScheduler, *MockCpuInfo, string, func()) {
-	// 1. Find a free port on localhost
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
-	assert.NoError(t, err)
-	port := listener.Addr().(*net.TCPAddr).Port
-	_ = listener.Close() // Close it so the service can use it
+func setupTestService(t *testing.T) (*MockScheduler, *MockCpuInfo, string) {
+	// 1. Create a temporary socket path
+	tmpDir := t.TempDir()
+	// t.TempDir() creates a unique directory for each test, so a fixed filename is safe.
+	socketPath := filepath.Join(tmpDir, "pca-test.sock")
 
 	// 2. Setup Mock Scheduler
 	mockSched := new(MockScheduler)
@@ -74,7 +74,7 @@ func setupTestService(t *testing.T) (*MockScheduler, *MockCpuInfo, string, func(
 	mockCpuInfo := new(MockCpuInfo)
 
 	// 4. Create and Start Service
-	svc := New("127.0.0.1", port, mockSched, mockCpuInfo)
+	svc := New(t.Context(), socketPath, mockSched, mockCpuInfo)
 
 	// Start in a goroutine
 	errChan := make(chan error, 1)
@@ -85,9 +85,9 @@ func setupTestService(t *testing.T) (*MockScheduler, *MockCpuInfo, string, func(
 	// Give the server a moment to start
 	time.Sleep(100 * time.Millisecond)
 
-	baseURL := fmt.Sprintf("http://127.0.0.1:%d", port)
-
-	teardown := func() {
+	t.Cleanup(func() {
+		// Use context.Background() because t.Context() is cancelled during cleanup.
+		// We need a fresh context to allow the shutdown to complete gracefully if needed.
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()
 		err := svc.Shutdown(ctx)
@@ -95,18 +95,18 @@ func setupTestService(t *testing.T) (*MockScheduler, *MockCpuInfo, string, func(
 
 		select {
 		case err := <-errChan:
-			assert.Equal(t, http.ErrServerClosed, err)
+			assert.NoError(t, err)
 		case <-time.After(1 * time.Second):
 			t.Fatal("Service did not exit after shutdown")
 		}
-	}
+		_ = os.Remove(socketPath)
+	})
 
-	return mockSched, mockCpuInfo, baseURL, teardown
+	return mockSched, mockCpuInfo, socketPath
 }
 
 func TestService_VmStarted(t *testing.T) {
-	mockSched, _, baseURL, teardown := setupTestService(t)
-	defer teardown()
+	mockSched, _, socketPath := setupTestService(t)
 
 	expectedResult := map[string]interface{}{
 		"vmid":   100,
@@ -115,43 +115,25 @@ func TestService_VmStarted(t *testing.T) {
 	}
 	mockSched.On("VmStarted", mock.Anything, 100).Return(expectedResult, nil)
 
-	url := fmt.Sprintf("%s/api/vmstarted/100", baseURL)
-	resp, err := http.Get(url)
+	// Dial
+	conn, err := net.Dial("unix", socketPath)
 	assert.NoError(t, err)
-	defer func() { _ = resp.Body.Close() }()
+	defer func() {
+		_ = conn.Close()
+	}()
 
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	// Send Request
+	req := Request{Command: "vm-started", VMID: 100}
+	err = json.NewEncoder(conn).Encode(req)
+	assert.NoError(t, err)
+
+	// Read Response
+	var resp Response
+	err = json.NewDecoder(conn).Decode(&resp)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "ok", resp.Status)
 	mockSched.AssertExpectations(t)
-}
-
-func TestService_GetCoreRanking(t *testing.T) {
-	_, mockCpuInfo, baseURL, teardown := setupTestService(t)
-	defer teardown()
-
-	expectedRankings := []cpuinfo.CoreRanking{
-		{CPU: 0, Ranking: []cpuinfo.Neighbor{{CPU: 1, LatencyNS: 10}}},
-	}
-	mockCpuInfo.On("GetCoreRanking").Return(expectedRankings, nil)
-
-	url := fmt.Sprintf("%s/api/ranking", baseURL)
-	resp, err := http.Get(url)
-	assert.NoError(t, err)
-	defer func() { _ = resp.Body.Close() }()
-
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	mockCpuInfo.AssertExpectations(t)
-}
-
-func TestService_Ping(t *testing.T) {
-	_, _, baseURL, teardown := setupTestService(t)
-	defer teardown()
-
-	url := fmt.Sprintf("%s/api/ping", baseURL)
-	resp, err := http.Get(url)
-	assert.NoError(t, err)
-	defer func() { _ = resp.Body.Close() }()
-
-	assert.Equal(t, http.StatusOK, resp.StatusCode)
 }
 
 func TestService_VmStarted_InvalidID(t *testing.T) {
@@ -159,4 +141,18 @@ func TestService_VmStarted_InvalidID(t *testing.T) {
 	// but integration testing the router is safer.
 	// For brevity, relying on the previous test structure is fine.
 	// This test is just a placeholder to show where edge cases would go.
+}
+
+func TestService_HandleConnection_EOF(t *testing.T) {
+	_, _, socketPath := setupTestService(t)
+
+	// Dial
+	conn, err := net.Dial("unix", socketPath)
+	assert.NoError(t, err)
+
+	// Close immediately to trigger EOF on server side decode
+	_ = conn.Close()
+
+	// Allow some time for server to process
+	time.Sleep(50 * time.Millisecond)
 }

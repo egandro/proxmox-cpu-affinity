@@ -1,16 +1,5 @@
 # Configuration for proxmox-cpu-affinity
 
-# Service Host and Port
-# PCA_HOST=127.0.0.1
-# PCA_PORT=8245
-
-# Security
-# By default, the service only binds to localhost to prevent unauthorized access.
-# Setting PCA_INSECURE_ALLOW_REMOTE=true allows binding to non-localhost addresses.
-# WARNING: This exposes the unauthenticated API to the network. Anyone with network
-# access to this port can change CPU affinity settings on your VMs.
-# PCA_INSECURE_ALLOW_REMOTE=false
-
 # Logging
 # PCA_LOG_LEVEL=info
 # PCA_LOG_FILE=/var/log/proxmox-cpu-affinity.log
@@ -30,12 +19,13 @@
 # PCA_ROUNDS=10
 # PCA_ITERATIONS=100000
 
-# Webhook Settings
-# PCA_WEBHOOK_RETRY=10
-# PCA_WEBHOOK_SLEEP=10 # in seconds
-# PCA_WEBHOOK_TIMEOUT=30 # in seconds
-# PCA_WEBHOOK_PING_ON_PRESTART=true
-
 # CPU Hotplug Watchdog
 # Set to true to automatically detect and handle CPU hotplug events via Netlink.
 # PCA_CPU_HOTPLUG_WATCHDOG=true
+
+# Socket Settings
+# PCA_SOCKET_FILE="/var/run/proxmox-cpu-affinity.sock"
+# PCA_SOCKET_RETRY=10
+# PCA_SOCKET_SLEEP=10
+# PCA_SOCKET_TIMEOUT=30
+# PCA_SOCKET_PING_ON_PRESTART=true

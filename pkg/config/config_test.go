@@ -48,42 +48,16 @@ func TestLoad(t *testing.T) {
 	// Test loading with defaults (no env vars set)
 	cfg := Load("")
 
-	assert.Equal(t, DefaultServiceHost, cfg.ServiceHost)
-	assert.Equal(t, DefaultServicePort, cfg.ServicePort)
 	assert.Equal(t, DefaultLogLevel, cfg.LogLevel)
 	assert.Equal(t, ConstantLogFile, cfg.LogFile)
+	assert.Equal(t, ConstantSocketFile, cfg.SocketFile)
+	assert.Equal(t, DefaultSocketRetry, cfg.SocketRetry)
+	assert.Equal(t, DefaultSocketSleep, cfg.SocketSleep)
+	assert.Equal(t, DefaultSocketTimeout, cfg.SocketTimeout)
+	assert.Equal(t, DefaultSocketPingOnPreStart, cfg.SocketPingOnPreStart)
 
 	// Rounds and iterations should match adaptive defaults
 	expectedRounds, expectedIterations := AdaptiveCpuInfoParameters()
 	assert.Equal(t, expectedRounds, cfg.Rounds)
 	assert.Equal(t, expectedIterations, cfg.Iterations)
-}
-
-func TestIsLocalhostAddr(t *testing.T) {
-	tests := []struct {
-		host     string
-		expected bool
-	}{
-		// Localhost addresses
-		{"127.0.0.1", true},
-		{"localhost", true},
-		{"::1", true},
-		{"", true},
-
-		// Non-localhost addresses
-		{"0.0.0.0", false},
-		{"192.168.1.1", false},
-		{"10.0.0.1", false},
-		{"172.16.0.1", false},
-		{"example.com", false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.host, func(t *testing.T) {
-			got := isLocalhostAddr(tt.host)
-			if got != tt.expected {
-				t.Errorf("isLocalhostAddr(%q) = %v, want %v", tt.host, got, tt.expected)
-			}
-		})
-	}
 }

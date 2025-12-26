@@ -22,8 +22,8 @@ func main() {
 
 	rootCmd.AddCommand(newStatusCmd())
 	rootCmd.AddCommand(newCPUInfoCmd())
-	rootCmd.AddCommand(newInfoCmd())
-	rootCmd.AddCommand(newWebhookCmd())
+	rootCmd.AddCommand(newPSCmd())
+	rootCmd.AddCommand(newHookscriptCmd())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)

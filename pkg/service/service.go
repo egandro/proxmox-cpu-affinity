@@ -3,94 +3,139 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"log/slog"
-	"net/http"
-	"strconv"
+	"net"
+	"os"
+	"sync"
 	"time"
 
+	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/scheduler"
 )
 
-// service represents the HTTP service.
+// Request represents the JSON request structure.
+type Request struct {
+	Command string `json:"command"`
+	VMID    int    `json:"vmid"`
+}
+
+// Response represents the JSON response structure.
+type Response struct {
+	Status string      `json:"status"`
+	Data   interface{} `json:"data,omitempty"`
+	Error  string      `json:"error,omitempty"`
+}
+
+// service represents the socket service.
 type service struct {
-	Host      string
-	Port      int
-	server    *http.Server
-	scheduler scheduler.Scheduler
-	cpuInfo   cpuinfo.Provider
+	ctx        context.Context
+	mu         sync.Mutex
+	SocketPath string
+	listener   net.Listener
+	scheduler  scheduler.Scheduler
+	cpuInfo    cpuinfo.Provider
 }
 
 // New creates a new service instance.
-func New(host string, port int, sched scheduler.Scheduler, cpuInfo cpuinfo.Provider) *service {
+func New(ctx context.Context, socketPath string, sched scheduler.Scheduler, cpuInfo cpuinfo.Provider) *service {
 	return &service{
-		Host:      host,
-		Port:      port,
-		scheduler: sched,
-		cpuInfo:   cpuInfo,
+		ctx:        ctx,
+		SocketPath: socketPath,
+		scheduler:  sched,
+		cpuInfo:    cpuInfo,
 	}
 }
 
-// Start runs the HTTP server.
+// Start runs the socket listener.
 func (s *service) Start() error {
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /api/vmstarted/{vmid}", s.handleVmStarted)
-	mux.HandleFunc("GET /api/ranking", s.handleGetCoreRanking)
-	mux.HandleFunc("GET /api/ping", s.handlePing)
-
-	addr := fmt.Sprintf("%s:%d", s.Host, s.Port)
-	slog.Info("Starting HTTP service", "address", addr)
-
-	s.server = &http.Server{
-		Addr:              addr,
-		Handler:           mux,
-		ReadHeaderTimeout: 3 * time.Second,
+	// Remove existing socket if it exists
+	if _, err := os.Stat(s.SocketPath); err == nil {
+		if err := os.Remove(s.SocketPath); err != nil {
+			return fmt.Errorf("failed to remove existing socket: %w", err)
+		}
 	}
-	return s.server.ListenAndServe()
+
+	listener, err := net.Listen("unix", s.SocketPath)
+	if err != nil {
+		return fmt.Errorf("failed to listen on socket %s: %w", s.SocketPath, err)
+	}
+
+	// Set restrictive permissions so only root can access it
+	if err := os.Chmod(s.SocketPath, 0600); err != nil {
+		_ = listener.Close()
+		return fmt.Errorf("failed to chmod socket: %w", err)
+	}
+
+	s.mu.Lock()
+	s.listener = listener
+	s.mu.Unlock()
+	slog.Info("Starting socket service", "socket", s.SocketPath)
+
+	for {
+		conn, err := listener.Accept()
+		if err != nil {
+			if errors.Is(err, net.ErrClosed) {
+				return nil
+			}
+			return fmt.Errorf("accept error: %w", err)
+		}
+		go s.handleConnection(s.ctx, conn)
+	}
 }
 
 // Shutdown gracefully shuts down the server.
 func (s *service) Shutdown(ctx context.Context) error {
-	if s.server != nil {
-		return s.server.Shutdown(ctx)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.listener != nil {
+		return s.listener.Close()
 	}
 	return nil
 }
 
-func (s *service) handleVmStarted(w http.ResponseWriter, r *http.Request) {
-	vmidStr := r.PathValue("vmid")
-	vmid, err := strconv.Atoi(vmidStr)
-	if err != nil {
-		s.respond(w, http.StatusBadRequest, map[string]string{"error": "Invalid VMID"})
+func (s *service) handleConnection(ctx context.Context, conn net.Conn) {
+	defer func() {
+		_ = conn.Close()
+	}()
+
+	// Set a deadline for the interaction
+	_ = conn.SetDeadline(time.Now().Add(config.ConstantSocketTimeout))
+
+	var req Request
+	if err := json.NewDecoder(conn).Decode(&req); err != nil {
+		if errors.Is(err, io.EOF) {
+			//slog.Debug("Connection closed by client (EOF)")
+			return
+		}
+		slog.Error("Failed to decode request", "error", err)
 		return
 	}
-	result, err := s.scheduler.VmStarted(r.Context(), vmid)
-	if err != nil {
-		s.respond(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-		return
+
+	var resp Response
+	switch req.Command {
+	case "vm-started":
+		result, err := s.scheduler.VmStarted(ctx, req.VMID)
+		if err != nil {
+			resp.Status = "error"
+			resp.Error = err.Error()
+		} else {
+			resp.Status = "ok"
+			resp.Data = result
+		}
+	case "ping":
+		slog.Debug("ping received")
+		resp.Status = "ok"
+		resp.Data = "pong"
+	default:
+		resp.Status = "error"
+		resp.Error = fmt.Sprintf("unknown command: %s", req.Command)
 	}
-	s.respond(w, http.StatusOK, result)
-}
 
-func (s *service) handleGetCoreRanking(w http.ResponseWriter, r *http.Request) {
-	rankings, err := s.cpuInfo.GetCoreRanking()
-	if err != nil {
-		s.respond(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
-		return
-	}
-	s.respond(w, http.StatusOK, rankings)
-}
-
-func (s *service) handlePing(w http.ResponseWriter, r *http.Request) {
-	slog.Debug("ping received")
-	s.respond(w, http.StatusOK, map[string]string{"ping": "pong"})
-}
-
-func (s *service) respond(w http.ResponseWriter, status int, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	if err := json.NewEncoder(w).Encode(data); err != nil {
+	if err := json.NewEncoder(conn).Encode(resp); err != nil {
 		slog.Error("Failed to encode response", "error", err)
 	}
 }
