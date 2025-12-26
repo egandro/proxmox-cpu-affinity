@@ -1,10 +1,10 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -13,13 +13,8 @@ import (
 
 	"github.com/briandowns/spinner"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
+	"github.com/egandro/proxmox-cpu-affinity/pkg/executor"
 	"github.com/spf13/cobra"
-)
-
-const (
-	systemPS      = "/usr/bin/ps"
-	systemTaskSet = "/usr/bin/taskset"
-	systemPGrep   = "/usr/bin/pgrep"
 )
 
 type PSInfo struct {
@@ -47,6 +42,8 @@ type PSChild struct {
 	Command string `json:"command"`
 }
 
+type PIDReader func(vmid uint64) ([]byte, error)
+
 func newPSCmd() *cobra.Command {
 	var verbose bool
 	var jsonOutput bool
@@ -68,6 +65,9 @@ func newPSCmd() *cobra.Command {
 				fmt.Printf("Error: %v\n", err)
 				os.Exit(1)
 			}
+
+			ctx := cmd.Context()
+			exec := &executor.DefaultExecutor{}
 
 			var vmids []uint64
 			var explicit bool
@@ -100,8 +100,13 @@ func newPSCmd() *cobra.Command {
 				s.Start()
 			}
 
+			pidReader := func(vmid uint64) ([]byte, error) {
+				pidFile := filepath.Join(config.ConstantQemuServerPidDir, fmt.Sprintf("%d.pid", vmid))
+				return os.ReadFile(pidFile) // #nosec G304 -- vmid is uint64, path is safe
+			}
+
 			for _, vmid := range vmids {
-				if info := getVMProcessInfo(vmid, verbose, explicit); info != nil {
+				if info := getVMProcessInfo(ctx, exec, pidReader, vmid, verbose, explicit); info != nil {
 					results = append(results, *info)
 				}
 			}
@@ -133,9 +138,8 @@ func printPSHeader() {
 	fmt.Printf("%-8s %-10s %-6s %-8s %-5s %-12s %-20s\n", "----", "---", "-----", "-------", "----", "-----------", "--------")
 }
 
-func getVMProcessInfo(vmid uint64, verbose bool, explicit bool) *PSInfo {
-	pidFile := filepath.Join(config.ConstantQemuServerPidDir, fmt.Sprintf("%d.pid", vmid))
-	pidBytes, err := os.ReadFile(pidFile) // #nosec G304 -- vmid is uint64, path is safe
+func getVMProcessInfo(ctx context.Context, exec executor.Executor, pidReader PIDReader, vmid uint64, verbose bool, explicit bool) *PSInfo {
+	pidBytes, err := pidReader(vmid)
 	if err != nil {
 		if explicit {
 			return &PSInfo{VMID: vmid, Error: "VM is not running (PID file not found)"}
@@ -157,7 +161,7 @@ func getVMProcessInfo(vmid uint64, verbose bool, explicit bool) *PSInfo {
 	sockets := 1
 	numa := false
 
-	out, _ := exec.Command(config.ConstantProxmoxQM, "config", strconv.FormatUint(vmid, 10)).Output() // #nosec G204 -- vmid is uint64
+	out, _ := exec.Output(ctx, config.CommandProxmoxQM, "config", strconv.FormatUint(vmid, 10)) // #nosec G204 -- vmid is uint64
 	lines := strings.Split(string(out), "\n")
 	for _, line := range lines {
 		parts := strings.SplitN(line, ":", 2)
@@ -196,9 +200,9 @@ func getVMProcessInfo(vmid uint64, verbose bool, explicit bool) *PSInfo {
 
 	// Check if process exists
 	// #nosec G204 -- pid is uint64
-	if err := exec.Command(systemPS, "-p", strconv.FormatUint(pid, 10)).Run(); err == nil {
+	if err := exec.Run(ctx, config.CommandSystemPS, "-p", strconv.FormatUint(pid, 10)); err == nil {
 		// taskset -cp "$pid"
-		tsOut, _ := exec.Command(systemTaskSet, "-cp", strconv.FormatUint(pid, 10)).CombinedOutput() // #nosec G204 -- pid is uint64
+		tsOut, _ := exec.CombinedOutput(ctx, config.CommandSystemTaskSet, "-cp", strconv.FormatUint(pid, 10)) // #nosec G204 -- pid is uint64
 		affinity := strings.TrimSpace(string(tsOut))
 		if idx := strings.Index(affinity, ":"); idx != -1 {
 			affinity = strings.TrimSpace(affinity[idx+1:])
@@ -207,7 +211,7 @@ func getVMProcessInfo(vmid uint64, verbose bool, explicit bool) *PSInfo {
 
 		if verbose {
 			// ps -L -p "$pid" -o tid,psr,comm
-			psOut, _ := exec.Command(systemPS, "-L", "-p", strconv.FormatUint(pid, 10), "-o", "tid,psr,comm").Output() // #nosec G204 -- pid is uint64
+			psOut, _ := exec.Output(ctx, config.CommandSystemPS, "-L", "-p", strconv.FormatUint(pid, 10), "-o", "tid,psr,comm") // #nosec G204 -- pid is uint64
 			lines := strings.Split(string(psOut), "\n")
 			for i, line := range lines {
 				if i == 0 || line == "" {
@@ -222,7 +226,7 @@ func getVMProcessInfo(vmid uint64, verbose bool, explicit bool) *PSInfo {
 			}
 
 			// Child processes
-			pgrepOut, _ := exec.Command(systemPGrep, "-P", strconv.FormatUint(pid, 10)).Output() // #nosec G204 -- pid is uint64
+			pgrepOut, _ := exec.Output(ctx, config.CommandSystemPGrep, "-P", strconv.FormatUint(pid, 10)) // #nosec G204 -- pid is uint64
 			children := strings.ReplaceAll(strings.TrimSpace(string(pgrepOut)), "\n", ",")
 
 			validChildren := children != ""
@@ -237,7 +241,7 @@ func getVMProcessInfo(vmid uint64, verbose bool, explicit bool) *PSInfo {
 
 			if validChildren {
 				// ps -p "$children" -o pid,psr,comm
-				psChildOut, _ := exec.Command(systemPS, "-p", children, "-o", "pid,psr,comm").Output() // #nosec G204 -- children is validated
+				psChildOut, _ := exec.Output(ctx, config.CommandSystemPS, "-p", children, "-o", "pid,psr,comm") // #nosec G204 -- children is validated
 				cLines := strings.Split(string(psChildOut), "\n")
 				for i, line := range cLines {
 					if i == 0 || line == "" {
