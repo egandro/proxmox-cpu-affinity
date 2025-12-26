@@ -93,6 +93,36 @@ func TestGetVmConfig(t *testing.T) {
 				assert.Equal(t, "local:snippets/hookscript.pl", c.HookScript)
 			},
 		},
+		{
+			name:        "Error - pvesh command fails",
+			vmid:        999,
+			mockError:   fmt.Errorf("command failed: exit status 2"),
+			expectError: true,
+		},
+		{
+			name:        "Error - invalid JSON response",
+			vmid:        998,
+			mockOutput:  []byte("not valid json {{{"),
+			expectError: true,
+		},
+		{
+			name:       "Success - zero cores defaults to 1",
+			vmid:       997,
+			mockOutput: []byte(`{"sockets": 2}`),
+			check: func(t *testing.T, c *VmConfig) {
+				assert.Equal(t, 1, c.Cores)
+				assert.Equal(t, 2, c.Sockets)
+			},
+		},
+		{
+			name:       "Success - zero sockets defaults to 1",
+			vmid:       996,
+			mockOutput: []byte(`{"cores": 8}`),
+			check: func(t *testing.T, c *VmConfig) {
+				assert.Equal(t, 8, c.Cores)
+				assert.Equal(t, 1, c.Sockets)
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -159,6 +189,35 @@ func TestGetVmPid(t *testing.T) {
 				return false
 			},
 			want: -1,
+		},
+		{
+			name: "Error - ReadFile permission denied",
+			vmid: 103,
+			mockReadFile: func(name string) ([]byte, error) {
+				return nil, os.ErrPermission
+			},
+			want:        -1,
+			expectError: true,
+		},
+		{
+			name: "Error - Invalid PID in file",
+			vmid: 104,
+			mockReadFile: func(name string) ([]byte, error) {
+				return []byte("not-a-number"), nil
+			},
+			want:        -1,
+			expectError: true,
+		},
+		{
+			name: "Running with whitespace in PID file",
+			vmid: 105,
+			mockReadFile: func(name string) ([]byte, error) {
+				return []byte("  54321\n"), nil
+			},
+			mockProcExist: func(pid int) bool {
+				return pid == 54321
+			},
+			want: 54321,
 		},
 	}
 

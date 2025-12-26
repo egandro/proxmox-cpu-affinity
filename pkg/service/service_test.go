@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net"
 	"os"
 	"path/filepath"
@@ -137,10 +138,48 @@ func TestService_UpdateAffinity(t *testing.T) {
 }
 
 func TestService_UpdateAffinity_InvalidID(t *testing.T) {
-	// We don't need a full server start for this if we could test handler directly,
-	// but integration testing the router is safer.
-	// For brevity, relying on the previous test structure is fine.
-	// This test is just a placeholder to show where edge cases would go.
+	_, _, socketPath := setupTestService(t)
+
+	conn, err := net.Dial("unix", socketPath)
+	assert.NoError(t, err)
+	defer func() { _ = conn.Close() }()
+
+	// Send invalid JSON (string instead of int for vmid)
+	_, err = conn.Write([]byte(`{"command": "update-affinity", "vmid": "not-a-number"}`))
+	assert.NoError(t, err)
+
+	var resp Response
+	err = json.NewDecoder(conn).Decode(&resp)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "error", resp.Status)
+}
+
+func TestService_UpdateAffinity_Error(t *testing.T) {
+	mockSched, _, socketPath := setupTestService(t)
+
+	mockSched.On("UpdateAffinity", mock.Anything, 999).Return(nil, fmt.Errorf("VM not found"))
+
+	conn, err := net.Dial("unix", socketPath)
+	assert.NoError(t, err)
+	defer func() { _ = conn.Close() }()
+
+	req := Request{Command: "update-affinity", VMID: 999}
+	err = json.NewEncoder(conn).Encode(req)
+	assert.NoError(t, err)
+
+	var resp Response
+	err = json.NewDecoder(conn).Decode(&resp)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "error", resp.Status)
+	mockSched.AssertExpectations(t)
+}
+
+func TestService_ShutdownNilServer(t *testing.T) {
+	svc := &service{}
+	err := svc.Shutdown(context.Background())
+	assert.NoError(t, err)
 }
 
 func TestService_HandleConnection_EOF(t *testing.T) {
