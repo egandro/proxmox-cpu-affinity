@@ -8,15 +8,12 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-package:
-    name: Lint, Test, Sec, Build, Deb (${{ matrix.arch }})
+  test:
+    name: Lint, Test, Sec
     runs-on: ubuntu-latest
     container: debian:trixie
-    strategy:
-      matrix:
-        arch: [amd64, arm64]
     permissions:
-      contents: write
+      contents: read
       security-events: write
 
     steps:
@@ -58,6 +55,31 @@ jobs:
           go tool cover -func=coverage.out
         env:
           CGO_ENABLED: 1
+
+  build-and-package:
+    name: Build, Deb (${{ matrix.arch }})
+    needs: test
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+    permissions:
+      contents: read
+
+    steps:
+      - name: Install System Dependencies
+        run: |
+          apt-get update && apt-get install -y git make curl bash binutils build-essential
+          git config --global --add safe.directory '*'
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.25'
 
       # Build Binary
       - name: Build Binaries
