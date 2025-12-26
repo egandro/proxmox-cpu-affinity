@@ -22,10 +22,7 @@ install -m 755 bin/${ARCH}/proxmox-cpu-affinity-hook dist/var/lib/vz/snippets/pr
 if [ "$GITHUB_ACTIONS" != "true" ]; then
     echo "Developer build detected: Installing testing scripts..."
     mkdir -p dist/usr/share/proxmox-cpu-affinity
-    install -m 755 scripts/create-dummy-vms.sh dist/usr/share/proxmox-cpu-affinity
-    install -m 755 scripts/destroy-dummy-vms.sh dist/usr/share/proxmox-cpu-affinity
-    install -m 755 scripts/start-dummy-vms.sh dist/usr/share/proxmox-cpu-affinity
-    install -m 755 scripts/stop-dummy-vms.sh dist/usr/share/proxmox-cpu-affinity
+    install -m 755 scripts/*-dummy-vms.sh dist/usr/share/proxmox-cpu-affinity
 else
     echo "GitHub Actions detected: Skipping installation of testing scripts."
 fi
