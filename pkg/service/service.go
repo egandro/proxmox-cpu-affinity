@@ -117,8 +117,8 @@ func (s *service) handleConnection(ctx context.Context, conn net.Conn) {
 
 	var resp Response
 	switch req.Command {
-	case "vm-started":
-		result, err := s.scheduler.VmStarted(ctx, req.VMID)
+	case "update-affinity":
+		result, err := s.scheduler.UpdateAffinity(ctx, req.VMID)
 		if err != nil {
 			resp.Status = "error"
 			resp.Error = err.Error()
