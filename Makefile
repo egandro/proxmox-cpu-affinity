@@ -1,7 +1,7 @@
 .PHONY: all deps build clean test coverage lint tidy deploy deb
 
 DEPLOY_HOST ?= testmox
-VERSION ?= 0.0.2
+VERSION ?= 0.0.3
 ARCH ?= amd64
 
 all: build
@@ -18,7 +18,7 @@ build:
 	go build -o bin/proxmox-cpu-affinity ./cmd/cli
 
 clean:
-	rm -rf bin dist *.deb coverage.out coverage.html
+	rm -rf bin dist local *.deb coverage.out coverage.html
 
 test:
 	go clean -testcache
@@ -46,3 +46,10 @@ deploy: deb
 
 deb: build
 	./deb/build.sh $(VERSION) $(ARCH)
+
+run-service: build
+	mkdir -p local
+	./bin/proxmox-cpu-affinity-service --socket ./local/proxmox-cpu-affinity.sock --log-file ./local/proxmox-cpu-affinity.log --log-level debug --stdout
+
+run-status: build
+	./bin/proxmox-cpu-affinity status --socket ./local/proxmox-cpu-affinity.sock

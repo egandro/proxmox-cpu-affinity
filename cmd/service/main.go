@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -21,12 +20,10 @@ import (
 
 func main() {
 	configFile := flag.String("config", config.ConstantConfigFilename, "Path to config file")
-	hostFlag := flag.String("host", "", "HTTP service host")
-	portFlag := flag.Int("port", 0, "HTTP service port")
+	socketFlag := flag.String("socket", "", "Unix socket path")
 	logFileFlag := flag.String("log-file", "", "Path to log file")
 	logLevelFlag := flag.String("log-level", "", "Log level (debug, info, notice, warn, error)")
 	toStdout := flag.Bool("stdout", false, "Log to stdout")
-	insecureBind := flag.Bool("insecure-allow-remote", false, "Allow binding to non-localhost addresses (DANGEROUS: exposes unauthenticated API)")
 	disableCpuHotplugWatchdog := flag.Bool("disable-cpu-hotplug-watchdog", false, "Disable CPU hotplug watchdog")
 
 	flag.Parse()
@@ -34,11 +31,8 @@ func main() {
 	cfg := config.Load(*configFile)
 
 	// Override config with flags if provided
-	if *hostFlag != "" {
-		cfg.ServiceHost = *hostFlag
-	}
-	if *portFlag != 0 {
-		cfg.ServicePort = *portFlag
+	if *socketFlag != "" {
+		cfg.SocketFile = *socketFlag
 	}
 	if *logFileFlag != "" {
 		cfg.LogFile = *logFileFlag
@@ -46,17 +40,8 @@ func main() {
 	if *logLevelFlag != "" {
 		cfg.LogLevel = *logLevelFlag
 	}
-	if *insecureBind {
-		cfg.InsecureAllowRemote = true
-	}
 	if *disableCpuHotplugWatchdog {
 		cfg.CPUHotplugWatchdog = false
-	}
-
-	// security check for insecure bind
-	if err := cfg.Validate(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
 	}
 
 	var logF *os.File
@@ -104,10 +89,14 @@ func main() {
 		slog.Error("Failed to initialize scheduler", "error", err)
 		os.Exit(1)
 	}
-	s := service.New(cfg.ServiceHost, cfg.ServicePort, sched, cpuInfo)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	s := service.New(ctx, cfg.SocketFile, sched, cpuInfo)
 
 	go func() {
-		if err := s.Start(); err != nil && err != http.ErrServerClosed {
+		if err := s.Start(); err != nil {
 			slog.Error("Service failed", "error", err)
 			os.Exit(1)
 		}
@@ -137,6 +126,7 @@ func main() {
 			}
 		case syscall.SIGINT, syscall.SIGTERM:
 			slog.Info("Shutting down service...")
+			cancel()
 			if hotplugController != nil {
 				if err := hotplugController.StopWatchdog(); err != nil {
 					slog.Error("Failed to stop hotplug watchdog", "error", err)

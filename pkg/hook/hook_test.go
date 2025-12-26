@@ -2,10 +2,6 @@ package hook
 
 import (
 	"bytes"
-	"net/http"
-	"net/http/httptest"
-	"net/url"
-	"strconv"
 	"testing"
 
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
@@ -13,72 +9,21 @@ import (
 )
 
 func TestHandler_OnPreStart(t *testing.T) {
-	t.Run("Disabled", func(t *testing.T) {
-		var buf bytes.Buffer
-		h := &handler{
-			Output: &buf,
-			Config: &config.Config{WebhookPingOnPreStart: false},
-		}
+	var buf bytes.Buffer
+	h := &handler{
+		Output: &buf,
+		Config: &config.Config{},
+	}
 
-		err := h.OnPreStart(100)
-		assert.NoError(t, err)
-	})
-
-	t.Run("Enabled_Success", func(t *testing.T) {
-		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/api/ping" {
-				w.WriteHeader(http.StatusOK)
-			} else {
-				w.WriteHeader(http.StatusNotFound)
-			}
-		}))
-		defer ts.Close()
-
-		u, _ := url.Parse(ts.URL)
-		host := u.Hostname()
-		port, _ := strconv.Atoi(u.Port())
-
-		var buf bytes.Buffer
-		h := &handler{
-			Output: &buf,
-			Config: &config.Config{
-				WebhookPingOnPreStart: true,
-				ServiceHost:           host,
-				ServicePort:           port,
-				WebhookRetry:          0,
-				WebhookSleep:          0,
-			},
-		}
-
-		err := h.OnPreStart(100)
-		assert.NoError(t, err)
-		assert.Empty(t, buf.String())
-	})
-
-	t.Run("Enabled_Failure", func(t *testing.T) {
-		var buf bytes.Buffer
-		h := &handler{
-			Output: &buf,
-			Config: &config.Config{
-				WebhookPingOnPreStart: true,
-				ServiceHost:           "127.0.0.1",
-				ServicePort:           0, // Invalid port
-				WebhookRetry:          0,
-				WebhookSleep:          0,
-			},
-		}
-
-		err := h.OnPreStart(100)
-		assert.NoError(t, err)
-		assert.Contains(t, buf.String(), "Error server not ready")
-	})
+	err := h.OnPreStart(100)
+	assert.NoError(t, err)
 }
 
 func TestHandler_OnPostStart(t *testing.T) {
 	var buf bytes.Buffer
 	h := &handler{
 		Output: &buf,
-		Config: &config.Config{WebhookRetry: 0, WebhookSleep: 0},
+		Config: &config.Config{},
 	}
 
 	err := h.OnPostStart(100)

@@ -1,6 +1,6 @@
 # proxmox-cpu-affinity
 
-Automated CPU affinity management for Proxmox VE VMs. Uses a background service and a Proxmox hookscript (webhook) to optimize CPU placement on VM startup.
+Automated CPU affinity management for Proxmox VE VMs. Uses a background service and a Proxmox hookscript to optimize CPU placement on VM startup.
 
 When a VM starts, the hookscript triggers the background service, which then calculates and applies the optimal CPU affinity for that VM.
 
@@ -30,27 +30,27 @@ dpkg -i proxmox-cpu-affinity_*.deb
 
 ## CLI Tool
 
-The project includes a CLI tool `proxmox-cpu-affinity` to manage the service and webhooks.
+The project includes a CLI tool `proxmox-cpu-affinity` to manage the service and hookscripts.
 
-### webhook
+### hookscript
 
 Manage hookscript activation. Handles HA and manual affinity checks automatically.
 (HA machines are ignored. Templates are ignored. Existing scripts are not overwritten.)
 
 ```bash
-proxmox-cpu-affinity webhook list
-proxmox-cpu-affinity webhook enable <VMID> [storage]
-proxmox-cpu-affinity webhook enable-all [storage]
-proxmox-cpu-affinity webhook disable-all
+proxmox-cpu-affinity hookscript list
+proxmox-cpu-affinity hookscript enable <VMID> [storage]
+proxmox-cpu-affinity hookscript enable-all [storage]
+proxmox-cpu-affinity hookscript disable-all
 ```
 
-### info
+### ps
 
 Show current CPU affinity for running VMs.
 
 ```bash
-proxmox-cpu-affinity info [-v]
-proxmox-cpu-affinity info <VMID> [-v]
+proxmox-cpu-affinity ps [-v]
+proxmox-cpu-affinity ps <VMID> [-v]
 ```
 
 ### status
@@ -91,7 +91,7 @@ qm set <VMID> --delete hookscript
 
 ### Edge case "local" Proxmox Storage is disabled
 
-The webhook is installed in `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`. This is the default **local** storage.
+The hookscript is installed in `/var/lib/vz/snippets/proxmox-cpu-affinity-hook`. This is the default **local** storage.
 
 In case you disabled your **local** storage you have to link it to a custom storage.
 
@@ -112,7 +112,7 @@ ln -s /var/lib/vz/snippets/proxmox-cpu-affinity-hook /raid/snippets/proxmox-cpu-
 
 *   **proxmox-cpu-affinity-service**: Systemd service that monitors VM starts and applies CPU affinity rules (Go HTTP REST Server on `127.0.0.1:8245`).
 *   **proxmox-cpu-affinity-hook**: Proxmox hookscript that notifies the service when a VM starts.
-*   **proxmox-cpu-affinity**: CLI tool to manage the service, webhooks, view status and CPU topology.
+*   **proxmox-cpu-affinity**: CLI tool to manage the service, hookscript, view status and CPU topology.
 
 ## Algorithm
 

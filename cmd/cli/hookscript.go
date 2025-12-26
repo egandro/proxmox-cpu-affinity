@@ -11,9 +11,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newWebhookCmd() *cobra.Command {
+func newHookscriptCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "webhook",
+		Use:   "hookscript",
 		Short: "Manage proxmox-cpu-affinity hookscripts",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			return ensureProxmoxHost()
@@ -21,7 +21,7 @@ func newWebhookCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(newListCmd())
-	cmd.AddCommand(newWebhookStatusCmd())
+	cmd.AddCommand(newHookscriptStatusCmd())
 	cmd.AddCommand(newEnableCmd())
 	cmd.AddCommand(newDisableCmd())
 	cmd.AddCommand(newEnableAllCmd())
@@ -40,7 +40,7 @@ func newListCmd() *cobra.Command {
 	}
 }
 
-func newWebhookStatusCmd() *cobra.Command {
+func newHookscriptStatusCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "status <vmid>",
 		Short: "Show hook status for specific VM",

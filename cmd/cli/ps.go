@@ -18,10 +18,10 @@ const (
 	systemPGrep   = "/usr/bin/pgrep"
 )
 
-func newInfoCmd() *cobra.Command {
+func newPSCmd() *cobra.Command {
 	var verbose bool
 	cmd := &cobra.Command{
-		Use:   "info [vmid]",
+		Use:   "ps [vmid]",
 		Short: "Show affinity information for VMs",
 		Args: func(cmd *cobra.Command, args []string) error {
 			if len(args) > 1 {

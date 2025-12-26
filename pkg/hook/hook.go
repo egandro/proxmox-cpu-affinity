@@ -1,9 +1,10 @@
 package hook
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
+	"net"
 	"os"
 	"time"
 
@@ -79,9 +80,9 @@ func (h *handler) OnPreStart(vmid int) error {
 	// The server might be in its calculation loop.
 	// Performing this delay during pre-start ensures we are in an environment
 	// where the system is not running many Qemu processes yet.
-	if h.Config.WebhookPingOnPreStart {
-		if err := h.callService("/api/ping"); err != nil {
-			_, _ = fmt.Fprintf(h.Output, "Error server not ready: %v\n", err)
+	if h.Config.SocketPingOnPreStart {
+		if err := h.callService("ping", vmid); err != nil {
+			_, _ = fmt.Fprintf(h.Output, "Warning: Service not reachable: %v\n", err)
 		}
 	}
 	return nil
@@ -89,9 +90,8 @@ func (h *handler) OnPreStart(vmid int) error {
 
 // OnPostStart is executed after the guest successfully started.
 func (h *handler) OnPostStart(vmid int) error {
-	path := fmt.Sprintf("/api/vmstarted/%d", vmid)
-	if err := h.callService(path); err != nil {
-		_, _ = fmt.Fprintf(h.Output, "Error calling vmstarted service: %v\n", err)
+	if err := h.callService("vm-started", vmid); err != nil {
+		_, _ = fmt.Fprintf(h.Output, "Error calling service: %v\n", err)
 	}
 	return nil
 }
@@ -106,30 +106,47 @@ func (h *handler) OnPostStop(vmid int) error {
 	return nil
 }
 
-func (h *handler) callService(apiPath string) error {
-	url := fmt.Sprintf("http://%s:%d%s", h.Config.ServiceHost, h.Config.ServicePort, apiPath)
-
+func (h *handler) callService(command string, vmid int) error {
 	var err error
-	for i := 0; i <= h.Config.WebhookRetry; i++ {
+	for i := 0; i <= h.Config.SocketRetry; i++ {
 		if i > 0 {
-			time.Sleep(time.Duration(h.Config.WebhookSleep) * time.Second)
+			time.Sleep(time.Duration(h.Config.SocketSleep) * time.Second)
 		}
 
 		err = func() error {
-			client := &http.Client{
-				Timeout: time.Duration(h.Config.WebhookTimeout) * time.Second,
+			timeout := time.Duration(h.Config.SocketTimeout) * time.Second
+			conn, err := net.DialTimeout("unix", h.Config.SocketFile, timeout)
+			if err != nil {
+				return err
 			}
-			resp, reqErr := client.Get(url) // #nosec G107
-			if reqErr != nil {
-				return reqErr
-			}
-			defer func() { _ = resp.Body.Close() }()
+			defer func() {
+				_ = conn.Close()
+			}()
 
-			if resp.StatusCode != http.StatusOK {
-				return fmt.Errorf("service returned non-OK status: %s", resp.Status)
+			_ = conn.SetDeadline(time.Now().Add(timeout))
+
+			req := map[string]interface{}{
+				"command": command,
+				"vmid":    vmid,
+			}
+			if err := json.NewEncoder(conn).Encode(req); err != nil {
+				return err
+			}
+
+			var resp struct {
+				Status string `json:"status"`
+				Error  string `json:"error"`
+			}
+			if err := json.NewDecoder(conn).Decode(&resp); err != nil {
+				return err
+			}
+
+			if resp.Status != "ok" {
+				return fmt.Errorf("service returned error: %s", resp.Error)
 			}
 			return nil
 		}()
+
 		if err == nil {
 			return nil
 		}

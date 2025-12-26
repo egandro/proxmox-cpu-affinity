@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -20,6 +19,7 @@ const (
 	// Proxmox defaults
 	ConstantQemuServerPidDir   = "/var/run/qemu-server"
 	ConstantConfigFilename     = "/etc/default/proxmox-cpu-affinity"
+	ConstantSocketFile         = "/var/run/proxmox-cpu-affinity.sock"
 	ConstantProxmoxQM          = "/usr/sbin/qm"
 	ConstantProxmoxHaManager   = "/usr/sbin/ha-manager"
 	ConstantProxmoxConfigDir   = "/etc/pve"
@@ -32,6 +32,14 @@ const (
 
 	ConstantMaxCalculationRankingDuration = 2 * time.Minute
 
+	ConstantSocketTimeout = 5 * time.Second
+
+	// Socket defaults
+	DefaultSocketRetry          = 10
+	DefaultSocketSleep          = 10 // in seconds
+	DefaultSocketTimeout        = 30 // in seconds
+	DefaultSocketPingOnPreStart = true
+
 	// CPUInfo defaults
 	// DefaultRounds is set to 10 to average out noise from the OS scheduler and
 	// background processes. This provides a stable latency measurement without
@@ -43,20 +51,10 @@ const (
 	// Future improvement: This can be made dynamic based on the number of cores.
 	DefaultIterations = 100_000
 
-	// Service defaults
-	DefaultServicePort         = 8245
-	DefaultServiceHost         = "127.0.0.1"
-	DefaultInsecureAllowRemote = false
-
 	// logger
 	DefaultLogLevel = "info"
 
-	// Webhook defaults
-	DefaultWebhookRetry          = 10
-	DefaultWebhookSleep          = 10 // in seconds
-	DefaultWebhookTimeout        = 30 // in seconds
-	DefaultWebhookPingOnPreStart = true
-	DefaultCPUHotplugWatchdog    = true
+	DefaultCPUHotplugWatchdog = true
 )
 
 // AdaptiveCpuInfoParameters calculates measurement parameters based on CPU count.
@@ -86,43 +84,16 @@ func AdaptiveCpuInfoParameters() (int, int) {
 }
 
 type Config struct {
-	ServiceHost           string
-	ServicePort           int
-	InsecureAllowRemote   bool
-	LogLevel              string
-	LogFile               string
-	Rounds                int
-	Iterations            int
-	WebhookRetry          int
-	WebhookSleep          int // in seconds
-	WebhookPingOnPreStart bool
-	WebhookTimeout        int // in seconds
-	CPUHotplugWatchdog    bool
-}
-
-func (c *Config) Validate() error {
-	if !isLocalhostAddr(c.ServiceHost) {
-		if !c.InsecureAllowRemote {
-			return fmt.Errorf(`binding to non-localhost address %q exposes an unauthenticated API.
-
-This service has no authentication. Binding to a network-accessible address
-allows any host on the network to trigger CPU affinity changes on your VMs.
-
-If you understand the risks and want to proceed anyway, use:
-    --insecure-allow-remote
-    or set PCA_INSECURE_ALLOW_REMOTE=true`, c.ServiceHost)
-		}
-		fmt.Fprintf(os.Stderr, "WARNING: Binding to %q - unauthenticated API will be network-accessible!\n", c.ServiceHost)
-	}
-	return nil
-}
-
-func isLocalhostAddr(host string) bool {
-	switch host {
-	case "127.0.0.1", "localhost", "::1", "":
-		return true
-	}
-	return false
+	LogLevel             string
+	LogFile              string
+	SocketFile           string
+	Rounds               int
+	Iterations           int
+	SocketRetry          int
+	SocketSleep          int // in seconds
+	SocketTimeout        int // in seconds
+	SocketPingOnPreStart bool
+	CPUHotplugWatchdog   bool
 }
 
 func Load(filename string) *Config {
@@ -136,18 +107,16 @@ func Load(filename string) *Config {
 	defaultRounds, defaultIterations := AdaptiveCpuInfoParameters()
 
 	return &Config{
-		ServiceHost:           getEnv("PCA_HOST", DefaultServiceHost),
-		ServicePort:           getEnvInt("PCA_PORT", DefaultServicePort),
-		InsecureAllowRemote:   getEnvBool("PCA_INSECURE_ALLOW_REMOTE", DefaultInsecureAllowRemote),
-		LogLevel:              getEnv("PCA_LOG_LEVEL", DefaultLogLevel),
-		LogFile:               getEnv("PCA_LOG_FILE", ConstantLogFile),
-		Rounds:                getEnvInt("PCA_ROUNDS", defaultRounds),
-		Iterations:            getEnvInt("PCA_ITERATIONS", defaultIterations),
-		WebhookRetry:          getEnvInt("PCA_WEBHOOK_RETRY", DefaultWebhookRetry),
-		WebhookSleep:          getEnvInt("PCA_WEBHOOK_SLEEP", DefaultWebhookSleep),
-		WebhookTimeout:        getEnvInt("PCA_WEBHOOK_TIMEOUT", DefaultWebhookTimeout),
-		WebhookPingOnPreStart: getEnvBool("PCA_WEBHOOK_PING_ON_PRESTART", DefaultWebhookPingOnPreStart),
-		CPUHotplugWatchdog:    getEnvBool("PCA_CPU_HOTPLUG_WATCHDOG", DefaultCPUHotplugWatchdog),
+		LogLevel:             getEnv("PCA_LOG_LEVEL", DefaultLogLevel),
+		LogFile:              getEnv("PCA_LOG_FILE", ConstantLogFile),
+		SocketFile:           getEnv("PCA_SOCKET_FILE", ConstantSocketFile),
+		Rounds:               getEnvInt("PCA_ROUNDS", defaultRounds),
+		Iterations:           getEnvInt("PCA_ITERATIONS", defaultIterations),
+		SocketRetry:          getEnvInt("PCA_SOCKET_RETRY", DefaultSocketRetry),
+		SocketSleep:          getEnvInt("PCA_SOCKET_SLEEP", DefaultSocketSleep),
+		SocketTimeout:        getEnvInt("PCA_SOCKET_TIMEOUT", DefaultSocketTimeout),
+		SocketPingOnPreStart: getEnvBool("PCA_SOCKET_PING_ON_PRESTART", DefaultSocketPingOnPreStart),
+		CPUHotplugWatchdog:   getEnvBool("PCA_CPU_HOTPLUG_WATCHDOG", DefaultCPUHotplugWatchdog),
 	}
 }
 
