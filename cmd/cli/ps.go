@@ -42,6 +42,8 @@ type PSChild struct {
 	Command string `json:"command"`
 }
 
+type PIDReader func(vmid uint64) ([]byte, error)
+
 func newPSCmd() *cobra.Command {
 	var verbose bool
 	var jsonOutput bool
@@ -98,8 +100,13 @@ func newPSCmd() *cobra.Command {
 				s.Start()
 			}
 
+			pidReader := func(vmid uint64) ([]byte, error) {
+				pidFile := filepath.Join(config.ConstantQemuServerPidDir, fmt.Sprintf("%d.pid", vmid))
+				return os.ReadFile(pidFile) // #nosec G304 -- vmid is uint64, path is safe
+			}
+
 			for _, vmid := range vmids {
-				if info := getVMProcessInfo(ctx, exec, vmid, verbose, explicit); info != nil {
+				if info := getVMProcessInfo(ctx, exec, pidReader, vmid, verbose, explicit); info != nil {
 					results = append(results, *info)
 				}
 			}
@@ -131,9 +138,8 @@ func printPSHeader() {
 	fmt.Printf("%-8s %-10s %-6s %-8s %-5s %-12s %-20s\n", "----", "---", "-----", "-------", "----", "-----------", "--------")
 }
 
-func getVMProcessInfo(ctx context.Context, exec executor.Executor, vmid uint64, verbose bool, explicit bool) *PSInfo {
-	pidFile := filepath.Join(config.ConstantQemuServerPidDir, fmt.Sprintf("%d.pid", vmid))
-	pidBytes, err := os.ReadFile(pidFile) // #nosec G304 -- vmid is uint64, path is safe
+func getVMProcessInfo(ctx context.Context, exec executor.Executor, pidReader PIDReader, vmid uint64, verbose bool, explicit bool) *PSInfo {
+	pidBytes, err := pidReader(vmid)
 	if err != nil {
 		if explicit {
 			return &PSInfo{VMID: vmid, Error: "VM is not running (PID file not found)"}

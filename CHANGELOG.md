@@ -2,6 +2,8 @@
 
 ## [0.0.7] - TBD
 
+- Testing: Fuzz testing for all external commands
+
 ## [0.0.6] - 2025-12-26
 
 - Refactor: Renamed internal command `vm-started` to `update-affinity`.

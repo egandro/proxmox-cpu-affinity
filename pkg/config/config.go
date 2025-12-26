@@ -26,6 +26,7 @@ const (
 	// Executor commands
 	CommandProxmoxQM        = "/usr/sbin/qm"
 	CommandProxmoxHaManager = "/usr/sbin/ha-manager"
+	CommandProxmoxPVESM     = "/usr/sbin/pvesm"
 	CommandSystemPS         = "/usr/bin/ps"
 	CommandSystemTaskSet    = "/usr/bin/taskset"
 	CommandSystemPGrep      = "/usr/bin/pgrep"

@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -300,9 +301,12 @@ func getAllVMIDs(ctx context.Context, exec executor.Executor) []uint64 {
 var (
 	haConfigCache  string
 	haConfigLoaded bool
+	haConfigMu     sync.Mutex
 )
 
 func isHAVM(ctx context.Context, exec executor.Executor, vmid uint64) bool {
+	haConfigMu.Lock()
+	defer haConfigMu.Unlock()
 	if !haConfigLoaded {
 		out, _ := exec.Output(ctx, config.CommandProxmoxHaManager, "config") // #nosec G204 -- trusted path from config
 		haConfigCache = string(out)
@@ -389,7 +393,7 @@ func printVMList(ctx context.Context, exec executor.Executor, vmids []uint64, js
 }
 
 func checkStorage(ctx context.Context, exec executor.Executor, storageName string) error {
-	output, err := exec.Output(ctx, "/usr/sbin/pvesm", "status")
+	output, err := exec.Output(ctx, config.CommandProxmoxPVESM, "status")
 	if err != nil {
 		return fmt.Errorf("failed to execute pvesm status: %w", err)
 	}

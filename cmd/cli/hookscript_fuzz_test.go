@@ -8,11 +8,12 @@ import (
 )
 
 func FuzzCheckStorage(f *testing.F) {
-	f.Add([]byte("local dir active\n"))
-	f.Add([]byte("local dir disabled\n"))
-	f.Add([]byte("other zfs active\n"))
-	f.Add([]byte(""))
+	f.Add([]byte("proxmox-backup-client failed: Error: unable to open chunk store at \"/pbs/.chunks\" - No such file or directory (os error 2)"))
+	f.Add([]byte("Name         Type     Status     Total (KiB)      Used (KiB) Available (KiB)        %"))
+	f.Add([]byte("local         dir     active               0               0               0      N/A"))
 	f.Add([]byte("invalid output"))
+	f.Add([]byte("pbs           pbs   inactive               0               0               0    0.00%"))
+	f.Add([]byte("old           dir     active         1921598         1112718            7484   57.91%"))
 
 	f.Fuzz(func(t *testing.T, pvesmOutput []byte) {
 		mockExec := &executor.MockExecutor{
@@ -25,10 +26,11 @@ func FuzzCheckStorage(f *testing.F) {
 }
 
 func FuzzGetAllVMIDs(f *testing.F) {
-	f.Add([]byte("100 running\n101 stopped\n"))
-	f.Add([]byte("   100   \n"))
-	f.Add([]byte("not a number\n"))
-	f.Add([]byte(""))
+	f.Add([]byte("ct: 100"))
+	f.Add([]byte("    group HA"))
+	f.Add([]byte("    state started"))
+	f.Add([]byte("invalid output\n"))
+	f.Add([]byte("vm: 103"))
 
 	f.Fuzz(func(t *testing.T, qmListOutput []byte) {
 		mockExec := &executor.MockExecutor{
@@ -37,5 +39,28 @@ func FuzzGetAllVMIDs(f *testing.F) {
 			},
 		}
 		_ = getAllVMIDs(context.Background(), mockExec)
+	})
+}
+
+func FuzzIsHAVM(f *testing.F) {
+	f.Add([]byte("ct: 100"))
+	f.Add([]byte("    group HA"))
+	f.Add([]byte("    state started"))
+	f.Add([]byte("invalid output\n"))
+	f.Add([]byte("vm: 103"))
+
+	f.Fuzz(func(t *testing.T, haOutput []byte) {
+		// Reset global cache for each iteration to ensure parsing logic is triggered
+		haConfigMu.Lock()
+		haConfigLoaded = false
+		haConfigCache = ""
+		haConfigMu.Unlock()
+
+		mockExec := &executor.MockExecutor{
+			OutputFunc: func(ctx context.Context, name string, args ...string) ([]byte, error) {
+				return haOutput, nil
+			},
+		}
+		_ = isHAVM(context.Background(), mockExec, 100)
 	})
 }

@@ -90,7 +90,7 @@ func (p *proxmox) GetVmConfig(ctx context.Context, vmid int) (*VmConfig, error) 
 	// Construct the pvesh command
 	argPath := fmt.Sprintf("/nodes/%s/qemu/%d/config", p.nodeName, vmid)
 
-	output, err := p.executor.Output(ctx, "/usr/bin/pvesh", "get", argPath, "--output-format", "json-pretty")
+	output, err := p.executor.Output(ctx, config.CommandProxmoxPVESM, "get", argPath, "--output-format", "json-pretty")
 	if err != nil {
 		return nil, fmt.Errorf("pvesh command failed: %w", err)
 	}
