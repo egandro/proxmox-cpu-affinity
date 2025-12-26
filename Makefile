@@ -1,7 +1,7 @@
 .PHONY: all deps build clean test coverage lint tidy deploy deb
 
 DEPLOY_HOST ?= testmox
-VERSION ?= 0.0.6
+VERSION ?= 0.0.7
 ARCH ?= amd64
 
 all: build
