@@ -112,6 +112,11 @@ func (s *service) handleConnection(ctx context.Context, conn net.Conn) {
 			return
 		}
 		slog.Error("Failed to decode request", "error", err)
+		resp := Response{
+			Status: "error",
+			Error:  fmt.Sprintf("failed to decode request: %v", err),
+		}
+		_ = json.NewEncoder(conn).Encode(resp)
 		return
 	}
 
