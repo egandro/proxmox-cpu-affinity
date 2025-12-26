@@ -4,6 +4,7 @@
 
 - Testing: Fuzz testing for all external commands
 - Testing: increased coverage
+- Feature: arm64 support (https://github.com/jiangcuo/pxvirt / https://gitee.com/jiangcuo/Proxmox-Port)
 
 ## [0.0.6] - 2025-12-26
 
