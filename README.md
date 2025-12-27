@@ -4,9 +4,7 @@ Automated CPU affinity management for Proxmox VE VMs. Uses a background service 
 
 When a VM starts, the hookscript triggers the background service, which then calculates and applies the optimal CPU affinity for that VM.
 
-The CLI tool creates a nice heatmap SVG with realtime data.
-
-See [SHOWCASE.md](SHOWCASE.md) for an example session.
+See [SHOWCASE.md](SHOWCASE.md) for an example session and [example.svg](screenshots/example.svg) for a SVG heatmap.
 
 Written in Go.
 
