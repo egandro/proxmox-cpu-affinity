@@ -71,8 +71,8 @@ get-status-svg:
 
 deploy-benchmark-tools:
 	ssh $(BENCHMARK_USER)@$(BENCHMARK_HOST) "mkdir -p /benchmark"
-	ssh $(BENCHMARK_USER)@$(BENCHMARK_HOST) "[ -f /benchmark/config ]" || \
-		scp benchmark/config $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark/config
+	ssh $(BENCHMARK_USER)@$(BENCHMARK_HOST) "[ -f /benchmark/config.sh ]" || \
+		scp benchmark/config.sh $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark/config.sh
 	scp -r benchmark/scripts $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark
 
 deb:
