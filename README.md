@@ -66,7 +66,7 @@ proxmox-cpu-affinity status ping [--json]
 proxmox-cpu-affinity status core-ranking [--json]
 proxmox-cpu-affinity status core-ranking-summary [--json]
 proxmox-cpu-affinity status core-vm-affinity [--json]
-proxmox-cpu-affinity status svg [--affinity]
+proxmox-cpu-affinity status svg [--affinity] [-o <filename> (default is stdout)]
 ```
 
 ### cpuinfo
