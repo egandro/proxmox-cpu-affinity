@@ -40,7 +40,7 @@
         {{if .AffinityRows}}
         <rect x="0" y="-15" width="300" height="25" fill="#e0e0e0"/>
         <text x="10" y="0" font-size="12" font-weight="bold" text-anchor="start">VMID</text>
-        <text x="80" y="0" font-size="12" font-weight="bold" text-anchor="start">Selected CPUs</text>
+        <text x="80" y="0" font-size="12" font-weight="bold" text-anchor="start">CPUs (latency sorted)</text>
         <line x1="0" y1="10" x2="300" y2="10" stroke="black" stroke-width="2"/>
         {{range .AffinityRows}}
         <rect x="0" y="{{.RectY}}" width="300" height="40" fill="{{.Fill}}"/>
