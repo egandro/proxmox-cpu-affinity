@@ -32,7 +32,9 @@ for i in {1..3}; do
     echo "Log entry $i" > "${RESULT_DIR}/detail-${i}.txt"
 done
 
-sleep 10
+# Measure resources and duration, outputting to result.json
+/usr/bin/time -f "{\"testcase\": \"$TESTCASE\", \"duration_sec\": %e, \"max_rss_kb\": %M, \"cpu_user_sec\": %U, \"cpu_sys_sec\": %S}" -o "${RESULT_DIR}/result.json" \
+    sleep 10
 
 date
 echo "done"

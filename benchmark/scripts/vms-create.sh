@@ -6,6 +6,14 @@ SCRIPTDIR="$(dirname "$0")"
 
 . ${SCRIPTDIR}/../config.sh
 
+STORAGE="${STORAGE:-local-zfs}"
+
+USER_SCRIPT=""
+if [ -n "$1" ] && [ -f "$1" ]; then
+    USER_SCRIPT="$1"
+    shift
+fi
+
 if [ -n "$1" ]; then
     SOURCE_VMID="$1"
 else
@@ -36,7 +44,10 @@ for i in $(seq 1 $NUM_VMS); do
     # Configure resources
     qm set $NEW_VMID --cores $CORES --memory $MEMORY
 
-    # TODO: we might want to run a user script to tweak the machines even more
+    if [ -n "$USER_SCRIPT" ]; then
+        echo "Running user script $USER_SCRIPT on VM $NEW_VMID with storage $STORAGE..."
+        $USER_SCRIPT "$NEW_VMID" "$STORAGE"
+    fi
 done
 
 echo "All $NUM_VMS VMs created."
