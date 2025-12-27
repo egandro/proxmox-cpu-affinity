@@ -1,0 +1,4 @@
+#!/bin/bash
+#export STORAGE=local
+#export CREATE_TEMPLATE_FLAGS="--overwrite --force"
+

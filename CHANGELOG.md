@@ -3,6 +3,7 @@
 ## [0.0.10] - TBD
 
 - SVG: wording
+- Benchmark: initial framework
 
 ## [0.0.9] - 2025-12-27
 
