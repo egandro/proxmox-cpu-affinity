@@ -73,6 +73,8 @@ deploy-benchmark-tools:
 	ssh $(BENCHMARK_USER)@$(BENCHMARK_HOST) "mkdir -p /benchmark"
 	ssh $(BENCHMARK_USER)@$(BENCHMARK_HOST) "[ -f /benchmark/config.sh ]" || \
 		scp benchmark/config.sh $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark/config.sh
+	#ssh $(BENCHMARK_USER)@$(BENCHMARK_HOST) "[ -f /benchmark/testcases.json ]"
+	scp benchmark/testcases.json $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark/testcases.json
 	scp -r benchmark/scripts $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark
 	scp -r benchmark/testcase $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark
 

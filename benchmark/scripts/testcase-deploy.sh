@@ -46,7 +46,7 @@ for i in $(seq 1 $NUM_VMS); do
 
     case "$TESTCASE_ACTION" in
         install)
-            echo "Installing testcase ${TESTCASE}to VM..."
+            echo "Installing testcase ${TESTCASE} to VM..."
             ssh $SSH_OPTS "${SSH_USER}@${VM_IP}" "sudo mkdir -p /testcase && sudo chown -R ${SSH_USER} /testcase" || exit 1
             scp -r $SCP_OPTS "$TESTCASE_DIR" "${SSH_USER}@${VM_IP}:/testcase" || exit 1
             ;;
