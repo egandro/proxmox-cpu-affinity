@@ -1,7 +1,10 @@
 .PHONY: all deps build clean test coverage lint tidy deploy deb get-status-core-ranking get-status-svg run-service run-status
 
+VERSION ?= 0.0.10
+
 DEPLOY_HOST ?= testmox
-VERSION ?= 0.0.9
+BENCHMARK_HOST ?= testmox
+BENCHMARK_USER ?= root
 
 # Detect architecture (default to amd64)
 UNAME_M := $(shell uname -m)
@@ -65,6 +68,13 @@ get-status-svg:
 	mkdir -p ./pkg/svg/testresult
 	ssh $(DEPLOY_HOST) /usr/bin/proxmox-cpu-affinity status svg > ./pkg/svg/testresult/status-default.svg
 	ssh $(DEPLOY_HOST) /usr/bin/proxmox-cpu-affinity status svg --affinity > ./pkg/svg/testresult/status-affinity.svg
+
+deploy-benchmark-tools:
+	ssh $(BENCHMARK_USER)@$(BENCHMARK_HOST) "mkdir -p /benchmark"
+	ssh $(BENCHMARK_USER)@$(BENCHMARK_HOST) "[ -f /benchmark/config.sh ]" || \
+		scp benchmark/config.sh $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark/config.sh
+	scp -r benchmark/scripts $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark
+	scp -r benchmark/testcase $(BENCHMARK_USER)@$(BENCHMARK_HOST):/benchmark
 
 deb:
 	GOOS=linux $(MAKE) build
