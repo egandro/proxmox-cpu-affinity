@@ -4,7 +4,7 @@ set -e
 
 SCRIPTDIR="$(dirname "$0")"
 
-. ${SCRIPTDIR}/../config
+. ${SCRIPTDIR}/../config.sh
 
-apt update
-apt install jq -y
+apt update -qq
+apt install jq -qq -y

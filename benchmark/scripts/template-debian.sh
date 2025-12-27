@@ -1,13 +1,7 @@
 #!/bin/bash
 
-# Check if running on Proxmox
-if [ ! -d "/etc/pve" ]; then
-    echo "Error: This script must be run on a Proxmox VE host."
-    exit 1
-fi
-
 # Configuration
-VM_ID="${VM_ID:-1001}"
+VM_ID="${VM_ID:-1002}"
 OS_TYPE="${OS_TYPE:-debian}"
 OS_VERSION="${OS_VERSION:-13}"
 OS_RELEASE="${OS_RELEASE:-trixie}"
@@ -42,6 +36,8 @@ while [[ "$#" -gt 0 ]]; do
     esac
     shift
 done
+
+echo "Crating template: ${VM_NAME} (${VM_ID})"
 
 # Create the Cloud-Init Snippet for QEMU Agent
 # This file tells cloud-init to install the agent on first boot
