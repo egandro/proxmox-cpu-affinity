@@ -1,7 +1,7 @@
-.PHONY: all deps build clean test coverage lint tidy deploy deb
+.PHONY: all deps build clean test coverage lint tidy deploy deb get-status-core-ranking get-status-svg run-service run-status
 
 DEPLOY_HOST ?= testmox
-VERSION ?= 0.0.7
+VERSION ?= 0.0.8
 
 # Detect architecture (default to amd64)
 UNAME_M := $(shell uname -m)
@@ -32,7 +32,7 @@ build:
 	CGO_ENABLED=0 GOARCH=$(ARCH) go build -ldflags="$(LDFLAGS)" -o bin/$(ARCH)/proxmox-cpu-affinity ./cmd/cli
 
 clean:
-	rm -rf bin dist local *.deb coverage.out coverage.html
+	rm -rf bin dist local *.deb coverage.out coverage.html pkg/svg/testresult
 
 test:
 	go clean -testcache
@@ -57,6 +57,14 @@ deploy: deb
 	ssh $(DEPLOY_HOST) "sudo apt $(if $(FORCE_PURGE),purge,remove) proxmox-cpu-affinity -y || true"
 	ssh $(DEPLOY_HOST) "sudo dpkg -i /tmp/proxmox-cpu-affinity.deb"
 	ssh $(DEPLOY_HOST) "sudo rm -f /tmp/proxmox-cpu-affinity.deb"
+
+get-status-core-ranking:
+	ssh $(DEPLOY_HOST) /usr/bin/proxmox-cpu-affinity status core-ranking --json > ./pkg/svg/testdata/core-ranking.json
+
+get-status-svg:
+	mkdir -p ./pkg/svg/testresult
+	ssh $(DEPLOY_HOST) /usr/bin/proxmox-cpu-affinity status svg > ./pkg/svg/testresult/status-default.svg
+	ssh $(DEPLOY_HOST) /usr/bin/proxmox-cpu-affinity status svg --affinity > ./pkg/svg/testresult/status-affinity.svg
 
 deb:
 	GOOS=linux $(MAKE) build

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
-	"math"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -70,7 +69,6 @@ type Neighbor struct {
 	Socket    int     `json:"socket"`
 	Core      int     `json:"core"`
 	LatencyNS float64 `json:"latency_ns"`
-	StdDev    float64 `json:"std_dev"`
 }
 
 // CoreRanking contains a source core and its neighbors sorted by affinity (latency).
@@ -126,7 +124,6 @@ func (c *CPUInfo) Update(rounds int, iterations int, onProgress func(int, int)) 
 
 	numCores := len(topology)
 	latSums := make([]float64, numCores*numCores)
-	latSqSums := make([]float64, numCores*numCores)
 
 	// 2. Measure Accumulator (Linearized Matrix)
 	for r := 0; r < rounds; r++ {
@@ -144,7 +141,6 @@ func (c *CPUInfo) Update(rounds int, iterations int, onProgress func(int, int)) 
 					return fmt.Errorf("failed to measure latency between CPU %d and %d: %w", src.CPU, dst.CPU, err)
 				}
 				latSums[i*numCores+j] += lat
-				latSqSums[i*numCores+j] += lat * lat
 			}
 		}
 	}
@@ -162,17 +158,11 @@ func (c *CPUInfo) Update(rounds int, iterations int, onProgress func(int, int)) 
 
 			avgLat := latSums[i*numCores+j] / float64(rounds)
 
-			variance := (latSqSums[i*numCores+j] / float64(rounds)) - (avgLat * avgLat)
-			if variance < 0 {
-				variance = 0
-			}
-
 			neighbors = append(neighbors, Neighbor{
 				CPU:       dst.CPU,
 				Socket:    dst.Socket,
 				Core:      dst.Core,
 				LatencyNS: avgLat,
-				StdDev:    math.Sqrt(variance),
 			})
 		}
 
@@ -408,21 +398,14 @@ func readSysFSInt(path string) (int, error) {
 	return strconv.Atoi(strings.TrimSpace(string(data)))
 }
 
-// LatencyStat holds latency metrics for a specific link.
-type LatencyStat struct {
-	LatencyNS float64 `json:"latency_ns"`
-	StdDev    float64 `json:"std_dev"`
-	SrcCPU    int     `json:"src_cpu"`
-	DstCPU    int     `json:"dst_cpu"`
-}
-
 // TopologyStats contains statistics about the CPU topology and latency.
 type TopologyStats struct {
-	CPUCount      int         `json:"cpu_count"`
-	SocketCount   int         `json:"socket_count"`
-	Min           LatencyStat `json:"min"` // Best performance (lowest latency)
-	Max           LatencyStat `json:"max"` // Worst performance (highest latency)
-	MeanLatencyNS float64     `json:"mean_latency_ns"`
+	CPUCount        int     `json:"cpu_count"`
+	SocketCount     int     `json:"socket_count"`
+	MinLatencyNS    float64 `json:"min_latency_ns"`    // Best performance (lowest latency)
+	MaxLatencyNS    float64 `json:"max_latency_ns"`    // Worst performance (highest latency)
+	MedianLatencyNS float64 `json:"median_latency_ns"` // Median latency
+	MeanLatencyNS   float64 `json:"mean_latency_ns"`   // Mean latency
 }
 
 // SummarizeRankings returns statistics about the core rankings.
@@ -432,10 +415,11 @@ func SummarizeRankings(rankings []CoreRanking) TopologyStats {
 	}
 
 	var stats TopologyStats
-	stats.Min.LatencyNS = 1e18
-	stats.Max.LatencyNS = -1.0
+	stats.MinLatencyNS = 1e18
+	stats.MaxLatencyNS = -1.0
 
-	var totalLat float64
+	var lats []float64
+	var total float64
 	var count int
 
 	sockets := make(map[int]struct{})
@@ -448,20 +432,15 @@ func SummarizeRankings(rankings []CoreRanking) TopologyStats {
 			cpus[n.CPU] = struct{}{}
 
 			val := n.LatencyNS
-			totalLat += val
+			lats = append(lats, val)
+			total += val
 			count++
 
-			if val < stats.Min.LatencyNS {
-				stats.Min.LatencyNS = val
-				stats.Min.StdDev = n.StdDev
-				stats.Min.SrcCPU = r.CPU
-				stats.Min.DstCPU = n.CPU
+			if val < stats.MinLatencyNS {
+				stats.MinLatencyNS = val
 			}
-			if val > stats.Max.LatencyNS {
-				stats.Max.LatencyNS = val
-				stats.Max.StdDev = n.StdDev
-				stats.Max.SrcCPU = r.CPU
-				stats.Max.DstCPU = n.CPU
+			if val > stats.MaxLatencyNS {
+				stats.MaxLatencyNS = val
 			}
 		}
 	}
@@ -469,22 +448,23 @@ func SummarizeRankings(rankings []CoreRanking) TopologyStats {
 	stats.CPUCount = len(cpus)
 	stats.SocketCount = len(sockets)
 
-	if count > 0 {
-		stats.MeanLatencyNS = totalLat / float64(count)
+	if count == 0 {
+		stats.MinLatencyNS = 0
+		stats.MaxLatencyNS = 0
 	} else {
-		stats.Min.LatencyNS = 0
-		stats.Max.LatencyNS = 0
+		sort.Float64s(lats)
+		stats.MedianLatencyNS = lats[len(lats)/2]
+		stats.MeanLatencyNS = total / float64(count)
 	}
 
 	// round := func(v float64) float64 {
 	// 	return math.Round(v*100) / 100
 	// }
 
-	// stats.Min.LatencyNS = round(stats.Min.LatencyNS)
+	// stats.MinLatencyNS = round(stats.MinLatencyNS)
 	// stats.Min.StdDev = round(stats.Min.StdDev)
-	// stats.Max.LatencyNS = round(stats.Max.LatencyNS)
+	// stats.MaxLatencyNS = round(stats.MaxLatencyNS)
 	// stats.Max.StdDev = round(stats.Max.StdDev)
-	// stats.MeanLatencyNS = round(stats.MeanLatencyNS)
 
 	return stats
 }

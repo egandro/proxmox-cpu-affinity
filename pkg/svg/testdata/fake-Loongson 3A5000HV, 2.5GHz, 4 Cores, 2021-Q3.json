@@ -1,0 +1,94 @@
+[
+  {
+    "cpu": 0,
+    "ranking": [
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 39.493826999999996
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 39.49506033333333
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 39.528452666666674
+      }
+    ]
+  },
+  {
+    "cpu": 1,
+    "ranking": [
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 39.493152666666674
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 39.49506033333333
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 39.52453933333333
+      }
+    ]
+  },
+  {
+    "cpu": 2,
+    "ranking": [
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 39.493152666666674
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 39.493826999999996
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 39.525122666666675
+      }
+    ]
+  },
+  {
+    "cpu": 3,
+    "ranking": [
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 39.52453933333333
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 39.525122666666675
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 39.528452666666674
+      }
+    ]
+  }
+]

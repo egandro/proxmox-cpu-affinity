@@ -1,0 +1,6114 @@
+[
+  {
+    "cpu": 0,
+    "ranking": [
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 1,
+    "ranking": [
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 10.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 2,
+    "ranking": [
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 10.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 3,
+    "ranking": [
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 10.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 4,
+    "ranking": [
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 5
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 5,
+    "ranking": [
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 5
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 6,
+    "ranking": [
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 10.666666666666666
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 7,
+    "ranking": [
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 10.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 8,
+    "ranking": [
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 9,
+    "ranking": [
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 10,
+    "ranking": [
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 10.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 11,
+    "ranking": [
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 10.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 12,
+    "ranking": [
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 10.666666666666666
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 13,
+    "ranking": [
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 14,
+    "ranking": [
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 15,
+    "ranking": [
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 16,
+    "ranking": [
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 17,
+    "ranking": [
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 18,
+    "ranking": [
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 19,
+    "ranking": [
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 20,
+    "ranking": [
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 5
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 21,
+    "ranking": [
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 5
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 22,
+    "ranking": [
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 23,
+    "ranking": [
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 24,
+    "ranking": [
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 25,
+    "ranking": [
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 26,
+    "ranking": [
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 27,
+    "ranking": [
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 28,
+    "ranking": [
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 29,
+    "ranking": [
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 10.333333333333334
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 30,
+    "ranking": [
+      {
+        "cpu": 31,
+        "socket": 0,
+        "core": 31,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 15.333333333333334
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 73
+      }
+    ]
+  },
+  {
+    "cpu": 31,
+    "ranking": [
+      {
+        "cpu": 30,
+        "socket": 0,
+        "core": 30,
+        "latency_ns": 5.333333333333333
+      },
+      {
+        "cpu": 20,
+        "socket": 0,
+        "core": 20,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 29,
+        "socket": 0,
+        "core": 29,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 25,
+        "socket": 0,
+        "core": 25,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 24,
+        "socket": 0,
+        "core": 24,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 18,
+        "socket": 0,
+        "core": 18,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 27,
+        "socket": 0,
+        "core": 27,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 16,
+        "socket": 0,
+        "core": 16,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 21,
+        "socket": 0,
+        "core": 21,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 23,
+        "socket": 0,
+        "core": 23,
+        "latency_ns": 15.666666666666666
+      },
+      {
+        "cpu": 28,
+        "socket": 0,
+        "core": 28,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 22,
+        "socket": 0,
+        "core": 22,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 17,
+        "socket": 0,
+        "core": 17,
+        "latency_ns": 20.666666666666668
+      },
+      {
+        "cpu": 19,
+        "socket": 0,
+        "core": 19,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 26,
+        "socket": 0,
+        "core": 26,
+        "latency_ns": 21
+      },
+      {
+        "cpu": 2,
+        "socket": 0,
+        "core": 2,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 9,
+        "socket": 0,
+        "core": 9,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 5,
+        "socket": 0,
+        "core": 5,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 3,
+        "socket": 0,
+        "core": 3,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 12,
+        "socket": 0,
+        "core": 12,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 15,
+        "socket": 0,
+        "core": 15,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 8,
+        "socket": 0,
+        "core": 8,
+        "latency_ns": 67.66666666666667
+      },
+      {
+        "cpu": 0,
+        "socket": 0,
+        "core": 0,
+        "latency_ns": 68
+      },
+      {
+        "cpu": 1,
+        "socket": 0,
+        "core": 1,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 11,
+        "socket": 0,
+        "core": 11,
+        "latency_ns": 72.66666666666667
+      },
+      {
+        "cpu": 10,
+        "socket": 0,
+        "core": 10,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 14,
+        "socket": 0,
+        "core": 14,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 13,
+        "socket": 0,
+        "core": 13,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 7,
+        "socket": 0,
+        "core": 7,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 6,
+        "socket": 0,
+        "core": 6,
+        "latency_ns": 73
+      },
+      {
+        "cpu": 4,
+        "socket": 0,
+        "core": 4,
+        "latency_ns": 73
+      }
+    ]
+  }
+]

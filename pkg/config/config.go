@@ -22,6 +22,7 @@ const (
 	ConstantSocketFile         = "/var/run/proxmox-cpu-affinity.sock"
 	ConstantProxmoxConfigDir   = "/etc/pve"
 	ConstantHookScriptFilename = "proxmox-cpu-affinity-hook"
+	ConstantProcCpuInfo        = "/proc/cpuinfo"
 
 	// Executor commands
 	CommandProxmoxQM        = "/usr/sbin/qm"
