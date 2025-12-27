@@ -99,17 +99,21 @@ func generateDummyAffinity(rankings []cpuinfo.CoreRanking) map[int][]int {
 	// Create VMs until we have "used" enough cores (conceptually)
 	for used < targetUsedCores {
 		// Vary core count slightly for realism, but keep it simple for dummy data
-		count := (vmid % 4) + 1 // 1 to 4 cores
+		count := (vmid % 4) + 2 // 2 to 5 cores
 		if count > maxPerVM {
 			count = maxPerVM
 		}
 
 		var cpus []int
+		seen := make(map[int]bool)
 		for i := 0; i < count; i++ {
-			// Pick cores in a way that spreads them out but allows some overlap/pattern
-			// This simple logic just picks cores based on current usage index wrapping around
-			coreIdx := (used + i) % numCores
-			cpus = append(cpus, cpuIDs[coreIdx])
+			// Pseudo-random selection based on VMID to avoid simple sequences like 3,4,5,6
+			idx := (vmid*13 + i*7) % numCores
+			for seen[idx] {
+				idx = (idx + 1) % numCores
+			}
+			seen[idx] = true
+			cpus = append(cpus, cpuIDs[idx])
 		}
 		affinity[vmid] = cpus
 		used += 1 // Increment used "slots" (not necessarily unique cores)

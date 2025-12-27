@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.10] - TBD
+
+- SVG: wording
+
 ## [0.0.9] - 2025-12-27
 
 - CLI: svg export.
