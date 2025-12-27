@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1080" height="760" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <!-- Header -->
+    <text x="540" y="30" font-size="20" font-weight="bold" text-anchor="middle">AMD Ryzen 7 5700G with Radeon Graphics</text>
+    <text x="540" y="50" font-size="14" fill="#333" text-anchor="middle">1 Socket | 16 CPUs</text>
+    <text x="540" y="70" font-size="14" fill="#555" text-anchor="middle">Min: 27.97 ns | Max: 93.06 ns | Median: 41.76 ns | Mean: 42.85 ns</text>
+
+    <!-- Row Labels -->
+    <text x="70" y="120" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 0</text>
+    <text x="70" y="160" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 1</text>
+    <text x="70" y="200" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 2</text>
+    <text x="70" y="240" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 3</text>
+    <text x="70" y="280" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 4</text>
+    <text x="70" y="320" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 5</text>
+    <text x="70" y="360" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 6</text>
+    <text x="70" y="400" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 7</text>
+    <text x="70" y="440" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 8</text>
+    <text x="70" y="480" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 9</text>
+    <text x="70" y="520" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 10</text>
+    <text x="70" y="560" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 11</text>
+    <text x="70" y="600" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 12</text>
+    <text x="70" y="640" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 13</text>
+    <text x="70" y="680" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 14</text>
+    <text x="70" y="720" font-size="12" text-anchor="end" dominant-baseline="middle">CPU 15</text>
+    
+
+    <!-- Horizontal Lines -->
+    
+
+    <!-- Column Labels -->
+    <text x="100" y="90" font-size="12" text-anchor="middle">0</text>
+    <text x="140" y="90" font-size="12" text-anchor="middle">1</text>
+    <text x="180" y="90" font-size="12" text-anchor="middle">2</text>
+    <text x="220" y="90" font-size="12" text-anchor="middle">3</text>
+    <text x="260" y="90" font-size="12" text-anchor="middle">4</text>
+    <text x="300" y="90" font-size="12" text-anchor="middle">5</text>
+    <text x="340" y="90" font-size="12" text-anchor="middle">6</text>
+    <text x="380" y="90" font-size="12" text-anchor="middle">7</text>
+    <text x="420" y="90" font-size="12" text-anchor="middle">8</text>
+    <text x="460" y="90" font-size="12" text-anchor="middle">9</text>
+    <text x="500" y="90" font-size="12" text-anchor="middle">10</text>
+    <text x="540" y="90" font-size="12" text-anchor="middle">11</text>
+    <text x="580" y="90" font-size="12" text-anchor="middle">12</text>
+    <text x="620" y="90" font-size="12" text-anchor="middle">13</text>
+    <text x="660" y="90" font-size="12" text-anchor="middle">14</text>
+    <text x="700" y="90" font-size="12" text-anchor="middle">15</text>
+    
+
+    <!-- Vertical Lines -->
+    
+
+    <!-- Cells -->
+    <rect x="80" y="100" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="100" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="120" y="100" width="40" height="40" fill="rgb(253,212,141)" stroke="#ccc"/>
+    <text x="140" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">59</text>
+    <rect x="160" y="100" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="180" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="200" y="100" width="40" height="40" fill="rgb(253,254,191)" stroke="#ccc"/>
+    <text x="220" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">46</text>
+    <rect x="240" y="100" width="40" height="40" fill="rgb(215,231,196)" stroke="#ccc"/>
+    <text x="260" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="280" y="100" width="40" height="40" fill="rgb(240,246,192)" stroke="#ccc"/>
+    <text x="300" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="320" y="100" width="40" height="40" fill="rgb(254,254,189)" stroke="#ccc"/>
+    <text x="340" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">47</text>
+    <rect x="360" y="100" width="40" height="40" fill="rgb(208,227,197)" stroke="#ccc"/>
+    <text x="380" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="400" y="100" width="40" height="40" fill="rgb(192,218,199)" stroke="#ccc"/>
+    <text x="420" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">36</text>
+    <rect x="440" y="100" width="40" height="40" fill="rgb(221,235,195)" stroke="#ccc"/>
+    <text x="460" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="480" y="100" width="40" height="40" fill="rgb(226,238,194)" stroke="#ccc"/>
+    <text x="500" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="520" y="100" width="40" height="40" fill="rgb(211,229,196)" stroke="#ccc"/>
+    <text x="540" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="560" y="100" width="40" height="40" fill="rgb(237,244,193)" stroke="#ccc"/>
+    <text x="580" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="600" y="100" width="40" height="40" fill="rgb(211,229,196)" stroke="#ccc"/>
+    <text x="620" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="640" y="100" width="40" height="40" fill="rgb(220,234,195)" stroke="#ccc"/>
+    <text x="660" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="680" y="100" width="40" height="40" fill="rgb(214,230,196)" stroke="#ccc"/>
+    <text x="700" y="120" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="80" y="140" width="40" height="40" fill="rgb(216,232,196)" stroke="#ccc"/>
+    <text x="100" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="120" y="140" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="140" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="160" y="140" width="40" height="40" fill="rgb(232,241,193)" stroke="#ccc"/>
+    <text x="180" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="200" y="140" width="40" height="40" fill="rgb(229,239,194)" stroke="#ccc"/>
+    <text x="220" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="240" y="140" width="40" height="40" fill="rgb(213,230,196)" stroke="#ccc"/>
+    <text x="260" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="280" y="140" width="40" height="40" fill="rgb(229,239,194)" stroke="#ccc"/>
+    <text x="300" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="320" y="140" width="40" height="40" fill="rgb(249,251,191)" stroke="#ccc"/>
+    <text x="340" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">46</text>
+    <rect x="360" y="140" width="40" height="40" fill="rgb(221,234,195)" stroke="#ccc"/>
+    <text x="380" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="400" y="140" width="40" height="40" fill="rgb(218,233,195)" stroke="#ccc"/>
+    <text x="420" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="440" y="140" width="40" height="40" fill="rgb(193,218,198)" stroke="#ccc"/>
+    <text x="460" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">36</text>
+    <rect x="480" y="140" width="40" height="40" fill="rgb(209,228,196)" stroke="#ccc"/>
+    <text x="500" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="520" y="140" width="40" height="40" fill="rgb(235,243,193)" stroke="#ccc"/>
+    <text x="540" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="560" y="140" width="40" height="40" fill="rgb(231,241,194)" stroke="#ccc"/>
+    <text x="580" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="600" y="140" width="40" height="40" fill="rgb(254,218,148)" stroke="#ccc"/>
+    <text x="620" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">57</text>
+    <rect x="640" y="140" width="40" height="40" fill="rgb(209,228,196)" stroke="#ccc"/>
+    <text x="660" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="680" y="140" width="40" height="40" fill="rgb(220,234,195)" stroke="#ccc"/>
+    <text x="700" y="160" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="80" y="180" width="40" height="40" fill="rgb(242,247,192)" stroke="#ccc"/>
+    <text x="100" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="120" y="180" width="40" height="40" fill="rgb(246,250,192)" stroke="#ccc"/>
+    <text x="140" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="160" y="180" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="180" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="200" y="180" width="40" height="40" fill="rgb(240,246,192)" stroke="#ccc"/>
+    <text x="220" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="240" y="180" width="40" height="40" fill="rgb(253,206,134)" stroke="#ccc"/>
+    <text x="260" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">61</text>
+    <rect x="280" y="180" width="40" height="40" fill="rgb(221,235,195)" stroke="#ccc"/>
+    <text x="300" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="320" y="180" width="40" height="40" fill="rgb(254,254,191)" stroke="#ccc"/>
+    <text x="340" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">47</text>
+    <rect x="360" y="180" width="40" height="40" fill="rgb(228,239,194)" stroke="#ccc"/>
+    <text x="380" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="400" y="180" width="40" height="40" fill="rgb(219,234,195)" stroke="#ccc"/>
+    <text x="420" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="440" y="180" width="40" height="40" fill="rgb(237,244,193)" stroke="#ccc"/>
+    <text x="460" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="480" y="180" width="40" height="40" fill="rgb(169,204,202)" stroke="#ccc"/>
+    <text x="500" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">32</text>
+    <rect x="520" y="180" width="40" height="40" fill="rgb(249,251,191)" stroke="#ccc"/>
+    <text x="540" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">46</text>
+    <rect x="560" y="180" width="40" height="40" fill="rgb(207,226,197)" stroke="#ccc"/>
+    <text x="580" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="600" y="180" width="40" height="40" fill="rgb(240,246,192)" stroke="#ccc"/>
+    <text x="620" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="640" y="180" width="40" height="40" fill="rgb(201,223,197)" stroke="#ccc"/>
+    <text x="660" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">38</text>
+    <rect x="680" y="180" width="40" height="40" fill="rgb(209,228,196)" stroke="#ccc"/>
+    <text x="700" y="200" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="80" y="220" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="100" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="120" y="220" width="40" height="40" fill="rgb(253,196,122)" stroke="#ccc"/>
+    <text x="140" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">63</text>
+    <rect x="160" y="220" width="40" height="40" fill="rgb(253,183,108)" stroke="#ccc"/>
+    <text x="180" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">67</text>
+    <rect x="200" y="220" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="220" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="240" y="220" width="40" height="40" fill="rgb(250,252,191)" stroke="#ccc"/>
+    <text x="260" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">46</text>
+    <rect x="280" y="220" width="40" height="40" fill="rgb(232,241,193)" stroke="#ccc"/>
+    <text x="300" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="320" y="220" width="40" height="40" fill="rgb(253,192,117)" stroke="#ccc"/>
+    <text x="340" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">65</text>
+    <rect x="360" y="220" width="40" height="40" fill="rgb(228,239,194)" stroke="#ccc"/>
+    <text x="380" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="400" y="220" width="40" height="40" fill="rgb(217,232,195)" stroke="#ccc"/>
+    <text x="420" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="440" y="220" width="40" height="40" fill="rgb(218,233,195)" stroke="#ccc"/>
+    <text x="460" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="480" y="220" width="40" height="40" fill="rgb(242,247,192)" stroke="#ccc"/>
+    <text x="500" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="520" y="220" width="40" height="40" fill="rgb(170,205,201)" stroke="#ccc"/>
+    <text x="540" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">32</text>
+    <rect x="560" y="220" width="40" height="40" fill="rgb(254,253,189)" stroke="#ccc"/>
+    <text x="580" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">47</text>
+    <rect x="600" y="220" width="40" height="40" fill="rgb(210,228,196)" stroke="#ccc"/>
+    <text x="620" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="640" y="220" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="660" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="680" y="220" width="40" height="40" fill="rgb(220,234,195)" stroke="#ccc"/>
+    <text x="700" y="240" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="80" y="260" width="40" height="40" fill="rgb(208,227,196)" stroke="#ccc"/>
+    <text x="100" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="120" y="260" width="40" height="40" fill="rgb(224,237,194)" stroke="#ccc"/>
+    <text x="140" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="160" y="260" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="180" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="200" y="260" width="40" height="40" fill="rgb(247,250,192)" stroke="#ccc"/>
+    <text x="220" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="240" y="260" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="260" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="280" y="260" width="40" height="40" fill="rgb(241,247,192)" stroke="#ccc"/>
+    <text x="300" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="320" y="260" width="40" height="40" fill="rgb(254,246,180)" stroke="#ccc"/>
+    <text x="340" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">49</text>
+    <rect x="360" y="260" width="40" height="40" fill="rgb(228,239,194)" stroke="#ccc"/>
+    <text x="380" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="400" y="260" width="40" height="40" fill="rgb(224,237,194)" stroke="#ccc"/>
+    <text x="420" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="440" y="260" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="460" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="480" y="260" width="40" height="40" fill="rgb(244,248,192)" stroke="#ccc"/>
+    <text x="500" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="520" y="260" width="40" height="40" fill="rgb(228,239,194)" stroke="#ccc"/>
+    <text x="540" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="560" y="260" width="40" height="40" fill="rgb(175,207,201)" stroke="#ccc"/>
+    <text x="580" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">33</text>
+    <rect x="600" y="260" width="40" height="40" fill="rgb(241,246,192)" stroke="#ccc"/>
+    <text x="620" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="640" y="260" width="40" height="40" fill="rgb(207,227,197)" stroke="#ccc"/>
+    <text x="660" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="680" y="260" width="40" height="40" fill="rgb(214,230,196)" stroke="#ccc"/>
+    <text x="700" y="280" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="80" y="300" width="40" height="40" fill="rgb(219,234,195)" stroke="#ccc"/>
+    <text x="100" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="120" y="300" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="140" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="160" y="300" width="40" height="40" fill="rgb(227,238,194)" stroke="#ccc"/>
+    <text x="180" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="200" y="300" width="40" height="40" fill="rgb(254,241,175)" stroke="#ccc"/>
+    <text x="220" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">50</text>
+    <rect x="240" y="300" width="40" height="40" fill="rgb(232,241,193)" stroke="#ccc"/>
+    <text x="260" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="280" y="300" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="300" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="320" y="300" width="40" height="40" fill="rgb(218,233,195)" stroke="#ccc"/>
+    <text x="340" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="360" y="300" width="40" height="40" fill="rgb(234,242,193)" stroke="#ccc"/>
+    <text x="380" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="400" y="300" width="40" height="40" fill="rgb(224,237,194)" stroke="#ccc"/>
+    <text x="420" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="440" y="300" width="40" height="40" fill="rgb(240,246,192)" stroke="#ccc"/>
+    <text x="460" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="480" y="300" width="40" height="40" fill="rgb(229,240,194)" stroke="#ccc"/>
+    <text x="500" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="520" y="300" width="40" height="40" fill="rgb(254,247,181)" stroke="#ccc"/>
+    <text x="540" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">49</text>
+    <rect x="560" y="300" width="40" height="40" fill="rgb(238,244,193)" stroke="#ccc"/>
+    <text x="580" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="600" y="300" width="40" height="40" fill="rgb(151,193,204)" stroke="#ccc"/>
+    <text x="620" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">29</text>
+    <rect x="640" y="300" width="40" height="40" fill="rgb(220,234,195)" stroke="#ccc"/>
+    <text x="660" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="680" y="300" width="40" height="40" fill="rgb(217,232,195)" stroke="#ccc"/>
+    <text x="700" y="320" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="80" y="340" width="40" height="40" fill="rgb(235,243,193)" stroke="#ccc"/>
+    <text x="100" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="120" y="340" width="40" height="40" fill="rgb(235,243,193)" stroke="#ccc"/>
+    <text x="140" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="160" y="340" width="40" height="40" fill="rgb(228,239,194)" stroke="#ccc"/>
+    <text x="180" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="200" y="340" width="40" height="40" fill="rgb(254,230,162)" stroke="#ccc"/>
+    <text x="220" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">54</text>
+    <rect x="240" y="340" width="40" height="40" fill="rgb(229,239,194)" stroke="#ccc"/>
+    <text x="260" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="280" y="340" width="40" height="40" fill="rgb(221,235,195)" stroke="#ccc"/>
+    <text x="300" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="320" y="340" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="340" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="360" y="340" width="40" height="40" fill="rgb(232,241,193)" stroke="#ccc"/>
+    <text x="380" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="400" y="340" width="40" height="40" fill="rgb(238,245,193)" stroke="#ccc"/>
+    <text x="420" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="440" y="340" width="40" height="40" fill="rgb(208,227,197)" stroke="#ccc"/>
+    <text x="460" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="480" y="340" width="40" height="40" fill="rgb(254,248,183)" stroke="#ccc"/>
+    <text x="500" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">48</text>
+    <rect x="520" y="340" width="40" height="40" fill="rgb(216,232,196)" stroke="#ccc"/>
+    <text x="540" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="560" y="340" width="40" height="40" fill="rgb(204,225,197)" stroke="#ccc"/>
+    <text x="580" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">38</text>
+    <rect x="600" y="340" width="40" height="40" fill="rgb(203,224,197)" stroke="#ccc"/>
+    <text x="620" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">38</text>
+    <rect x="640" y="340" width="40" height="40" fill="rgb(144,189,205)" stroke="#ccc"/>
+    <text x="660" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">28</text>
+    <rect x="680" y="340" width="40" height="40" fill="rgb(201,223,197)" stroke="#ccc"/>
+    <text x="700" y="360" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">38</text>
+    <rect x="80" y="380" width="40" height="40" fill="rgb(234,242,193)" stroke="#ccc"/>
+    <text x="100" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="120" y="380" width="40" height="40" fill="rgb(242,247,192)" stroke="#ccc"/>
+    <text x="140" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="160" y="380" width="40" height="40" fill="rgb(233,242,193)" stroke="#ccc"/>
+    <text x="180" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="200" y="380" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="220" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="240" y="380" width="40" height="40" fill="rgb(223,236,195)" stroke="#ccc"/>
+    <text x="260" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="280" y="380" width="40" height="40" fill="rgb(253,254,191)" stroke="#ccc"/>
+    <text x="300" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">46</text>
+    <rect x="320" y="380" width="40" height="40" fill="rgb(246,250,192)" stroke="#ccc"/>
+    <text x="340" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="360" y="380" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="380" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="400" y="380" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="420" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="440" y="380" width="40" height="40" fill="rgb(232,241,193)" stroke="#ccc"/>
+    <text x="460" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="480" y="380" width="40" height="40" fill="rgb(227,238,194)" stroke="#ccc"/>
+    <text x="500" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="520" y="380" width="40" height="40" fill="rgb(254,218,149)" stroke="#ccc"/>
+    <text x="540" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">57</text>
+    <rect x="560" y="380" width="40" height="40" fill="rgb(218,233,195)" stroke="#ccc"/>
+    <text x="580" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="600" y="380" width="40" height="40" fill="rgb(250,252,191)" stroke="#ccc"/>
+    <text x="620" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">46</text>
+    <rect x="640" y="380" width="40" height="40" fill="rgb(244,248,192)" stroke="#ccc"/>
+    <text x="660" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="680" y="380" width="40" height="40" fill="rgb(166,202,202)" stroke="#ccc"/>
+    <text x="700" y="400" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">32</text>
+    <rect x="80" y="420" width="40" height="40" fill="rgb(153,195,204)" stroke="#ccc"/>
+    <text x="100" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">30</text>
+    <rect x="120" y="420" width="40" height="40" fill="rgb(181,211,200)" stroke="#ccc"/>
+    <text x="140" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">34</text>
+    <rect x="160" y="420" width="40" height="40" fill="rgb(211,229,196)" stroke="#ccc"/>
+    <text x="180" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="200" y="420" width="40" height="40" fill="rgb(246,250,192)" stroke="#ccc"/>
+    <text x="220" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="240" y="420" width="40" height="40" fill="rgb(196,220,198)" stroke="#ccc"/>
+    <text x="260" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">37</text>
+    <rect x="280" y="420" width="40" height="40" fill="rgb(204,225,197)" stroke="#ccc"/>
+    <text x="300" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">38</text>
+    <rect x="320" y="420" width="40" height="40" fill="rgb(219,234,195)" stroke="#ccc"/>
+    <text x="340" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="360" y="420" width="40" height="40" fill="rgb(204,225,197)" stroke="#ccc"/>
+    <text x="380" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">38</text>
+    <rect x="400" y="420" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="420" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="440" y="420" width="40" height="40" fill="rgb(217,232,195)" stroke="#ccc"/>
+    <text x="460" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="480" y="420" width="40" height="40" fill="rgb(237,121,72)" stroke="#ccc"/>
+    <text x="500" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">80</text>
+    <rect x="520" y="420" width="40" height="40" fill="rgb(243,248,192)" stroke="#ccc"/>
+    <text x="540" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="560" y="420" width="40" height="40" fill="rgb(222,236,195)" stroke="#ccc"/>
+    <text x="580" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="600" y="420" width="40" height="40" fill="rgb(224,236,194)" stroke="#ccc"/>
+    <text x="620" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="640" y="420" width="40" height="40" fill="rgb(226,238,194)" stroke="#ccc"/>
+    <text x="660" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="680" y="420" width="40" height="40" fill="rgb(223,236,195)" stroke="#ccc"/>
+    <text x="700" y="440" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="80" y="460" width="40" height="40" fill="rgb(236,244,193)" stroke="#ccc"/>
+    <text x="100" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="120" y="460" width="40" height="40" fill="rgb(149,193,204)" stroke="#ccc"/>
+    <text x="140" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">29</text>
+    <rect x="160" y="460" width="40" height="40" fill="rgb(224,236,194)" stroke="#ccc"/>
+    <text x="180" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="200" y="460" width="40" height="40" fill="rgb(241,246,192)" stroke="#ccc"/>
+    <text x="220" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="240" y="460" width="40" height="40" fill="rgb(228,239,194)" stroke="#ccc"/>
+    <text x="260" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="280" y="460" width="40" height="40" fill="rgb(254,244,178)" stroke="#ccc"/>
+    <text x="300" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">50</text>
+    <rect x="320" y="460" width="40" height="40" fill="rgb(234,242,193)" stroke="#ccc"/>
+    <text x="340" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="360" y="460" width="40" height="40" fill="rgb(208,227,197)" stroke="#ccc"/>
+    <text x="380" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="400" y="460" width="40" height="40" fill="rgb(199,222,198)" stroke="#ccc"/>
+    <text x="420" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">37</text>
+    <rect x="440" y="460" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="460" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="480" y="460" width="40" height="40" fill="rgb(190,216,199)" stroke="#ccc"/>
+    <text x="500" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">36</text>
+    <rect x="520" y="460" width="40" height="40" fill="rgb(197,221,198)" stroke="#ccc"/>
+    <text x="540" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">37</text>
+    <rect x="560" y="460" width="40" height="40" fill="rgb(200,223,198)" stroke="#ccc"/>
+    <text x="580" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">37</text>
+    <rect x="600" y="460" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="620" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="640" y="460" width="40" height="40" fill="rgb(206,226,197)" stroke="#ccc"/>
+    <text x="660" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">38</text>
+    <rect x="680" y="460" width="40" height="40" fill="rgb(210,228,196)" stroke="#ccc"/>
+    <text x="700" y="480" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="80" y="500" width="40" height="40" fill="rgb(254,249,184)" stroke="#ccc"/>
+    <text x="100" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">48</text>
+    <rect x="120" y="500" width="40" height="40" fill="rgb(226,84,55)" stroke="#ccc"/>
+    <text x="140" y="520" font-size="10" fill="white" text-anchor="middle" dominant-baseline="middle">86</text>
+    <rect x="160" y="500" width="40" height="40" fill="rgb(209,227,196)" stroke="#ccc"/>
+    <text x="180" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="200" y="500" width="40" height="40" fill="rgb(218,233,195)" stroke="#ccc"/>
+    <text x="220" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="240" y="500" width="40" height="40" fill="rgb(232,241,193)" stroke="#ccc"/>
+    <text x="260" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="280" y="500" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="300" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="320" y="500" width="40" height="40" fill="rgb(248,251,191)" stroke="#ccc"/>
+    <text x="340" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">46</text>
+    <rect x="360" y="500" width="40" height="40" fill="rgb(224,236,194)" stroke="#ccc"/>
+    <text x="380" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="400" y="500" width="40" height="40" fill="rgb(231,241,194)" stroke="#ccc"/>
+    <text x="420" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="440" y="500" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="460" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="480" y="500" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="500" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="520" y="500" width="40" height="40" fill="rgb(221,234,195)" stroke="#ccc"/>
+    <text x="540" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="560" y="500" width="40" height="40" fill="rgb(234,243,193)" stroke="#ccc"/>
+    <text x="580" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="600" y="500" width="40" height="40" fill="rgb(254,251,187)" stroke="#ccc"/>
+    <text x="620" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">47</text>
+    <rect x="640" y="500" width="40" height="40" fill="rgb(254,238,172)" stroke="#ccc"/>
+    <text x="660" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">51</text>
+    <rect x="680" y="500" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="700" y="520" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="80" y="540" width="40" height="40" fill="rgb(253,200,127)" stroke="#ccc"/>
+    <text x="100" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">62</text>
+    <rect x="120" y="540" width="40" height="40" fill="rgb(238,126,75)" stroke="#ccc"/>
+    <text x="140" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">79</text>
+    <rect x="160" y="540" width="40" height="40" fill="rgb(228,239,194)" stroke="#ccc"/>
+    <text x="180" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="200" y="540" width="40" height="40" fill="rgb(192,217,199)" stroke="#ccc"/>
+    <text x="220" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">36</text>
+    <rect x="240" y="540" width="40" height="40" fill="rgb(208,227,197)" stroke="#ccc"/>
+    <text x="260" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="280" y="540" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="300" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="320" y="540" width="40" height="40" fill="rgb(215,48,39)" stroke="#ccc"/>
+    <text x="340" y="560" font-size="10" fill="white" text-anchor="middle" dominant-baseline="middle">93</text>
+    <rect x="360" y="540" width="40" height="40" fill="rgb(226,238,194)" stroke="#ccc"/>
+    <text x="380" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="400" y="540" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="420" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="440" y="540" width="40" height="40" fill="rgb(210,228,196)" stroke="#ccc"/>
+    <text x="460" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="480" y="540" width="40" height="40" fill="rgb(249,251,191)" stroke="#ccc"/>
+    <text x="500" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">46</text>
+    <rect x="520" y="540" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="540" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="560" y="540" width="40" height="40" fill="rgb(240,246,192)" stroke="#ccc"/>
+    <text x="580" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="600" y="540" width="40" height="40" fill="rgb(206,226,197)" stroke="#ccc"/>
+    <text x="620" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">38</text>
+    <rect x="640" y="540" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="660" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="680" y="540" width="40" height="40" fill="rgb(206,226,197)" stroke="#ccc"/>
+    <text x="700" y="560" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">38</text>
+    <rect x="80" y="580" width="40" height="40" fill="rgb(213,230,196)" stroke="#ccc"/>
+    <text x="100" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="120" y="580" width="40" height="40" fill="rgb(254,250,186)" stroke="#ccc"/>
+    <text x="140" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">48</text>
+    <rect x="160" y="580" width="40" height="40" fill="rgb(241,247,192)" stroke="#ccc"/>
+    <text x="180" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="200" y="580" width="40" height="40" fill="rgb(238,245,193)" stroke="#ccc"/>
+    <text x="220" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="240" y="580" width="40" height="40" fill="rgb(171,205,201)" stroke="#ccc"/>
+    <text x="260" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">33</text>
+    <rect x="280" y="580" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="300" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="320" y="580" width="40" height="40" fill="rgb(234,242,193)" stroke="#ccc"/>
+    <text x="340" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="360" y="580" width="40" height="40" fill="rgb(219,233,195)" stroke="#ccc"/>
+    <text x="380" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="400" y="580" width="40" height="40" fill="rgb(223,236,195)" stroke="#ccc"/>
+    <text x="420" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="440" y="580" width="40" height="40" fill="rgb(224,237,194)" stroke="#ccc"/>
+    <text x="460" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="480" y="580" width="40" height="40" fill="rgb(254,225,157)" stroke="#ccc"/>
+    <text x="500" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">55</text>
+    <rect x="520" y="580" width="40" height="40" fill="rgb(237,244,193)" stroke="#ccc"/>
+    <text x="540" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="560" y="580" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="580" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="600" y="580" width="40" height="40" fill="rgb(229,239,194)" stroke="#ccc"/>
+    <text x="620" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="640" y="580" width="40" height="40" fill="rgb(198,221,198)" stroke="#ccc"/>
+    <text x="660" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">37</text>
+    <rect x="680" y="580" width="40" height="40" fill="rgb(224,237,194)" stroke="#ccc"/>
+    <text x="700" y="600" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="80" y="620" width="40" height="40" fill="rgb(232,241,193)" stroke="#ccc"/>
+    <text x="100" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="120" y="620" width="40" height="40" fill="rgb(230,240,194)" stroke="#ccc"/>
+    <text x="140" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="160" y="620" width="40" height="40" fill="rgb(238,245,193)" stroke="#ccc"/>
+    <text x="180" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="200" y="620" width="40" height="40" fill="rgb(234,243,193)" stroke="#ccc"/>
+    <text x="220" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="240" y="620" width="40" height="40" fill="rgb(248,250,191)" stroke="#ccc"/>
+    <text x="260" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="280" y="620" width="40" height="40" fill="rgb(168,204,202)" stroke="#ccc"/>
+    <text x="300" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">32</text>
+    <rect x="320" y="620" width="40" height="40" fill="rgb(221,235,195)" stroke="#ccc"/>
+    <text x="340" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="360" y="620" width="40" height="40" fill="rgb(214,231,196)" stroke="#ccc"/>
+    <text x="380" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="400" y="620" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="420" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="440" y="620" width="40" height="40" fill="rgb(254,227,158)" stroke="#ccc"/>
+    <text x="460" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">54</text>
+    <rect x="480" y="620" width="40" height="40" fill="rgb(222,236,195)" stroke="#ccc"/>
+    <text x="500" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="520" y="620" width="40" height="40" fill="rgb(254,247,182)" stroke="#ccc"/>
+    <text x="540" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">49</text>
+    <rect x="560" y="620" width="40" height="40" fill="rgb(211,229,196)" stroke="#ccc"/>
+    <text x="580" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="600" y="620" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="620" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="640" y="620" width="40" height="40" fill="rgb(247,250,191)" stroke="#ccc"/>
+    <text x="660" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="680" y="620" width="40" height="40" fill="rgb(224,237,194)" stroke="#ccc"/>
+    <text x="700" y="640" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="80" y="660" width="40" height="40" fill="rgb(214,231,196)" stroke="#ccc"/>
+    <text x="100" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="120" y="660" width="40" height="40" fill="rgb(209,227,196)" stroke="#ccc"/>
+    <text x="140" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="160" y="660" width="40" height="40" fill="rgb(223,236,195)" stroke="#ccc"/>
+    <text x="180" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="200" y="660" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="220" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="240" y="660" width="40" height="40" fill="rgb(210,228,196)" stroke="#ccc"/>
+    <text x="260" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="280" y="660" width="40" height="40" fill="rgb(213,230,196)" stroke="#ccc"/>
+    <text x="300" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="320" y="660" width="40" height="40" fill="rgb(159,198,203)" stroke="#ccc"/>
+    <text x="340" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">31</text>
+    <rect x="360" y="660" width="40" height="40" fill="rgb(224,237,194)" stroke="#ccc"/>
+    <text x="380" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="400" y="660" width="40" height="40" fill="rgb(214,231,196)" stroke="#ccc"/>
+    <text x="420" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="440" y="660" width="40" height="40" fill="rgb(254,254,191)" stroke="#ccc"/>
+    <text x="460" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">46</text>
+    <rect x="480" y="660" width="40" height="40" fill="rgb(195,219,198)" stroke="#ccc"/>
+    <text x="500" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">37</text>
+    <rect x="520" y="660" width="40" height="40" fill="rgb(228,239,194)" stroke="#ccc"/>
+    <text x="540" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="560" y="660" width="40" height="40" fill="rgb(211,229,196)" stroke="#ccc"/>
+    <text x="580" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="600" y="660" width="40" height="40" fill="rgb(231,240,194)" stroke="#ccc"/>
+    <text x="620" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">43</text>
+    <rect x="640" y="660" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="660" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    <rect x="680" y="660" width="40" height="40" fill="rgb(215,231,196)" stroke="#ccc"/>
+    <text x="700" y="680" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="80" y="700" width="40" height="40" fill="rgb(227,238,194)" stroke="#ccc"/>
+    <text x="100" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="120" y="700" width="40" height="40" fill="rgb(218,233,195)" stroke="#ccc"/>
+    <text x="140" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="160" y="700" width="40" height="40" fill="rgb(214,230,196)" stroke="#ccc"/>
+    <text x="180" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="200" y="700" width="40" height="40" fill="rgb(227,238,194)" stroke="#ccc"/>
+    <text x="220" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="240" y="700" width="40" height="40" fill="rgb(229,240,194)" stroke="#ccc"/>
+    <text x="260" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="280" y="700" width="40" height="40" fill="rgb(225,237,194)" stroke="#ccc"/>
+    <text x="300" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">42</text>
+    <rect x="320" y="700" width="40" height="40" fill="rgb(247,250,192)" stroke="#ccc"/>
+    <text x="340" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">45</text>
+    <rect x="360" y="700" width="40" height="40" fill="rgb(156,196,203)" stroke="#ccc"/>
+    <text x="380" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">30</text>
+    <rect x="400" y="700" width="40" height="40" fill="rgb(219,234,195)" stroke="#ccc"/>
+    <text x="420" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">41</text>
+    <rect x="440" y="700" width="40" height="40" fill="rgb(216,232,195)" stroke="#ccc"/>
+    <text x="460" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="480" y="700" width="40" height="40" fill="rgb(254,244,178)" stroke="#ccc"/>
+    <text x="500" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">50</text>
+    <rect x="520" y="700" width="40" height="40" fill="rgb(213,230,196)" stroke="#ccc"/>
+    <text x="540" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="560" y="700" width="40" height="40" fill="rgb(216,232,196)" stroke="#ccc"/>
+    <text x="580" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">40</text>
+    <rect x="600" y="700" width="40" height="40" fill="rgb(238,245,193)" stroke="#ccc"/>
+    <text x="620" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">44</text>
+    <rect x="640" y="700" width="40" height="40" fill="rgb(212,230,196)" stroke="#ccc"/>
+    <text x="660" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">39</text>
+    <rect x="680" y="700" width="40" height="40" fill="#eeeeee" stroke="#ccc"/>
+    <text x="700" y="720" font-size="10" fill="black" text-anchor="middle" dominant-baseline="middle">0</text>
+    
+
+    <!-- Affinity Table -->
+    
+    <g transform="translate(760, 120)">
+        <text x="0" y="-30" font-size="16" font-weight="bold" text-anchor="start">VM Affinity</text>
+        
+        <rect x="0" y="-15" width="300" height="25" fill="#e0e0e0"/>
+        <text x="10" y="0" font-size="12" font-weight="bold" text-anchor="start">VMID</text>
+        <text x="80" y="0" font-size="12" font-weight="bold" text-anchor="start">Selected CPUs</text>
+        <line x1="0" y1="10" x2="300" y2="10" stroke="black" stroke-width="2"/>
+        
+        <rect x="0" y="10" width="300" height="40" fill="white"/>
+        <text x="10" y="30" font-size="12" text-anchor="start" dominant-baseline="middle">3001</text>
+        <text x="80" y="30" font-size="12" text-anchor="start" dominant-baseline="middle">1,9,14,10,4,0,8,15,7,5,3,12,2,11,6,13</text>
+        <line x1="0" y1="50" x2="300" y2="50" stroke="#ccc" stroke-width="1"/>
+        
+        <rect x="0" y="50" width="300" height="40" fill="#f9f9f9"/>
+        <text x="10" y="70" font-size="12" text-anchor="start" dominant-baseline="middle">5600</text>
+        <text x="80" y="70" font-size="12" text-anchor="start" dominant-baseline="middle">2,10,14,12</text>
+        <line x1="0" y1="90" x2="300" y2="90" stroke="#ccc" stroke-width="1"/>
+        
+        <rect x="0" y="90" width="300" height="40" fill="white"/>
+        <text x="10" y="110" font-size="12" text-anchor="start" dominant-baseline="middle">20000</text>
+        <text x="80" y="110" font-size="12" text-anchor="start" dominant-baseline="middle">3,11,13,8</text>
+        <line x1="0" y1="130" x2="300" y2="130" stroke="#ccc" stroke-width="1"/>
+        
+        <rect x="0" y="130" width="300" height="40" fill="#f9f9f9"/>
+        <text x="10" y="150" font-size="12" text-anchor="start" dominant-baseline="middle">20001</text>
+        <text x="80" y="150" font-size="12" text-anchor="start" dominant-baseline="middle">4,12</text>
+        <line x1="0" y1="170" x2="300" y2="170" stroke="#ccc" stroke-width="1"/>
+        
+        <rect x="0" y="170" width="300" height="40" fill="white"/>
+        <text x="10" y="190" font-size="12" text-anchor="start" dominant-baseline="middle">20002</text>
+        <text x="80" y="190" font-size="12" text-anchor="start" dominant-baseline="middle">5,13,15,6,0,14,8,2</text>
+        <line x1="0" y1="210" x2="300" y2="210" stroke="#ccc" stroke-width="1"/>
+        
+        <rect x="0" y="210" width="300" height="40" fill="#f9f9f9"/>
+        <text x="10" y="230" font-size="12" text-anchor="start" dominant-baseline="middle">20004</text>
+        <text x="80" y="230" font-size="12" text-anchor="start" dominant-baseline="middle">6,14,15,13</text>
+        <line x1="0" y1="250" x2="300" y2="250" stroke="#ccc" stroke-width="1"/>
+        
+        <rect x="0" y="250" width="300" height="40" fill="white"/>
+        <text x="10" y="270" font-size="12" text-anchor="start" dominant-baseline="middle">20006</text>
+        <text x="80" y="270" font-size="12" text-anchor="start" dominant-baseline="middle">7,15,12,4</text>
+        <line x1="0" y1="290" x2="300" y2="290" stroke="#ccc" stroke-width="1"/>
+        
+        <rect x="0" y="290" width="300" height="40" fill="#f9f9f9"/>
+        <text x="10" y="310" font-size="12" text-anchor="start" dominant-baseline="middle">20010</text>
+        <text x="80" y="310" font-size="12" text-anchor="start" dominant-baseline="middle">8,0,1,4</text>
+        <line x1="0" y1="330" x2="300" y2="330" stroke="#ccc" stroke-width="1"/>
+        
+        <rect x="0" y="330" width="300" height="40" fill="white"/>
+        <text x="10" y="350" font-size="12" text-anchor="start" dominant-baseline="middle">20012</text>
+        <text x="80" y="350" font-size="12" text-anchor="start" dominant-baseline="middle">9,1,10,11</text>
+        <line x1="0" y1="370" x2="300" y2="370" stroke="#ccc" stroke-width="1"/>
+        
+        <rect x="0" y="370" width="300" height="40" fill="#f9f9f9"/>
+        <text x="10" y="390" font-size="12" text-anchor="start" dominant-baseline="middle">30001</text>
+        <text x="80" y="390" font-size="12" text-anchor="start" dominant-baseline="middle">10,2,3,11,7,9,15,5</text>
+        <line x1="0" y1="410" x2="300" y2="410" stroke="#ccc" stroke-width="1"/>
+        
+        
+    </g>
+    
+</svg>

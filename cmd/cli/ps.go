@@ -73,20 +73,16 @@ func newPSCmd() *cobra.Command {
 			var explicit bool
 
 			if len(args) > 0 {
+				// Process a single VMID
 				vmid, _ := strconv.ParseUint(args[0], 10, 64)
 				vmids = []uint64{vmid}
 				explicit = true
 			} else {
-				files, _ := filepath.Glob(filepath.Join(config.ConstantQemuServerPidDir, "*.pid"))
-				if len(files) == 0 {
-					fmt.Println("No running VMs found.")
-					return
-				}
-				for _, f := range files {
-					vmidStr := strings.TrimSuffix(filepath.Base(f), ".pid")
-					if vmid, err := strconv.ParseUint(vmidStr, 10, 64); err == nil {
-						vmids = append(vmids, vmid)
-					}
+				var err error
+				vmids, err = getAllRunningVMIDs(ctx, exec)
+				if err != nil {
+					fmt.Printf("Error: Failed to get running VMs: %v\n", err)
+					os.Exit(1)
 				}
 				sort.Slice(vmids, func(i, j int) bool { return vmids[i] < vmids[j] })
 			}

@@ -1,16 +1,19 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
+	"github.com/egandro/proxmox-cpu-affinity/pkg/executor"
 )
 
 func getHookPath(storage string) string {
@@ -101,4 +104,39 @@ func getCPUModelName(path string) string {
 		}
 	}
 	return "Unknown CPU"
+}
+
+// getAllRunningVMIDs returns a sorted list of VMIDs for all running VMs.
+func getAllRunningVMIDs(ctx context.Context, exec executor.Executor) ([]uint64, error) {
+	files, err := filepath.Glob(filepath.Join(config.ConstantQemuServerPidDir, "*.pid"))
+	if err != nil {
+		return nil, fmt.Errorf("failed to read PID directory: %w", err)
+	}
+	if len(files) == 0 {
+		return nil, nil // No running VMs
+	}
+
+	var vmids []uint64
+	for _, f := range files {
+		vmidStr := strings.TrimSuffix(filepath.Base(f), ".pid")
+		if vmid, err := strconv.ParseUint(vmidStr, 10, 64); err == nil {
+			vmids = append(vmids, vmid)
+		}
+	}
+	sort.Slice(vmids, func(i, j int) bool { return vmids[i] < vmids[j] })
+	return vmids, nil
+}
+
+// getVMConfigOutput retrieves the raw output of `qm config <vmid>`.
+func getVMConfigOutput(ctx context.Context, exec executor.Executor, vmid uint64) (string, error) {
+	out, err := exec.Output(ctx, config.CommandProxmoxQM, "config", strconv.FormatUint(vmid, 10)) // #nosec G204 -- vmid is uint64
+	if err != nil {
+		return "", fmt.Errorf("failed to get config for VM %d: %w", vmid, err)
+	}
+	return string(out), nil
+}
+
+// isProxmoxCPUAffinityHookEnabled checks if the proxmox-cpu-affinity hook is enabled for a VM.
+func isProxmoxCPUAffinityHookEnabled(vmConfigOutput string) bool {
+	return strings.Contains(vmConfigOutput, "hookscript: ") && strings.Contains(vmConfigOutput, config.ConstantHookScriptFilename)
 }
