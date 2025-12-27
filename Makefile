@@ -1,7 +1,7 @@
 .PHONY: all deps build clean test coverage lint tidy deploy deb get-status-core-ranking get-status-svg run-service run-status
 
 DEPLOY_HOST ?= testmox
-VERSION ?= 0.0.8
+VERSION ?= 0.0.9
 
 # Detect architecture (default to amd64)
 UNAME_M := $(shell uname -m)

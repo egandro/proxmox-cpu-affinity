@@ -46,8 +46,8 @@ func newListCmd() *cobra.Command {
 		Short: "List all VMs and their hook status",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
-			exec := &executor.DefaultExecutor{}
-			printVMList(ctx, exec, getAllVMIDs(ctx, exec), jsonOutput, quiet)
+			exec := &executor.DefaultExecutor{} // #nosec G601 -- DefaultExecutor is a struct, not a pointer
+			printVMList(ctx, exec, getVMIDsFromQMList(ctx, exec), jsonOutput, quiet)
 		},
 	}
 	cmd.Flags().BoolVar(&jsonOutput, "json", false, "Output in JSON format")
@@ -76,7 +76,7 @@ func newHookscriptStatusCmd() *cobra.Command {
 			// #nosec G204 -- vmid is uint64
 			if err := exec.Run(ctx, config.CommandProxmoxQM, "config", strconv.FormatUint(vmid, 10)); err != nil {
 				fmt.Printf("Error: VM %d not found.\n", vmid)
-				os.Exit(1)
+				os.Exit(1) // Exit if VM not found
 			}
 			printVMList(ctx, exec, []uint64{vmid}, jsonOutput, false)
 		},
@@ -126,7 +126,7 @@ func newEnableCmd() *cobra.Command {
 				fmt.Printf("Error: VM %d has manual CPU affinity set. Cannot modify hookscript.\n", vmid)
 				os.Exit(1)
 			}
-			updateVMHook(ctx, exec, vmid, true, storage, dryRun)
+			updateVMHook(ctx, exec, vmid, true, storage, dryRun) // #nosec G601 -- exec is a struct, not a pointer
 		},
 	}
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
@@ -161,7 +161,7 @@ func newDisableCmd() *cobra.Command {
 				fmt.Printf("Error: VM %d has manual CPU affinity set. Cannot modify hookscript.\n", vmid)
 				os.Exit(1)
 			}
-			updateVMHook(ctx, exec, vmid, false, "", dryRun)
+			updateVMHook(ctx, exec, vmid, false, "", dryRun) // #nosec G601 -- exec is a struct, not a pointer
 		},
 	}
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Print commands without executing them")
@@ -192,7 +192,7 @@ func newEnableAllCmd() *cobra.Command {
 				fmt.Printf("Warning: %v (proceeding due to --force)\n", err)
 			}
 
-			processAllVMs(ctx, exec, true, storage, force, dryRun)
+			processAllVMs(ctx, exec, true, storage, force, dryRun) // #nosec G601 -- exec is a struct, not a pointer
 		},
 	}
 	cmd.Flags().BoolVar(&force, "force", false, "Force enable even if other hookscripts are present or storage check fails")
@@ -207,7 +207,7 @@ func newDisableAllCmd() *cobra.Command {
 		Short: "Disable hook for ALL VMs",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context()
-			exec := &executor.DefaultExecutor{}
+			exec := &executor.DefaultExecutor{} // #nosec G601 -- DefaultExecutor is a struct, not a pointer
 			processAllVMs(ctx, exec, false, "", false, dryRun)
 		},
 	}
@@ -248,12 +248,12 @@ func updateVMHook(ctx context.Context, exec executor.Executor, vmid uint64, enab
 }
 
 func processAllVMs(ctx context.Context, exec executor.Executor, enable bool, storage string, force bool, dryRun bool) {
-	for _, vmid := range getAllVMIDs(ctx, exec) {
+	for _, vmid := range getVMIDsFromQMList(ctx, exec) {
 		if isHAVM(ctx, exec, vmid) {
 			fmt.Printf("Skipping HA-managed VM %d...\n", vmid)
 			continue
 		}
-		vmConf := getVMConfig(ctx, exec, vmid)
+		vmConf, _ := getVMConfigOutput(ctx, exec, vmid) // Error handled by getVMConfigOutput
 		if strings.Contains(vmConf, "template: 1") {
 			fmt.Printf("Skipping VM Template %d...\n", vmid)
 			continue
@@ -264,7 +264,7 @@ func processAllVMs(ctx context.Context, exec executor.Executor, enable bool, sto
 		}
 
 		if enable {
-			if strings.Contains(vmConf, "hookscript:") {
+			if strings.Contains(vmConf, "hookscript:") { // Check if any hookscript is set
 				if !strings.Contains(vmConf, config.ConstantHookScriptFilename) {
 					if !force {
 						fmt.Printf("Skipping VM %d (other hookscript set)...\n", vmid)
@@ -274,7 +274,7 @@ func processAllVMs(ctx context.Context, exec executor.Executor, enable bool, sto
 			}
 			updateVMHook(ctx, exec, vmid, true, storage, dryRun)
 		} else {
-			if !strings.Contains(vmConf, "hookscript: ") || !strings.Contains(vmConf, config.ConstantHookScriptFilename) {
+			if !isProxmoxCPUAffinityHookEnabled(vmConf) {
 				continue
 			}
 			updateVMHook(ctx, exec, vmid, false, "", dryRun)
@@ -282,7 +282,7 @@ func processAllVMs(ctx context.Context, exec executor.Executor, enable bool, sto
 	}
 }
 
-func getAllVMIDs(ctx context.Context, exec executor.Executor) []uint64 {
+func getVMIDsFromQMList(ctx context.Context, exec executor.Executor) []uint64 {
 	out, _ := exec.Output(ctx, config.CommandProxmoxQM, "list") // #nosec G204 -- trusted path from config
 	lines := strings.Split(string(out), "\n")
 	var vmids []uint64
@@ -321,11 +321,6 @@ func hasAffinitySet(ctx context.Context, exec executor.Executor, vmid uint64) bo
 	return strings.Contains(string(out), "affinity:")
 }
 
-func getVMConfig(ctx context.Context, exec executor.Executor, vmid uint64) string {
-	out, _ := exec.Output(ctx, config.CommandProxmoxQM, "config", strconv.FormatUint(vmid, 10)) // #nosec G204 -- vmid is uint64
-	return string(out)
-}
-
 type HookStatusInfo struct {
 	VMID   uint64 `json:"vmid"`
 	Status string `json:"status"`
@@ -345,7 +340,7 @@ func printVMList(ctx context.Context, exec executor.Executor, vmids []uint64, js
 	for _, vmid := range vmids {
 		status := "Disabled"
 		notes := ""
-		vmConf := getVMConfig(ctx, exec, vmid)
+		vmConf, _ := getVMConfigOutput(ctx, exec, vmid) // Error handled by getVMConfigOutput
 
 		if strings.Contains(vmConf, "template: 1") {
 			notes = "VM Template"
@@ -357,7 +352,7 @@ func printVMList(ctx context.Context, exec executor.Executor, vmids []uint64, js
 				notes += ", "
 			}
 			notes += "HA Managed"
-		} else if strings.Contains(vmConf, "affinity:") {
+		} else if strings.Contains(vmConf, "affinity:") { // Check for manual affinity
 			status = "Skipped"
 			if notes != "" {
 				notes += ", "
@@ -365,7 +360,7 @@ func printVMList(ctx context.Context, exec executor.Executor, vmids []uint64, js
 			notes += "Manual Affinity Set"
 		} else if strings.Contains(vmConf, "hookscript: ") && strings.Contains(vmConf, config.ConstantHookScriptFilename) {
 			status = "Enabled"
-		}
+		} // Else, it remains "Disabled"
 
 		list = append(list, HookStatusInfo{
 			VMID:   vmid,

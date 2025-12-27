@@ -4,6 +4,8 @@ Automated CPU affinity management for Proxmox VE VMs. Uses a background service 
 
 When a VM starts, the hookscript triggers the background service, which then calculates and applies the optimal CPU affinity for that VM.
 
+The CLI tool creates a nice heatmap SVG with realtime data.
+
 See [SHOWCASE.md](SHOWCASE.md) for an example session.
 
 Written in Go.
@@ -75,6 +77,14 @@ Runs the cpuinfo and shows the core-to-core latency.
 
 ```bash
 proxmox-cpu-affinity cpuinfo [-v] [--summary] [--quiet]
+```
+
+### reassign
+
+Reassign CPU affinity for running VMs with enabled hooks.
+
+```bash
+proxmox-cpu-affinity reassign [vmid] [--all] [--dry-run]
 ```
 
 ## Manual VM Configuration

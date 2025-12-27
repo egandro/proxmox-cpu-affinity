@@ -1,8 +1,9 @@
 # Changelog
 
-## [0.0.9] - TBD
+## [0.0.9] - 2025-12-27
 
 - CLI: svg export.
+- CLI: `reassign` command.
 
 ## [0.0.8] - 2025-12-26
 

@@ -38,7 +38,7 @@ func FuzzGetAllVMIDs(f *testing.F) {
 				return qmListOutput, nil
 			},
 		}
-		_ = getAllVMIDs(context.Background(), mockExec)
+		_ = getVMIDsFromQMList(context.Background(), mockExec)
 	})
 }
 
