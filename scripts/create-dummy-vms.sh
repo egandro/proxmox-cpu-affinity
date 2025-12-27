@@ -23,12 +23,14 @@ MEMORY=1024
 START_VMID=200
 HOOKSCRIPT="local:snippets/proxmox-cpu-affinity-hook"
 AFFINITY="1,3,4,5"
+STORAGE=local
 
 if ! qm status "$SOURCE_VMID" >/dev/null 2>&1; then
     echo "Source VM $SOURCE_VMID does not exist. Creating a new dummy template '$TEMPLATE_NAME'..."
     qm create "$SOURCE_VMID" --name "$TEMPLATE_NAME" --memory 128 --net0 virtio,bridge=vmbr0
-    # we disable the booting - the default net0 boot will just eat CPU time
-    qm set "$SOURCE_VMID" --delete boot
+    # Create a Dummy Disk - We error with trying to boot from the empty disk
+    qm set "$SOURCE_VMID" --scsi0 ${STORAGE}:0,size=8G,discard=on,ssd=1
+    qm set "$SOURCE_VMID" --boot order=scsi0
     qm template "$SOURCE_VMID"
 fi
 
