@@ -13,3 +13,7 @@
 # IDEs
 .vscode/
 .idea/
+
+# Testing
+testresult
+core-ranking.json

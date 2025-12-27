@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="{{.Width}}" height="{{.Height}}" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+    <rect width="100%" height="100%" fill="white"/>
+
+    <!-- Header -->
+    <text x="{{.CenterX}}" y="30" font-size="20" font-weight="bold" text-anchor="middle">{{.Title}}</text>
+    <text x="{{.CenterX}}" y="50" font-size="14" fill="#333" text-anchor="middle">{{.Specs}}</text>
+    <text x="{{.CenterX}}" y="70" font-size="14" fill="#555" text-anchor="middle">{{.Stats}}</text>
+
+    <!-- Row Labels -->
+    {{range .RowLabels -}}
+    <text x="{{.X}}" y="{{.Y}}" font-size="12" text-anchor="end" dominant-baseline="middle">{{.Text}}</text>
+    {{end}}
+
+    <!-- Horizontal Lines -->
+    {{range .HLines -}}
+    <line x1="{{.X1}}" y1="{{.Y1}}" x2="{{.X2}}" y2="{{.Y2}}" stroke="black" stroke-width="2"/>
+    {{end}}
+
+    <!-- Column Labels -->
+    {{range .ColLabels -}}
+    <text x="{{.X}}" y="{{.Y}}" font-size="12" text-anchor="middle">{{.Text}}</text>
+    {{end}}
+
+    <!-- Vertical Lines -->
+    {{range .VLines -}}
+    <line x1="{{.X1}}" y1="{{.Y1}}" x2="{{.X2}}" y2="{{.Y2}}" stroke="black" stroke-width="2"/>
+    {{end}}
+
+    <!-- Cells -->
+    {{range .Cells -}}
+    <rect x="{{.X}}" y="{{.Y}}" width="{{.Width}}" height="{{.Height}}" fill="{{.Fill}}" stroke="#ccc"/>
+    <text x="{{.TextX}}" y="{{.TextY}}" font-size="10" fill="{{.TextColor}}" text-anchor="middle" dominant-baseline="middle">{{.Text}}</text>
+    {{end}}
+
+    <!-- Affinity Table -->
+    {{if .ShowAffinity}}
+    <g transform="translate({{.AffinityX}}, {{.AffinityY}})">
+        <text x="0" y="-30" font-size="16" font-weight="bold" text-anchor="start">VM Affinity</text>
+        {{if .AffinityRows}}
+        <rect x="0" y="-15" width="300" height="25" fill="#e0e0e0"/>
+        <text x="10" y="0" font-size="12" font-weight="bold" text-anchor="start">VMID</text>
+        <text x="80" y="0" font-size="12" font-weight="bold" text-anchor="start">Selected CPUs</text>
+        <line x1="0" y1="10" x2="300" y2="10" stroke="black" stroke-width="2"/>
+        {{range .AffinityRows}}
+        <rect x="0" y="{{.RectY}}" width="300" height="40" fill="{{.Fill}}"/>
+        <text x="10" y="{{.Y}}" font-size="12" text-anchor="start" dominant-baseline="middle">{{.VMID}}</text>
+        <text x="80" y="{{.Y}}" font-size="12" text-anchor="start" dominant-baseline="middle">{{.CPUs}}</text>
+        <line x1="0" y1="{{.LineY}}" x2="300" y2="{{.LineY}}" stroke="#ccc" stroke-width="1"/>
+        {{end}}
+        {{else}}
+        <text x="10" y="0" font-size="12" font-style="italic" text-anchor="start" fill="#555">No affinity data available</text>
+        {{end}}
+    </g>
+    {{end}}
+</svg>

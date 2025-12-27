@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
@@ -79,4 +80,25 @@ func sendSocketRequest(socketPath string, req SocketRequest) (*SocketResponse, e
 	}
 
 	return &resp, nil
+}
+
+func getCPUModelName(path string) string {
+	if path == "" {
+		path = config.ConstantProcCpuInfo
+	}
+	// #nosec G304 -- path is either hardcoded /proc/cpuinfo (ConstantProcCpuInfo) or a test file
+	data, err := os.ReadFile(filepath.Clean(path))
+	if err != nil {
+		return "Unknown CPU"
+	}
+	lines := strings.Split(string(data), "\n")
+	for _, line := range lines {
+		if strings.Contains(line, "model name") {
+			parts := strings.Split(line, ":")
+			if len(parts) > 1 {
+				return strings.TrimSpace(parts[1])
+			}
+		}
+	}
+	return "Unknown CPU"
 }

@@ -135,3 +135,22 @@ func TestSendSocketRequest(t *testing.T) {
 	_, err = sendSocketRequest(filepath.Join(tmpDir, "nonexistent.sock"), SocketRequest{Command: "ping"})
 	assert.Error(t, err)
 }
+
+func TestGetCPUModelName(t *testing.T) {
+	tmpDir := t.TempDir()
+	cpuInfoPath := filepath.Join(tmpDir, "cpuinfo")
+
+	content := `processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 85
+model name	: Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz
+stepping	: 4
+microcode	: 0x2000069
+`
+	err := os.WriteFile(cpuInfoPath, []byte(content), 0600)
+	require.NoError(t, err)
+
+	assert.Equal(t, "Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz", getCPUModelName(cpuInfoPath))
+	assert.Equal(t, "Unknown CPU", getCPUModelName(filepath.Join(tmpDir, "missing")))
+}

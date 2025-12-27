@@ -8,7 +8,9 @@ import (
 	"strings"
 	"text/tabwriter"
 
+	"github.com/egandro/proxmox-cpu-affinity/pkg/config"
 	"github.com/egandro/proxmox-cpu-affinity/pkg/cpuinfo"
+	"github.com/egandro/proxmox-cpu-affinity/pkg/svg"
 	"github.com/spf13/cobra"
 )
 
@@ -38,6 +40,7 @@ func newStatusCmd() *cobra.Command {
 	cmd.AddCommand(newCoreRankingCmd(&socketFile))
 	cmd.AddCommand(newCoreRankingSummaryCmd(&socketFile))
 	cmd.AddCommand(newCoreVMAffinityCmd(&socketFile))
+	cmd.AddCommand(newSvgCmd(&socketFile))
 	return cmd
 }
 
@@ -81,36 +84,17 @@ func newCoreRankingCmd(socketFile *string) *cobra.Command {
 		Use:   "core-ranking",
 		Short: "Get the current core ranking",
 		Run: func(cmd *cobra.Command, args []string) {
-			targetSocket := resolveSocketPath(*socketFile)
-			resp, err := sendSocketRequest(targetSocket, SocketRequest{Command: "core-ranking"})
-			if err != nil {
+			var rankings []cpuinfo.CoreRanking
+			if err := fetchServiceData(*socketFile, "core-ranking", &rankings); err != nil {
 				fmt.Printf("Error: %v\n", err)
-				os.Exit(1)
-			}
-
-			if resp.Status != "ok" {
-				fmt.Printf("Error: %s\n", resp.Error)
 				os.Exit(1)
 			}
 
 			if jsonOutput {
 				enc := json.NewEncoder(os.Stdout)
 				enc.SetIndent("", "  ")
-				_ = enc.Encode(resp.Data)
+				_ = enc.Encode(rankings)
 				return
-			}
-
-			// Convert generic data to typed struct
-			dataBytes, err := json.Marshal(resp.Data)
-			if err != nil {
-				fmt.Printf("Error processing response data: %v\n", err)
-				os.Exit(1)
-			}
-
-			var rankings []cpuinfo.CoreRanking
-			if err := json.Unmarshal(dataBytes, &rankings); err != nil {
-				fmt.Printf("Error parsing ranking data: %v\n", err)
-				os.Exit(1)
 			}
 
 			printCoreRankings(rankings)
@@ -122,15 +106,68 @@ func newCoreRankingCmd(socketFile *string) *cobra.Command {
 
 func printCoreRankings(rankings []cpuinfo.CoreRanking) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
-	_, _ = fmt.Fprintln(w, "Source\tNeighbor\tSocket\tCore\tLatency (ns)\tStdDev")
-	_, _ = fmt.Fprintln(w, "------\t--------\t------\t----\t------------\t------")
+	_, _ = fmt.Fprintln(w, "Source\tNeighbor\tSocket\tCore\tLatency (ns)")
+	_, _ = fmt.Fprintln(w, "------\t--------\t------\t----\t------------")
 
 	for _, r := range rankings {
 		for _, n := range r.Ranking {
-			_, _ = fmt.Fprintf(w, "%d\t%d\t%d\t%d\t%.2f\t%.2f\n", r.CPU, n.CPU, n.Socket, n.Core, n.LatencyNS, n.StdDev)
+			_, _ = fmt.Fprintf(w, "%d\t%d\t%d\t%d\t%.2f\n", r.CPU, n.CPU, n.Socket, n.Core, n.LatencyNS)
 		}
 	}
 	_ = w.Flush()
+}
+
+func newSvgCmd(socketFile *string) *cobra.Command {
+	var outputFile string
+	var showAffinity bool
+
+	cmd := &cobra.Command{
+		Use:   "svg",
+		Short: "Export current status as SVG",
+		Run: func(cmd *cobra.Command, args []string) {
+			var rankings []cpuinfo.CoreRanking
+			if err := fetchServiceData(*socketFile, "core-ranking", &rankings); err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+
+			var stats cpuinfo.TopologyStats
+			if err := fetchServiceData(*socketFile, "core-ranking-summary", &stats); err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+
+			var selections map[int][]int
+			if err := fetchServiceData(*socketFile, "core-vm-affinity", &selections); err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+
+			cpuName := getCPUModelName(config.ConstantProcCpuInfo)
+			mode := svg.ModeDefault
+			if showAffinity {
+				mode = svg.ModeAffinity
+			}
+			heatmap := svg.New(rankings, stats, selections, cpuName, mode)
+			data, err := heatmap.Generate()
+			if err != nil {
+				fmt.Printf("Error generating SVG: %v\n", err)
+				os.Exit(1)
+			}
+
+			if outputFile != "" {
+				if err := os.WriteFile(outputFile, []byte(data), 0600); err != nil {
+					fmt.Printf("Error writing output file: %v\n", err)
+					os.Exit(1)
+				}
+			} else {
+				fmt.Println(data)
+			}
+		},
+	}
+	cmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file (default is stdout)")
+	cmd.Flags().BoolVar(&showAffinity, "affinity", false, "Show current VMs affinity in SVG")
+	return cmd
 }
 
 func newCoreRankingSummaryCmd(socketFile *string) *cobra.Command {
@@ -140,36 +177,17 @@ func newCoreRankingSummaryCmd(socketFile *string) *cobra.Command {
 		Use:   "core-ranking-summary",
 		Short: "Get the core ranking summary",
 		Run: func(cmd *cobra.Command, args []string) {
-			targetSocket := resolveSocketPath(*socketFile)
-			resp, err := sendSocketRequest(targetSocket, SocketRequest{Command: "core-ranking-summary"})
-			if err != nil {
+			var stats cpuinfo.TopologyStats
+			if err := fetchServiceData(*socketFile, "core-ranking-summary", &stats); err != nil {
 				fmt.Printf("Error: %v\n", err)
-				os.Exit(1)
-			}
-
-			if resp.Status != "ok" {
-				fmt.Printf("Error: %s\n", resp.Error)
 				os.Exit(1)
 			}
 
 			if jsonOutput {
 				enc := json.NewEncoder(os.Stdout)
 				enc.SetIndent("", "  ")
-				_ = enc.Encode(resp.Data)
+				_ = enc.Encode(stats)
 				return
-			}
-
-			// Convert generic data to typed struct
-			dataBytes, err := json.Marshal(resp.Data)
-			if err != nil {
-				fmt.Printf("Error processing response data: %v\n", err)
-				os.Exit(1)
-			}
-
-			var stats cpuinfo.TopologyStats
-			if err := json.Unmarshal(dataBytes, &stats); err != nil {
-				fmt.Printf("Error parsing summary data: %v\n", err)
-				os.Exit(1)
 			}
 
 			printCoreRankingSummary(stats)
@@ -183,12 +201,11 @@ func printCoreRankingSummary(stats cpuinfo.TopologyStats) {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
 	_, _ = fmt.Fprintf(w, "CPU Count:\t%d\n", stats.CPUCount)
 	_, _ = fmt.Fprintf(w, "Socket Count:\t%d\n", stats.SocketCount)
-	_, _ = fmt.Fprintf(w, "Mean Latency:\t%.2f ns\n", stats.MeanLatencyNS)
 	_, _ = fmt.Fprintln(w, "")
-	_, _ = fmt.Fprintln(w, "Metric\tLatency (ns)\tStdDev\tSource CPU\tDest CPU")
-	_, _ = fmt.Fprintln(w, "------\t------------\t------\t----------\t--------")
-	_, _ = fmt.Fprintf(w, "Min (Best)\t%.2f\t%.2f\t%d\t%d\n", stats.Min.LatencyNS, stats.Min.StdDev, stats.Min.SrcCPU, stats.Min.DstCPU)
-	_, _ = fmt.Fprintf(w, "Max (Worst)\t%.2f\t%.2f\t%d\t%d\n", stats.Max.LatencyNS, stats.Max.StdDev, stats.Max.SrcCPU, stats.Max.DstCPU)
+	_, _ = fmt.Fprintln(w, "Metric\tLatency (ns)")
+	_, _ = fmt.Fprintln(w, "------\t------------")
+	_, _ = fmt.Fprintf(w, "Min (Best)\t%.2f\n", stats.MinLatencyNS)
+	_, _ = fmt.Fprintf(w, "Max (Worst)\t%.2f\n", stats.MaxLatencyNS)
 	_ = w.Flush()
 }
 
@@ -199,36 +216,17 @@ func newCoreVMAffinityCmd(socketFile *string) *cobra.Command {
 		Use:   "core-vm-affinity",
 		Short: "Get the current CPU affinity selections by VMID",
 		Run: func(cmd *cobra.Command, args []string) {
-			targetSocket := resolveSocketPath(*socketFile)
-			resp, err := sendSocketRequest(targetSocket, SocketRequest{Command: "core-vm-affinity"})
-			if err != nil {
+			var selections map[int][]int
+			if err := fetchServiceData(*socketFile, "core-vm-affinity", &selections); err != nil {
 				fmt.Printf("Error: %v\n", err)
-				os.Exit(1)
-			}
-
-			if resp.Status != "ok" {
-				fmt.Printf("Error: %s\n", resp.Error)
 				os.Exit(1)
 			}
 
 			if jsonOutput {
 				enc := json.NewEncoder(os.Stdout)
 				enc.SetIndent("", "  ")
-				_ = enc.Encode(resp.Data)
+				_ = enc.Encode(selections)
 				return
-			}
-
-			// Convert generic data to typed map
-			dataBytes, err := json.Marshal(resp.Data)
-			if err != nil {
-				fmt.Printf("Error processing response data: %v\n", err)
-				os.Exit(1)
-			}
-
-			var selections map[int][]int
-			if err := json.Unmarshal(dataBytes, &selections); err != nil {
-				fmt.Printf("Error parsing affinity data: %v\n", err)
-				os.Exit(1)
 			}
 
 			printCoreVMAffinity(selections)
@@ -260,4 +258,23 @@ func printCoreVMAffinity(selections map[int][]int) {
 		_, _ = fmt.Fprintf(w, "%d\t%s\n", vmid, strings.Join(cpuStrs, ","))
 	}
 	_ = w.Flush()
+}
+
+func fetchServiceData(socketFile string, command string, target interface{}) error {
+	targetSocket := resolveSocketPath(socketFile)
+	resp, err := sendSocketRequest(targetSocket, SocketRequest{Command: command})
+	if err != nil {
+		return err
+	}
+
+	if resp.Status != "ok" {
+		return fmt.Errorf("%s", resp.Error)
+	}
+
+	dataBytes, err := json.Marshal(resp.Data)
+	if err != nil {
+		return fmt.Errorf("processing response data: %w", err)
+	}
+
+	return json.Unmarshal(dataBytes, target)
 }
