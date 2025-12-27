@@ -15,7 +15,7 @@
                     "cmd": "$SCRIPT_DIR/vms-destroy.sh"
                 },
                 "vms-create": {
-                    "cmd": "$SCRIPT_DIR/vms-create.sh $SCRIPT_DIR/install-hookscript.sh"
+                    "cmd": "$SCRIPT_DIR/vms-create.sh $SCRIPT_DIR/modify-vms-install-hookscript.sh"
                 },
                 "vms-start": {
                     "cmd": "$SCRIPT_DIR/vms-start.sh"
