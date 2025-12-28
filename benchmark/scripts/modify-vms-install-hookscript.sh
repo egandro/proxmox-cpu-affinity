@@ -5,7 +5,7 @@ set -e
 VMID="$1"
 STORAGE="$2"
 
-if [ -z "$VMID" ] || [ -z "$PVE_STORAGE" ]; then
+if [ -z "$VMID" ] || [ -z "$STORAGE" ]; then
     echo "Usage: $0 <vmid> <storage>"
     exit 1
 fi

@@ -4,9 +4,11 @@ set -e
 
 SCRIPTDIR="$(dirname "$0")"
 
-. ${SCRIPTDIR}/../config.sh
+if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
+    . "${SCRIPTDIR}/../.env"
+fi
 
-STORAGE="${STORAGE:-local-zfs}"
+STORAGE="${PVE_STORAGE:-local-zfs}"
 
 if [ ! -f "$1" ]; then
     echo "Error: User script required."

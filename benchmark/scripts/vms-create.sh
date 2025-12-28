@@ -4,9 +4,11 @@ set -e
 
 SCRIPTDIR="$(dirname "$0")"
 
-. ${SCRIPTDIR}/../config.sh
+if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
+    . "${SCRIPTDIR}/../.env"
+fi
 
-STORAGE="${STORAGE:-local-zfs}"
+STORAGE="${PVE_STORAGE:-local-zfs}"
 
 USER_SCRIPT=""
 if [ -n "$1" ] && [ -f "$1" ]; then
@@ -14,12 +16,7 @@ if [ -n "$1" ] && [ -f "$1" ]; then
     shift
 fi
 
-if [ -n "$1" ]; then
-    SOURCE_VMID="$1"
-else
-    SOURCE_VMID="${BENCHMARK_TEMPLATE_ID:-1001}"
-fi
-
+SOURCE_VMID="${BENCHMARK_TEMPLATE_ID:-1001}"
 NUM_VMS="${BENCHMARK_NUM_VMS:-2}"
 CORES="${BENCHMARK_CORES:-4}"
 MEMORY="${BENCHMARK_MEMORY:-1024}"

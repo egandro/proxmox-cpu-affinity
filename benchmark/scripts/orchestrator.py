@@ -4,46 +4,28 @@ import subprocess
 import os
 import sys
 import argparse
-import re
+from dotenv import dotenv_values
 
 def resolve_env_vars(env_vars):
     """Resolves environment variables with transitive substitution."""
     original_env = os.environ.copy()
-    resolved = env_vars.copy()
-
-    # Regex to find $VAR or ${VAR} that are NOT escaped by a backslash
-    var_pattern = re.compile(r'(?<!\\)\$(\w+|\{([^}]*)\})')
+    resolved = {k: str(v) for k, v in env_vars.items()}
 
     try:
-        # Load initial values into os.environ so expandvars can see them
-        for k, v in env_vars.items():
-            os.environ[k] = str(v)
+        # Seed os.environ with our variables so expandvars can find them
+        os.environ.update(resolved)
 
-        # Multi-pass expansion to handle dependencies (e.g. A=$B, B=$C)
-        for _ in range(5):
+        # Multi-pass expansion to handle transitive dependencies
+        for _ in range(10):
             changed = False
-            for k in list(resolved.keys()):
-                v = resolved[k]
-
-                def replace_match(match):
-                    # match.group(1) is 'VAR' or '{VAR}'
-                    token = match.group(1)
-                    var_name = token[1:-1] if token.startswith('{') else token
-                    return os.environ.get(var_name, match.group(0))
-
-                new_val = var_pattern.sub(replace_match, v)
-
+            for k, v in resolved.items():
+                new_val = os.path.expandvars(v)
                 if new_val != v:
                     resolved[k] = new_val
                     os.environ[k] = new_val
                     changed = True
             if not changed:
                 break
-
-        # Final pass: unescape \$ to $
-        for k in resolved:
-            resolved[k] = resolved[k].replace(r'\$', '$')
-
         return resolved
     finally:
         os.environ.clear()
@@ -141,6 +123,14 @@ def main():
         data = json.load(f)
 
     global_env = data.get("global_config", {}).get("env", {})
+    global_env["ORCHESTRATOR_MODE"] = "1"
+
+    # Load .env from ../.env relative to script location
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    env_path = os.path.join(script_dir, "..", ".env")
+    if os.path.exists(env_path):
+        shell_env = dotenv_values(env_path)
+        global_env.update(shell_env)
 
     # Determine execution targets
     if args.create_templates:
