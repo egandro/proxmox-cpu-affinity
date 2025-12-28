@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 SCRIPTDIR="$(dirname "$0")"
 
 if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
@@ -8,7 +10,7 @@ if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
 fi
 
 # Configuration
-VM_ID="${TEMPLATE_ID_DEBIAN:-1002}"
+VMID="${TEMPLATE_ID_DEBIAN:-1002}"
 OS_TYPE="${OS_TYPE:-debian}"
 OS_VERSION="${OS_VERSION:-13}"
 OS_RELEASE="${OS_RELEASE:-trixie}"
@@ -26,7 +28,7 @@ CACHE="${CACHE:-writeback}"
 usage() {
     echo "Usage: $0 [OPTIONS]"
     echo "Options:"
-    echo "  --overwrite    Delete existing VM with ID $VM_ID if it exists"
+    echo "  --overwrite    Delete existing VM with ID $VMID if it exists"
     echo "  --force        Force delete linked clones if --overwrite is used"
     echo "  -h, --help     Show this help message"
 }
@@ -59,36 +61,44 @@ if [ ! -d "$SNIPPET_PATH" ]; then
     exit 1
 fi
 
-echo "Crating template: ${VM_NAME} (${VM_ID})"
+echo "Crating template: ${VM_NAME} (${VMID})"
 
 # Check if VM exists
-if qm status "$VM_ID" &>/dev/null; then
+set +e
+qm status "$VMID" &>/dev/null
+VM_EXISTS=$?
+set -e
+if [ $VM_EXISTS -eq 0 ]; then
     if [ "$OVERWRITE" != true ]; then
-        echo "Error: VM $VM_ID already exists. Use --overwrite to replace it."
+        echo "Error: VM $VMID already exists. Use --overwrite to replace it."
         exit 1
     fi
 
-    echo "Deleting existing VM $VM_ID..."
+    echo "Deleting existing VM $VMID..."
 
     # Check for linked clones
-    CLONES=$(grep -l "base-${VM_ID}-disk" /etc/pve/qemu-server/*.conf 2>/dev/null | grep -v "/${VM_ID}.conf")
+    CLONES=$(grep -l "base-${VMID}-disk" /etc/pve/qemu-server/*.conf 2>/dev/null | grep -v "/${VMID}.conf")
     if [ -n "$CLONES" ]; then
         if [ "$FORCE" = true ]; then
             echo "Found linked clones. Forcing removal..."
             for conf in $CLONES; do
                 CLONE_ID=$(basename "$conf" .conf)
                 echo "Destroying linked clone $CLONE_ID..."
-                qm stop "$CLONE_ID" --overrule-shutdown 1 &>/dev/null || true
+                if qm status "$CLONE_ID" | grep -q "status: running"; then
+                    qm stop "$CLONE_ID" --overrule-shutdown 1 &>/dev/null || true
+                fi
                 qm destroy "$CLONE_ID"
             done
         else
-            echo "Error: Linked clones found for template $VM_ID. Use --force to delete them."
+            echo "Error: Linked clones found for template $VMID. Use --force to delete them."
             exit 1
         fi
     fi
 
-    qm stop "$VM_ID" --overrule-shutdown 1 &>/dev/null || true
-    qm destroy "$VM_ID"
+    if qm status "$VMID" | grep -q "status: running"; then
+        qm stop "$VMID" --overrule-shutdown 1 &>/dev/null || true
+    fi
+    qm destroy "$VMID"
 fi
 
 # Download the Image
@@ -96,24 +106,24 @@ echo "Downloading Image..."
 wget -q -c -O "$IMAGE_FILE" "$IMAGE_URL"
 
 # Create and Configure the VM
-echo "Creating VM $VM_ID ($VM_NAME)..."
+echo "Creating VM $VMID ($VM_NAME)..."
 
 # Create the VM with basic settings
-qm create "$VM_ID" --name "$VM_NAME" --ostype l26
+qm create "$VMID" --name "$VM_NAME" --ostype l26
 
 # Memory and CPU settings
-qm set "$VM_ID" --memory 1024 --cores 2 --cpu host
+qm set "$VMID" --memory 1024 --cores 2 --cpu host
 
 # Networking (VirtIO Bridge)
-qm set "$VM_ID" --net0 virtio,bridge=vmbr0
+qm set "$VMID" --net0 virtio,bridge=vmbr0
 
 # Serial Console Settings (Required for Cloud-Init debugging and Proxmox Console)
-qm set "$VM_ID" --serial0 socket --vga serial0
+qm set "$VMID" --serial0 socket --vga serial0
 
 # Import the Disk
 echo "Importing disk to $PVE_STORAGE..."
-qm set "$VM_ID" --scsi0 "${STORAGE}:0,import-from=$(pwd)/$IMAGE_FILE,discard=on,ssd=1,cache=$CACHE" 1> /dev/null
-qm set "$VM_ID" --boot order=scsi0 --scsihw virtio-scsi-single
+qm set "$VMID" --scsi0 "${STORAGE}:0,import-from=$(pwd)/$IMAGE_FILE,discard=on,ssd=1,cache=$CACHE" 1> /dev/null
+qm set "$VMID" --boot order=scsi0 --scsihw virtio-scsi-single
 
 # Create the a custom Cloud-Init Snippet for QEMU Agent
 # This file tells cloud-init to install the agent on first boot
@@ -146,7 +156,7 @@ runcmd:
 EOF
 
 # Configure Cloud-Init Drive
-qm set "$VM_ID" --ide2 "${STORAGE}:cloudinit"
+qm set "$VMID" --ide2 "${STORAGE}:cloudinit"
 
 # Apply Cloud-Init Settings & Attach Snippet
 echo "Applying Cloud-Init configuration..."
@@ -154,31 +164,35 @@ echo "WARNING: this disables (most) of the Proxmox Cloud Init UI support"
 
 # Attach the User Data Snippet
 # Syntax: user=<storage>:snippets/<filename>
-qm set "$VM_ID" --cicustom "user=${SNIPPET_STORAGE}:snippets/${OS_TYPE}-${OS_VERSION}-agent.yaml"
+qm set "$VMID" --cicustom "user=${SNIPPET_STORAGE}:snippets/${OS_TYPE}-${OS_VERSION}-agent.yaml"
+
+# Set the cloud init user + keyfile (might not work)
+qm set "$VMID" --ciuser "$USERNAME"
+qm set "$VMID" --sshkeys "$SSH_KEYFILE_PUB"
 
 # Set IP Configuration (IPv6 auto, IPv4 DHCP)
-qm set "$VM_ID" --ipconfig0 "ip6=auto,ip=dhcp"
+qm set "$VMID" --ipconfig0 "ip6=auto,ip=dhcp"
 
 # I have no idea how to use this when we user our own custom snippet
 # # SSH Keys and User
-# qm set "$VM_ID" --sshkeys $SSH_KEYFILE_PUB
-# qm set "$VM_ID" --ciuser $USERNAME
+# qm set "$VMID" --sshkeys $SSH_KEYFILE_PUB
+# qm set "$VMID" --ciuser $USERNAME
 
 # Enable Agent Flag in Proxmox (So Proxmox knows to look for it)
-qm set "$VM_ID" --agent enabled=1,fstrim_cloned_disks=1
+qm set "$VMID" --agent enabled=1,fstrim_cloned_disks=1
 
 # Resize Disk (Optional: expand to 8GB min)
-qm disk resize "$VM_ID" scsi0 8G
+qm disk resize "$VMID" scsi0 8G
 
 # Finalize
 echo "Converting to Template..."
-qm template "$VM_ID"
+qm template "$VMID"
 
 # Sanity
-qm config "$VM_ID" | grep name
+qm config "$VMID" | grep name
 
 echo "------------------------------------------------"
-echo "Done! Template ${OS_TYPE}-${OS_VERSION} ($VM_ID) created."
+echo "Done! Template ${OS_TYPE}-${OS_VERSION} ($VMID) created."
 echo "When you clone this, wait for the first boot to finish."
 echo "Cloud-init will install qemu-guest-agent automatically."
 echo "------------------------------------------------"

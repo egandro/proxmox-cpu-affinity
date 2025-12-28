@@ -33,4 +33,4 @@ if ! qm status "$VMID" | grep -q "status: running"; then
 fi
 
 # Stopping VM, ignore errors
-qm stop "$VMID" || true
+qm stop --overrule-shutdown 1 "$VMID" || true

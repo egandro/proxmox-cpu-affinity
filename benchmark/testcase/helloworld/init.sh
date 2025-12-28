@@ -9,4 +9,4 @@ TESTCASE="$1"
 echo "Initializing testcase: $TESTCASE"
 
 apt-get update
-apt-get install -y sysbench time
+apt-get install -y time

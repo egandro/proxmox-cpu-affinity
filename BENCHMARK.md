@@ -41,6 +41,9 @@ cd /benchmark
 /benchmark/scripts/orchestrator.py -t helloworld -v
 # run quiet (only the step names)
 /benchmark/scripts/orchestrator.py -t helloworld -q
+
+## vm wariant - /benchmark/scripts/vm-to-testcase-template.sh 101 helloworld /benchmark/testcase/helloworld init.sh /benchmark/scripts/cleanup-debian-for-template.sh
+
 ```
 
 ## Results
