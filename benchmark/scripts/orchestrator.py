@@ -107,12 +107,13 @@ def execute_scripts(scripts, env, context_name, args):
 
 def main():
     parser = argparse.ArgumentParser(description="Benchmark Orchestrator")
-    parser.add_argument("config", nargs="?", default="/benchmark/testcases.json", help="Path to configuration file")
+    parser.add_argument("config", nargs="?", default="/benchmark/testcases.json", help="Path to configuration file (default: %(default)s)")
 
     mode_group = parser.add_mutually_exclusive_group(required=True)
     mode_group.add_argument("-t", "--testcase", help="Only run the specified testcase")
     mode_group.add_argument("--all", action="store_true", help="Run all testcases")
     mode_group.add_argument("--create-templates", action="store_true", help="Run template creation scripts")
+    mode_group.add_argument("--show", action="store_true", help="List available testcases")
 
     parser.add_argument("--dry-run", action="store_true", help="Simulate execution")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
@@ -130,6 +131,12 @@ def main():
 
     with open(args.config, 'r') as f:
         data = json.load(f)
+
+    if args.show:
+        print("Available Testcases:")
+        for tc in data.get("testcases", []):
+            print(f"  - {tc.get('name', 'unnamed')}")
+        sys.exit(0)
 
     global_env = data.get("global_config", {}).get("env", {})
     global_env["ORCHESTRATOR_MODE"] = "1"
