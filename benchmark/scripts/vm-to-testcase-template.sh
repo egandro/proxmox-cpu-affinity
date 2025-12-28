@@ -106,10 +106,10 @@ CMD_PATH="/testcase/${BASE_DIR}"
 TESTCASE=$BASE_DIR
 RUN_CMD="sudo $CMD_PATH/$TESTCASE_SCRIPT $TESTCASE"
 
-echo TESTCASE_DIR: $TESTCASE_DIR
-echo BASE_DIR: $BASE_DIR
-echo CMD_PATH: $CMD_PATH
-echo RUN_CMD: $RUN_CMD
+echo TESTCASE_DIR: "$TESTCASE_DIR"
+echo BASE_DIR: "$BASE_DIR"
+echo CMD_PATH: "$CMD_PATH"
+echo RUN_CMD: "$RUN_CMD"
 
 echo "Running script ${TESTCASE_SCRIPT} on VM..."
 
@@ -140,8 +140,8 @@ echo "Creating Template..."
 
 CURRENT_NAME=$(qm config "$VMID" | grep "name: " | awk '{print $2}')
 # remove "-$VMID" or "$VMID-"
-BASE_NAME="${CURRENT_NAME%-$VMID}"
-BASE_NAME="${BASE_NAME%$VMID-}"
+BASE_NAME="${CURRENT_NAME%-"$VMID"}"
+BASE_NAME="${BASE_NAME%"$VMID"-}"
 NEW_NAME="template-${BASE_NAME}-${NEW_NAME_POSTFIX}"
 
 echo "Renaming Template to $NEW_NAME ..."
