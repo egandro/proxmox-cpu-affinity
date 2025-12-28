@@ -17,10 +17,19 @@ VMID="$1"
 
 echo "Shutdown VM: $VMID"
 
-echo "Warning: This will only shutdown VMs with a qemu guest agent."
+echo "Info: This will only shutdown VMs with a qemu guest agent (you might have to stop it)."
 
 if ! qm status "$VMID" >/dev/null 2>&1; then
     echo "Warning: VM $VMID does not exist."
+    exit 0
+fi
+
+if qm config "$VMID" | grep -q "template: 1"; then
+    echo "Warning: VM $VMID is a template."
+fi
+
+if ! qm status "$VMID" | grep -q "status: running"; then
+    echo "Warning: VM $VMID is not running."
     exit 0
 fi
 

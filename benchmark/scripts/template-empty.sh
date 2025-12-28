@@ -12,7 +12,6 @@ VM_ID="${TEMPLATE_ID_EMPTY:-1001}"
 
 VM_NAME="template-empty"
 STORAGE="${PVE_STORAGE:-local-zfs}"
-SNIPPET_STORAGE="${PVE_STORAGE_SNIPPETS:-local}"
 SNIPPET_PATH="${PVE_STORAGE_SNIPPETS_PATH:-/var/lib/vz/snippets}"
 CACHE="${CACHE:-writeback}"
 

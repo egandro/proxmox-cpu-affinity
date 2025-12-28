@@ -18,10 +18,15 @@ if [ -z "$1" ]; then
 fi
 VMID="$1"
 
-echo -n "Waiting for agent for VM: $VMID"
+echo "Waiting for agent for VM: $VMID"
 
 if ! qm status "$VMID" >/dev/null 2>&1; then
     echo "Warning: VM $VMID does not exist."
+    exit 0
+fi
+
+if qm config "$VMID" | grep -q "template: 1"; then
+    echo "Warning: VM $VMID is a template."
     exit 0
 fi
 

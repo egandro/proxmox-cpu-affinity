@@ -22,5 +22,15 @@ if ! qm status "$VMID" >/dev/null 2>&1; then
     exit 0
 fi
 
+if qm config "$VMID" | grep -q "template: 1"; then
+    echo "Error: VM $VMID is a template."
+    exit 1
+fi
+
+if ! qm status "$VMID" | grep -q "status: running"; then
+    echo "Warning: VM $VMID is not running."
+    exit 0
+fi
+
 # Stopping VM, ignore errors
 qm stop "$VMID" || true
