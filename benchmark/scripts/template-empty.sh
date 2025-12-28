@@ -7,7 +7,7 @@ if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
 fi
 
 # Configuration
-VM_ID="${VM_ID:-1001}"
+VM_ID="${TEMPLATE_ID_EMPTY:-1001}"
 
 VM_NAME="template-empty"
 STORAGE="${PVE_STORAGE:-local-zfs}"

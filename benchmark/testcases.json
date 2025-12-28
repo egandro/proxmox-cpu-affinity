@@ -19,15 +19,11 @@
     "create_templates": {
         "scripts": {
             "empty": {
-                "cmd": "$SCRIPT_DIR/template-empty.sh $TEMPLATE_BUILD_FLAGS",
-                "env": {
-                    "VM_ID": "$TEMPLATE_ID_EMPTY"
-                }
+                "cmd": "$SCRIPT_DIR/template-empty.sh $TEMPLATE_BUILD_FLAGS"
             },
             "debian": {
                 "cmd": "$SCRIPT_DIR/template-debian.sh $TEMPLATE_BUILD_FLAGS",
                 "env": {
-                    "VM_ID": "$TEMPLATE_ID_DEBIAN",
                     "DEBIAN_USER": "$TESTCASE_SSH_USER"
                 }
             }
