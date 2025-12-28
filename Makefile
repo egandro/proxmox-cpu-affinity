@@ -51,8 +51,8 @@ lint:
 	gosec ./...
 	govulncheck ./...
 
-lint-benchmark:
-	find benchmark -name "*.sh" -type f -exec shellcheck {} +
+lint-shellcheck:
+	find . -name "*.sh" -type f -exec shellcheck {} +
 
 tidy:
 	go mod tidy

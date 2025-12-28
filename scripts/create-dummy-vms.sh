@@ -43,7 +43,7 @@ for i in $(seq 1 $NUM_VMS); do
     echo "[$i/$NUM_VMS] Creating linked clone $NEW_VMID..."
 
     # Create a linked clone (--full 0)
-    qm clone $SOURCE_VMID $NEW_VMID --name "dummy-vm-$NEW_VMID" --full 0
+    qm clone "$SOURCE_VMID" $NEW_VMID --name "dummy-vm-$NEW_VMID" --full 0
 
     # Configure resources
     qm set $NEW_VMID --cores $CORES --memory $MEMORY
