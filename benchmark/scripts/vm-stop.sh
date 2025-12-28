@@ -9,5 +9,13 @@ if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
     . "${SCRIPTDIR}/../.env"
 fi
 
-apt update -qq
-apt install jq python3-dotenv -qq -y
+if [ -z "$1" ]; then
+    echo "Usage: $0 <vmid>"
+    exit 1
+fi
+VMID="$1"
+
+echo "Stopping VM: $VMID"
+
+# Stopping VM, ignore errors
+qm stop "$VMID" || true

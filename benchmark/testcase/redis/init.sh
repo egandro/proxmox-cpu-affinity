@@ -6,6 +6,7 @@ if [ -z "$1" ]; then
 fi
 
 TESTCASE="$1"
+echo "Initializing testcase: $TESTCASE"
 
 apt-get update
 apt-get install -y build-essential git time

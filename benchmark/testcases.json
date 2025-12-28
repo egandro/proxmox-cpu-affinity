@@ -13,7 +13,9 @@
             "BENCHMARK_START_VMID": 200,
             "BENCHMARK_NUM_VMS": 2,
             "BENCHMARK_CORES": 2,
-            "BENCHMARK_MEMORY": 1024
+            "BENCHMARK_MEMORY": 1024,
+            "WAIT_FOR_AGENT_MAX_LOOP": 100,
+            "WAIT_FOR_AGENT_SLEEP_SECONDS": 10
         }
     },
     "create_templates": {
@@ -33,120 +35,6 @@
         }
     },
     "testcases": [
-        {
-            "name": "helloworld",
-            "env": {
-                "SLEEP_TIME": "100"
-            },
-            "scripts": {
-                "vms-destroy": {
-                    "cmd": "$SCRIPT_DIR/vms-destroy.sh"
-                },
-                "vms-create": {
-                    "cmd": "$SCRIPT_DIR/vms-create.sh $SCRIPT_DIR/modify-vms-install-hookscript.sh"
-                },
-                "vms-start": {
-                    "cmd": "$SCRIPT_DIR/vms-start.sh"
-                },
-                "vms-wait-for-agent": {
-                    "cmd": "$SCRIPT_DIR/vms-wait-for-agent.sh"
-                },
-                "testcase-deploy": {
-                    "cmd": "$SCRIPT_DIR/testcase-deploy.sh $TESTCASE install"
-                },
-                "testcase-init": {
-                    "cmd": "$SCRIPT_DIR/testcase-run.sh $TESTCASE init.sh"
-                },
-                "testcase-run-nohup": {
-                    "cmd": "$SCRIPT_DIR/testcase-run.sh $TESTCASE run.sh --nohup"
-                },
-                "wait": {
-                    "cmd": "sleep $SLEEP_TIME"
-                },
-                "testcase-results": {
-                    "cmd": "$SCRIPT_DIR/testcase-results.sh $TESTCASE"
-                },
-                "cleanup": {
-                    "cmd": "echo $SCRIPT_DIR/vms-destroy.sh"
-                }
-            }
-        },
-        {
-            "name": "sysbench",
-            "env": {
-                "SLEEP_TIME": "100"
-            },
-            "scripts": {
-                "vms-destroy": {
-                    "cmd": "$SCRIPT_DIR/vms-destroy.sh"
-                },
-                "vms-create": {
-                    "cmd": "$SCRIPT_DIR/vms-create.sh $SCRIPT_DIR/install-hookscript.sh"
-                },
-                "vms-start": {
-                    "cmd": "$SCRIPT_DIR/vms-start.sh"
-                },
-                "vms-wait-for-agent": {
-                    "cmd": "$SCRIPT_DIR/vms-wait-for-agent.sh"
-                },
-                "testcase-deploy": {
-                    "cmd": "$SCRIPT_DIR/testcase-deploy.sh $TESTCASE install"
-                },
-                "testcase-init": {
-                    "cmd": "$SCRIPT_DIR/testcase-run.sh $TESTCASE init.sh"
-                },
-                "testcase-run-nohup": {
-                    "cmd": "$SCRIPT_DIR/testcase-run.sh $TESTCASE run.sh --nohup"
-                },
-                "wait": {
-                    "cmd": "sleep $SLEEP_TIME"
-                },
-                "testcase-results": {
-                    "cmd": "$SCRIPT_DIR/testcase-results.sh $TESTCASE"
-                },
-                "cleanup": {
-                    "cmd": "echo $SCRIPT_DIR/vms-destroy.sh"
-                }
-            }
-        },
-        {
-            "name": "simple-http",
-            "env": {
-                "SLEEP_TIME": "100"
-            },
-            "scripts": {
-                "vms-destroy": {
-                    "cmd": "$SCRIPT_DIR/vms-destroy.sh"
-                },
-                "vms-create": {
-                    "cmd": "$SCRIPT_DIR/vms-create.sh $SCRIPT_DIR/install-hookscript.sh"
-                },
-                "vms-start": {
-                    "cmd": "$SCRIPT_DIR/vms-start.sh"
-                },
-                "vms-wait-for-agent": {
-                    "cmd": "$SCRIPT_DIR/vms-wait-for-agent.sh"
-                },
-                "testcase-deploy": {
-                    "cmd": "$SCRIPT_DIR/testcase-deploy.sh $TESTCASE install"
-                },
-                "testcase-init": {
-                    "cmd": "$SCRIPT_DIR/testcase-run.sh $TESTCASE init.sh"
-                },
-                "testcase-run-nohup": {
-                    "cmd": "$SCRIPT_DIR/testcase-run.sh $TESTCASE run.sh --nohup"
-                },
-                "wait": {
-                    "cmd": "sleep $SLEEP_TIME"
-                },
-                "testcase-results": {
-                    "cmd": "$SCRIPT_DIR/testcase-results.sh $TESTCASE"
-                },
-                "cleanup": {
-                    "cmd": "echo $SCRIPT_DIR/vms-destroy.sh"
-                }
-            }
-        },
         {
             "name": "kernel",
             "enable": false,

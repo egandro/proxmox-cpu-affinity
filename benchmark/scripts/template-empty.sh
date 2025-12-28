@@ -3,6 +3,7 @@
 SCRIPTDIR="$(dirname "$0")"
 
 if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
+    # shellcheck disable=SC1091
     . "${SCRIPTDIR}/../.env"
 fi
 
@@ -37,7 +38,7 @@ done
 echo "Crating template: ${VM_NAME} (${VM_ID})"
 
 # Check if VM exists
-if qm status $VM_ID &>/dev/null; then
+if qm status "$VM_ID" &>/dev/null; then
     if [ "$OVERWRITE" = true ]; then
         echo "Deleting existing VM $VM_ID..."
 
@@ -49,8 +50,8 @@ if qm status $VM_ID &>/dev/null; then
                 for conf in $CLONES; do
                     CLONE_ID=$(basename "$conf" .conf)
                     echo "Destroying linked clone $CLONE_ID..."
-                    qm stop $CLONE_ID --overrule-shutdown 1 &>/dev/null || true
-                    qm destroy $CLONE_ID
+                    qm stop "$CLONE_ID" --overrule-shutdown 1 &>/dev/null || true
+                    qm destroy "$CLONE_ID"
                 done
             else
                 echo "Error: Linked clones found for template $VM_ID. Use --force to delete them."
@@ -58,8 +59,8 @@ if qm status $VM_ID &>/dev/null; then
             fi
         fi
 
-        qm stop $VM_ID --overrule-shutdown 1 &>/dev/null || true
-        qm destroy $VM_ID
+        qm stop "$VM_ID" --overrule-shutdown 1 &>/dev/null || true
+        qm destroy "$VM_ID"
     else
         echo "Error: VM $VM_ID already exists. Use --overwrite to replace it."
         exit 1
@@ -70,26 +71,26 @@ fi
 echo "Creating VM $VM_ID ($VM_NAME)..."
 
 # Create the VM with basic settings
-qm create $VM_ID --name $VM_NAME --ostype l26
+qm create "$VM_ID" --name $VM_NAME --ostype l26
 
 # Memory and CPU settings
-qm set $VM_ID --memory 128 --cores 2 --cpu host
+qm set "$VM_ID" --memory 128 --cores 2 --cpu host
 
 # Networking (VirtIO Bridge)
-qm set $VM_ID --net0 virtio,bridge=vmbr0
+qm set "$VM_ID" --net0 virtio,bridge=vmbr0
 
 # Create a Dummy Disk
-qm set $VM_ID --scsi0 ${STORAGE}:0,size=8G,discard=on,ssd=1,cache=$CACHE
+qm set "$VM_ID" --scsi0 "${STORAGE}:0,size=8G,discard=on,ssd=1,cache=$CACHE"
 
 # We error with trying to boot from the empty disk
 qm set "$VM_ID" --boot order=scsi0
 
 # Finalize
 echo "Converting to Template..."
-qm template $VM_ID
+qm template "$VM_ID"
 
 # Sanity
-qm config $VM_ID | grep name
+qm config "$VM_ID" | grep name
 
 echo "------------------------------------------------"
 echo "Done! Template ${VM_NAME} created."

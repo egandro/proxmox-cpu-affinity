@@ -30,7 +30,7 @@ make clean
 # Run sysbench
 # Measure resources and duration, outputting to result.json
 /usr/bin/time -f "{\"testcase\": \"$TESTCASE\", \"duration_sec\": %e, \"max_rss_kb\": %M, \"cpu_user_sec\": %U, \"cpu_sys_sec\": %S}" -o "${RESULT_DIR}/result.json" \
-    /usr/bin/make -j$(nproc) > "${RESULT_DIR}/redis.log"
+    /usr/bin/make -j"$(nproc)" > "${RESULT_DIR}/redis.log"
 
 # create a success file to tell this test was ok
 touch "${RESULT_DIR}/success"
