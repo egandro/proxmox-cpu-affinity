@@ -22,6 +22,10 @@ if ! qm status "$VMID" >/dev/null 2>&1; then
     exit 0
 fi
 
+if qm config "$VMID" | grep -q "template: 1"; then
+    echo "Warning: VM $VMID is a template."
+fi
+
 # Stop the VM (hard stop) to ensure it can be destroyed
 qm stop "$VMID" || true
 
