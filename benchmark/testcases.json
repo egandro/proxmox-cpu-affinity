@@ -1,7 +1,35 @@
 {
     "global_config": {
         "env": {
-            "SCRIPT_DIR": "/benchmark/scripts"
+            "SCRIPT_DIR": "/benchmark/scripts",
+            "TEMPLATE_ID_EMPTY": 1001,
+            "TEMPLATE_ID_DEBIAN": 1002,
+            "PVE_VM_SSH_KEY_FILE_PUB": "/root/.ssh/id_rsa.pub",
+            "PVE_VM_SSH_KEY_FILE": "/root/.ssh/id_rsa",
+            "PVE_STORAGE": "local-zfs",
+            "PVE_STORAGE_SNIPPETS": "local-zfs",
+            "TESTCASE_SSH_USER": "debian",
+            "BENCHMARK_TEMPLATE_ID": "$TEMPLATE_ID_DEBIAN",
+            "BENCHMARK_START_VMID": 200,
+            "BENCHMARK_NUM_VMS": 2,
+            "BENCHMARK_CORES": 2,
+            "BENCHMARK_MEMORY": 1024
+        }
+    },
+    "create_templates": {
+        "scripts": {
+            "empty": {
+                "cmd": "$SCRIPT_DIR/template-empty.sh $TEMPLATE_BUILD_FLAGS"
+            },
+            "debian": {
+                "cmd": "$SCRIPT_DIR/template-debian.sh $TEMPLATE_BUILD_FLAGS",
+                "env": {
+                    "DEBIAN_USER": "$TESTCASE_SSH_USER"
+                }
+            }
+        },
+        "env": {
+            "TEMPLATE_BUILD_FLAGS": "--overwrite --force"
         }
     },
     "testcases": [
@@ -15,7 +43,7 @@
                     "cmd": "$SCRIPT_DIR/vms-destroy.sh"
                 },
                 "vms-create": {
-                    "cmd": "$SCRIPT_DIR/vms-create.sh $SCRIPT_DIR/install-hookscript.sh"
+                    "cmd": "$SCRIPT_DIR/vms-create.sh $SCRIPT_DIR/modify-vms-install-hookscript.sh"
                 },
                 "vms-start": {
                     "cmd": "$SCRIPT_DIR/vms-start.sh"

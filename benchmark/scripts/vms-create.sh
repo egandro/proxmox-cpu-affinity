@@ -4,9 +4,11 @@ set -e
 
 SCRIPTDIR="$(dirname "$0")"
 
-. ${SCRIPTDIR}/../config.sh
+if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
+    . "${SCRIPTDIR}/../.env"
+fi
 
-STORAGE="${STORAGE:-local-zfs}"
+STORAGE="${PVE_STORAGE:-local-zfs}"
 
 USER_SCRIPT=""
 if [ -n "$1" ] && [ -f "$1" ]; then
@@ -14,14 +16,9 @@ if [ -n "$1" ] && [ -f "$1" ]; then
     shift
 fi
 
-if [ -n "$1" ]; then
-    SOURCE_VMID="$1"
-else
-    SOURCE_VMID="${BENCHMARK_TEMPLATE_ID:-1001}"
-fi
-
+SOURCE_VMID="${BENCHMARK_TEMPLATE_ID:-1001}"
 NUM_VMS="${BENCHMARK_NUM_VMS:-2}"
-CORES="${BENCHMARK_CORES:-4}"
+CORES="${BENCHMARK_CORES:-2}"
 MEMORY="${BENCHMARK_MEMORY:-1024}"
 START_VMID="${BENCHMARK_START_VMID:-200}"
 
@@ -45,8 +42,8 @@ for i in $(seq 1 $NUM_VMS); do
     qm set $NEW_VMID --cores $CORES --memory $MEMORY
 
     if [ -n "$USER_SCRIPT" ]; then
-        echo "Running user script $USER_SCRIPT on VM $NEW_VMID with storage $STORAGE..."
-        $USER_SCRIPT "$NEW_VMID" "$STORAGE"
+        echo "Running user script $USER_SCRIPT on VM $NEW_VMID with storage $PVE_STORAGE..."
+        $USER_SCRIPT "$NEW_VMID" "$PVE_STORAGE"
     fi
 done
 

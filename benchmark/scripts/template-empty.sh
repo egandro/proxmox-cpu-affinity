@@ -1,10 +1,16 @@
 #!/bin/bash
 
+SCRIPTDIR="$(dirname "$0")"
+
+if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
+    . "${SCRIPTDIR}/../.env"
+fi
+
 # Configuration
-VM_ID="${VM_ID:-1001}"
+VM_ID="${TEMPLATE_ID_EMPTY:-1001}"
 
 VM_NAME="template-empty"
-STORAGE="${STORAGE:-local-zfs}"         # Storage for the VM Disk
+STORAGE="${PVE_STORAGE:-local-zfs}"
 CACHE="${CACHE:-writeback}"
 
 usage() {
@@ -88,5 +94,5 @@ qm config $VM_ID | grep name
 echo "------------------------------------------------"
 echo "Done! Template ${VM_NAME} created."
 echo "This is a dummy template does nothing when booted."
-echo "WARNING: there is no qemu agent present."
+echo "WARNING: this vm has no qemu agent."
 echo "------------------------------------------------"

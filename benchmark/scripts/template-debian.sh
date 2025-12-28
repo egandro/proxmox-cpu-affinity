@@ -1,17 +1,23 @@
 #!/bin/bash
 
+SCRIPTDIR="$(dirname "$0")"
+
+if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
+    . "${SCRIPTDIR}/../.env"
+fi
+
 # Configuration
-VM_ID="${VM_ID:-1002}"
+VM_ID="${TEMPLATE_ID_DEBIAN:-1002}"
 OS_TYPE="${OS_TYPE:-debian}"
 OS_VERSION="${OS_VERSION:-13}"
 OS_RELEASE="${OS_RELEASE:-trixie}"
 
 VM_NAME="template-${VM_NAME:-${OS_TYPE}-${OS_VERSION}-cloud}"
-STORAGE="${STORAGE:-local-zfs}"         # Storage for the VM Disk
-SNIPPET_STORAGE="${SNIPPET_STORAGE:-local}"     # Storage for the Cloud-Init snippet (usually 'local')
-SNIPPET_PATH="${SNIPPET_PATH:-/var/lib/vz/snippets}" # Physical path for snippets on host
-SSH_KEYFILE="${SSH_KEYFILE:-/root/.ssh/id_rsa.pub}"
-USERNAME="${USERNAME:-testcase}"
+STORAGE="${PVE_STORAGE:-local-zfs}"
+SNIPPET_STORAGE="${PVE_STORAGE_SNIPPETS:-local}"
+SNIPPET_PATH="${SNIPPET_PATH:-/var/lib/vz/snippets}"
+SSH_KEYFILE_PUB="${PVE_VM_SSH_KEY_FILE_PUB:-/root/.ssh/id_rsa.pub}"
+USERNAME="${DEBIAN_USER:-debian}"
 IMAGE_URL="${IMAGE_URL:-https://cloud.debian.org/images/cloud/${OS_RELEASE}/latest/${OS_TYPE}-${OS_VERSION}-genericcloud-amd64.qcow2}"
 IMAGE_FILE="${IMAGE_FILE:-${OS_TYPE}-${OS_VERSION}-genericcloud-amd64.qcow2}"
 CACHE="${CACHE:-writeback}"
@@ -43,11 +49,11 @@ echo "Crating template: ${VM_NAME} (${VM_ID})"
 # This file tells cloud-init to install the agent on first boot
 echo "Creating Cloud-Init snippet for QEMU Guest Agent..."
 
-if [ ! -f "$SSH_KEYFILE" ]; then
-    echo "Error: SSH Keyfile not found at $SSH_KEYFILE"
+if [ ! -f "$SSH_KEYFILE_PUB" ]; then
+    echo "Error: SSH Keyfile not found at $SSH_KEYFILE_PUB"
     exit 1
 fi
-SSH_KEY=$(cat "$SSH_KEYFILE")
+SSH_KEY=$(cat "$SSH_KEYFILE_PUB")
 
 mkdir -p $SNIPPET_PATH
 cat << EOF > $SNIPPET_PATH/${OS_TYPE}-${OS_VERSION}-agent.yaml
@@ -119,7 +125,7 @@ qm set $VM_ID --net0 virtio,bridge=vmbr0
 qm set $VM_ID --serial0 socket --vga serial0
 
 # Import the Disk
-echo "Importing disk to $STORAGE..."
+echo "Importing disk to $PVE_STORAGE..."
 qm set $VM_ID --scsi0 ${STORAGE}:0,import-from="$(pwd)/$IMAGE_FILE",discard=on,ssd=1,cache=$CACHE 1> /dev/null
 qm set $VM_ID --boot order=scsi0 --scsihw virtio-scsi-single
 
@@ -138,7 +144,7 @@ qm set $VM_ID --ipconfig0 "ip6=auto,ip=dhcp"
 
 # I have no idea how to use this when we user our own custom snippet
 # # SSH Keys and User
-# qm set $VM_ID --sshkeys $SSH_KEYFILE
+# qm set $VM_ID --sshkeys $SSH_KEYFILE_PUB
 # qm set $VM_ID --ciuser $USERNAME
 
 # Enable Agent Flag in Proxmox (So Proxmox knows to look for it)

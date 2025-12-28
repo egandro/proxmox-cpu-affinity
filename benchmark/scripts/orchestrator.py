@@ -4,9 +4,39 @@ import subprocess
 import os
 import sys
 import argparse
+from dotenv import dotenv_values
+
+def resolve_env_vars(env_vars):
+    """Resolves environment variables with transitive substitution."""
+    original_env = os.environ.copy()
+    resolved = {k: str(v) for k, v in env_vars.items()}
+
+    try:
+        # Seed os.environ with our variables so expandvars can find them
+        os.environ.update(resolved)
+
+        # Multi-pass expansion to handle transitive dependencies
+        for _ in range(10):
+            changed = False
+            for k, v in resolved.items():
+                new_val = os.path.expandvars(v)
+                if new_val != v:
+                    resolved[k] = new_val
+                    os.environ[k] = new_val
+                    changed = True
+            if not changed:
+                break
+        return resolved
+    finally:
+        os.environ.clear()
+        os.environ.update(original_env)
 
 def run_command(command, env_vars, step_name, dry_run=False, verbose=False, quiet=False):
     """Executes a shell command with the specific environment."""
+    # Ensure all environment variables are strings
+    env_vars = {k: str(v) for k, v in env_vars.items()}
+    env_vars = resolve_env_vars(env_vars)
+
     display_cmd = command
     prefix = "[EXEC]"
 
@@ -52,13 +82,47 @@ def run_command(command, env_vars, step_name, dry_run=False, verbose=False, quie
         print(f"  [ERROR] Step '{step_name}' failed with exit code {e.returncode}")
         raise e
 
+def execute_scripts(scripts, env, context_name, args):
+    """Iterates over scripts and executes them."""
+    for step_name, step_config in scripts.items():
+        # Merge Step-specific Env
+        step_env = env.copy()
+        step_env.update(step_config.get("env", {}))
+
+        # Handle "cmds" (list) vs "cmd" (string)
+        commands = []
+        if "cmds" in step_config:
+            commands = step_config["cmds"]
+        elif "cmd" in step_config:
+            commands = [step_config["cmd"]]
+
+        # Execute
+        try:
+            for cmd in commands:
+                run_command(cmd, step_env, step_name, dry_run=args.dry_run, verbose=args.verbose, quiet=args.quiet)
+        except subprocess.CalledProcessError:
+            print(f"Aborting '{context_name}' due to failure in step '{step_name}'.")
+            return False
+    return True
+
 def main():
     parser = argparse.ArgumentParser(description="Benchmark Orchestrator")
-    parser.add_argument("config", nargs="?", default="/benchmark/testcases.json", help="Path to configuration file")
+    parser.add_argument("config", nargs="?", default="/benchmark/testcases.json", help="Path to configuration file (default: %(default)s)")
+
+    mode_group = parser.add_mutually_exclusive_group(required=True)
+    mode_group.add_argument("-t", "--testcase", help="Only run the specified testcase")
+    mode_group.add_argument("--all", action="store_true", help="Run all testcases")
+    mode_group.add_argument("--create-templates", action="store_true", help="Run template creation scripts")
+    mode_group.add_argument("--show", action="store_true", help="List available testcases")
+
     parser.add_argument("--dry-run", action="store_true", help="Simulate execution")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument("-q", "--quiet", action="store_true", help="Suppress command output")
-    parser.add_argument("-t", "--testcase", help="Only run the specified testcase")
+
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
     args = parser.parse_args()
 
     if not os.path.exists(args.config):
@@ -68,48 +132,58 @@ def main():
     with open(args.config, 'r') as f:
         data = json.load(f)
 
-    global_env = data.get("global_config", {}).get("env", {})
+    if args.show:
+        print("Available Testcases:")
+        for tc in data.get("testcases", []):
+            print(f"  - {tc.get('name', 'unnamed')}")
+        sys.exit(0)
 
-    for testcase in data.get("testcases", []):
-        if "name" not in testcase:
+    global_env = data.get("global_config", {}).get("env", {})
+    global_env["ORCHESTRATOR_MODE"] = "1"
+
+    # Load .env from ../.env relative to script location
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    env_path = os.path.join(script_dir, "..", ".env")
+    if os.path.exists(env_path):
+        shell_env = dotenv_values(env_path)
+        global_env.update(shell_env)
+
+    # Determine execution targets
+    if args.create_templates:
+        if "create_templates" not in data:
+            print("Warning: 'create_templates' section not found in configuration.")
+            targets = []
+        else:
+            targets = [data["create_templates"]]
+    else:
+        targets = data.get("testcases", [])
+
+    for testcase in targets:
+        if "name" in testcase:
+            context_name = testcase["name"]
+        elif args.create_templates:
+            context_name = "create_templates"
+        else:
             print("Error: Testcase definition missing required 'name' field.")
             sys.exit(1)
 
-        tc_name = testcase["name"]
-        if args.testcase and args.testcase != tc_name:
+        if not args.create_templates and args.testcase and args.testcase != context_name:
             continue
 
         print(f"\n========================================")
-        print(f"RUNNING TESTCASE: {tc_name}")
+        print(f"RUNNING: {context_name}")
         print(f"========================================")
 
-        # 1. Setup Base Environment (Global + Testcase)
+        # Setup Environment
         tc_env = global_env.copy()
-        tc_env["TESTCASE"] = tc_name
+        if not args.create_templates:
+            tc_env["TESTCASE"] = context_name
         tc_env.update(testcase.get("env", {}))
 
         scripts = testcase.get("scripts", {})
-
-        # 2. Iterate EXACTLY as defined in the JSON file
-        for step_name, step_config in scripts.items():
-            # Merge Step-specific Env
-            step_env = tc_env.copy()
-            step_env.update(step_config.get("env", {}))
-
-            # Handle "cmds" (list) vs "cmd" (string)
-            commands = []
-            if "cmds" in step_config:
-                commands = step_config["cmds"]
-            elif "cmd" in step_config:
-                commands = [step_config["cmd"]]
-
-            # Execute
-            try:
-                for cmd in commands:
-                    run_command(cmd, step_env, step_name, dry_run=args.dry_run, verbose=args.verbose, quiet=args.quiet)
-            except subprocess.CalledProcessError:
-                print(f"Aborting testcase '{tc_name}' due to failure in step '{step_name}'.")
-                break
+        if not execute_scripts(scripts, tc_env, context_name, args):
+            if args.create_templates:
+                sys.exit(1)
 
 if __name__ == "__main__":
     main()

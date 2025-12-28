@@ -4,16 +4,19 @@ set -e
 
 SCRIPTDIR="$(dirname "$0")"
 
-. ${SCRIPTDIR}/../config.sh
+if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
+    . "${SCRIPTDIR}/../.env"
+fi
 
 NUM_VMS="${BENCHMARK_NUM_VMS:-2}"
 START_VMID="${BENCHMARK_START_VMID:-200}"
-SSH_USER="${TESTCASE_SSH_USER:-debian}"
+SSH_USER="${TESTCASE_SSH_USER:-testcase}"
 
 BASE_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR"
+SSH_KEYFILE="${PVE_VM_SSH_KEY_FILE:-"/root/.ssh/id_rsa"}"
 SSH_PORT="${TESTCASE_SSH_PORT:-22}"
-SSH_OPTS="$BASE_OPTS -p $SSH_PORT"
-SCP_OPTS="$BASE_OPTS -P $SSH_PORT"
+SSH_OPTS="$BASE_OPTS -p $SSH_PORT -i $SSH_KEYFILE"
+SCP_OPTS="$BASE_OPTS -P $SSH_PORT -i $SSH_KEYFILE"
 
 TESTCASE_BASE_DIR="${TESTCASE_BASE_DIR:-${SCRIPTDIR}/../testcase}"
 TESTCASE="${1:-helloworld}"

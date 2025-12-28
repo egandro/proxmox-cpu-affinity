@@ -4,7 +4,9 @@ set -e
 
 SCRIPTDIR="$(dirname "$0")"
 
-. ${SCRIPTDIR}/../config.sh
+if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
+    . "${SCRIPTDIR}/../.env"
+fi
 
 NUM_VMS="${BENCHMARK_NUM_VMS:-2}"
 START_VMID="${BENCHMARK_START_VMID:-200}"
