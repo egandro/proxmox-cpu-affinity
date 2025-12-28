@@ -67,6 +67,7 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         with:
           scandirs: 'benchmark'
+          version: v0.10.0
 
   build-and-package:
     name: Build, Deb (${{ matrix.arch }})
