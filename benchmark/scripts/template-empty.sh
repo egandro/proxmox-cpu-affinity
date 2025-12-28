@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-VM_ID="${TEMPLATE_ID_EMPTY:-1001}"
+VM_ID="${VM_ID:-1001}"
 
 VM_NAME="template-empty"
 STORAGE="${PVE_STORAGE:-local-zfs}"         # Storage for the VM Disk

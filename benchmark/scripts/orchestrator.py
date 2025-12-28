@@ -4,9 +4,57 @@ import subprocess
 import os
 import sys
 import argparse
+import re
+
+def resolve_env_vars(env_vars):
+    """Resolves environment variables with transitive substitution."""
+    original_env = os.environ.copy()
+    resolved = env_vars.copy()
+
+    # Regex to find $VAR or ${VAR} that are NOT escaped by a backslash
+    var_pattern = re.compile(r'(?<!\\)\$(\w+|\{([^}]*)\})')
+
+    try:
+        # Load initial values into os.environ so expandvars can see them
+        for k, v in env_vars.items():
+            os.environ[k] = str(v)
+
+        # Multi-pass expansion to handle dependencies (e.g. A=$B, B=$C)
+        for _ in range(5):
+            changed = False
+            for k in list(resolved.keys()):
+                v = resolved[k]
+
+                def replace_match(match):
+                    # match.group(1) is 'VAR' or '{VAR}'
+                    token = match.group(1)
+                    var_name = token[1:-1] if token.startswith('{') else token
+                    return os.environ.get(var_name, match.group(0))
+
+                new_val = var_pattern.sub(replace_match, v)
+
+                if new_val != v:
+                    resolved[k] = new_val
+                    os.environ[k] = new_val
+                    changed = True
+            if not changed:
+                break
+
+        # Final pass: unescape \$ to $
+        for k in resolved:
+            resolved[k] = resolved[k].replace(r'\$', '$')
+
+        return resolved
+    finally:
+        os.environ.clear()
+        os.environ.update(original_env)
 
 def run_command(command, env_vars, step_name, dry_run=False, verbose=False, quiet=False):
     """Executes a shell command with the specific environment."""
+    # Ensure all environment variables are strings
+    env_vars = {k: str(v) for k, v in env_vars.items()}
+    env_vars = resolve_env_vars(env_vars)
+
     display_cmd = command
     prefix = "[EXEC]"
 

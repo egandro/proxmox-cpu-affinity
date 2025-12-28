@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-VM_ID="${TEMPLATE_ID_DEBIAN:-1002}"
+VM_ID="${VM_ID:-1002}"
 OS_TYPE="${OS_TYPE:-debian}"
 OS_VERSION="${OS_VERSION:-13}"
 OS_RELEASE="${OS_RELEASE:-trixie}"
