@@ -4,6 +4,8 @@
 
 **NON Production Servers only** Scripts are going to delete VMs and Templates. No questions asked.
 
+Constraint: Your Proxmox must be able to give a VM on vmbr0 an IP via DHCP.
+
 ```bash
 git clone https://github.com/egandro/proxmox-cpu-affinity
 cd proxmox-cpu-affinity
