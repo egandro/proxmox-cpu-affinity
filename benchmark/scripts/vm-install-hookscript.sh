@@ -3,19 +3,20 @@
 set -e
 
 VMID="$1"
-STORAGE="$2"
 
-if [ -z "$VMID" ] || [ -z "$STORAGE" ]; then
+if [ -z "$VMID" ]; then
     echo "Usage: $0 <vmid> <storage>"
     exit 1
 fi
 
-echo "Installing hookscript on VM: $VMID with storage: $STORAGE"
+SNIPPET_STORAGE="${PVE_STORAGE_SNIPPETS:-local}"
 
-if ! pvesm status --storage "$STORAGE" >/dev/null 2>&1; then
-    echo "Error: Storage '$STORAGE' does not exist or is not active."
+if ! pvesm status --storage "$SNIPPET_STORAGE" >/dev/null 2>&1; then
+    echo "Error: Snipped Storage '$SNIPPET_STORAGE' does not exist or is not active."
     exit 1
 fi
+
+echo "Installing hookscript on VM: $VMID with storage: $SNIPPET_STORAGE"
 
 if ! qm status "$VMID" >/dev/null 2>&1; then
     echo "Warning: VM $VMID does not exist."
@@ -27,6 +28,10 @@ if ! qm status "$VMID" | grep -q "status: stopped"; then
     exit 1
 fi
 
-qm set "${VMID}" --hookscript "${STORAGE}:snippets/proxmox-cpu-affinity-hook"
+if qm config "$VMID" | grep -q "template: 1"; then
+    echo "Warning: VM $VMID is a template."
+fi
+
+qm set "${VMID}" --hookscript "${SNIPPET_STORAGE}:snippets/proxmox-cpu-affinity-hook"
 
 exit 0

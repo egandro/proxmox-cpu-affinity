@@ -36,4 +36,10 @@ if [ ! -f "$MODIFY_SCRIPT" ]; then
     exit 1
 fi
 
-$MODIFY_SCRIPT "$VMID" "$STORAGE"
+if qm config "$VMID" | grep -q "template: 1"; then
+    echo "Warning: VM $VMID is a template."
+fi
+
+echo "$MODIFY_SCRIPT" "$VMID" "$STORAGE"
+
+"$MODIFY_SCRIPT" "$VMID" "$STORAGE"

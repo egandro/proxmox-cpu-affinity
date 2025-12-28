@@ -49,6 +49,11 @@ if ! pvesm status --storage "$STORAGE" >/dev/null 2>&1; then
     exit 1
 fi
 
+if ! pvesm status --storage "$SNIPPET_STORAGE" >/dev/null 2>&1; then
+    echo "Error: Snipped Storage '$SNIPPET_STORAGE' does not exist or is not active."
+    exit 1
+fi
+
 if [ ! -d "$SNIPPET_PATH" ]; then
     echo "Error: Snippet path '$SNIPPET_PATH' does not exist."
     exit 1
