@@ -19,17 +19,24 @@ mkdir -p "$RESULT_DIR"
 # Redirect all output (stdout & stderr) to a main log file
 exec > "${RESULT_DIR}/testcase.log" 2>&1
 
-# Test if sysbench is installed
-which sysbench || exit 1
+# Start a dummy web server in the background (port 8000)
+python3 -m http.server 8000 > /dev/null 2>&1 &
+SERVER_PID=$!
+# kill at exit
+trap "kill $SERVER_PID" ERR
+
+#breath
+sleep 5
+
+# Test if wrk is installed
+which wrk || exit 1
 # Test if /usr/bin/time is installed (required for resource measurement)
 if [ ! -f /usr/bin/time ]; then echo "Error: /usr/bin/time not found. Please run init.sh to install 'time'."; exit 1; fi
 
-# Run sysbench
+# Run wrk
 # Measure resources and duration, outputting to result.json
 /usr/bin/time -f "{\"testcase\": \"$TESTCASE\", \"duration_sec\": %e, \"max_rss_kb\": %M, \"cpu_user_sec\": %U, \"cpu_sys_sec\": %S}" -o "${RESULT_DIR}/result.json" \
-    sysbench cpu --cpu-max-prime=20000 --threads=$(nproc) run > "${RESULT_DIR}/sysbench.log"
-
-# Look for: events per second (higher is better).
+    /usr/bin/wrk -t12 -c400 -d10s http://127.0.0.1:8000/ 2>&1 > "${RESULT_DIR}/wrk.log"
 
 # create a success file to tell this test was ok
 touch "${RESULT_DIR}/success"
