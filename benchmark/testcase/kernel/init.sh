@@ -9,4 +9,3 @@ TESTCASE="$1"
 
 apt-get update
 apt-get install -y build-essential git bison flex libssl-dev libelf-dev time
-
