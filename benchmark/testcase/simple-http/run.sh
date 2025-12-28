@@ -25,6 +25,9 @@ SERVER_PID=$!
 # kill at exit
 trap "kill $SERVER_PID" ERR
 
+#breath
+sleep 5
+
 # Test if wrk is installed
 which wrk || exit 1
 # Test if /usr/bin/time is installed (required for resource measurement)
@@ -33,7 +36,7 @@ if [ ! -f /usr/bin/time ]; then echo "Error: /usr/bin/time not found. Please run
 # Run wrk
 # Measure resources and duration, outputting to result.json
 /usr/bin/time -f "{\"testcase\": \"$TESTCASE\", \"duration_sec\": %e, \"max_rss_kb\": %M, \"cpu_user_sec\": %U, \"cpu_sys_sec\": %S}" -o "${RESULT_DIR}/result.json" \
-    wrk -t12 -c400 -d10s http://127.0.0.1:8000/ > "${wrk}/sysbench.log"
+    /usr/bin/wrk -t12 -c400 -d10s http://127.0.0.1:8000/ 2>&1 > "${RESULT_DIR}/wrk.log"
 
 # create a success file to tell this test was ok
 touch "${RESULT_DIR}/success"
