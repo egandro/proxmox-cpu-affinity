@@ -139,9 +139,10 @@ qm stop "$VMID"
 echo "Creating Template..."
 
 CURRENT_NAME=$(qm config "$VMID" | grep "name: " | awk '{print $2}')
-# in case we end with "-$VMID" remove this
+# remove "-$VMID" or "$VMID-"
 BASE_NAME="${CURRENT_NAME%-$VMID}"
-NEW_NAME="${BASE_NAME}-${NEW_NAME_POSTFIX}"
+BASE_NAME="${BASE_NAME%$VMID-}"
+NEW_NAME="template-${BASE_NAME}-${NEW_NAME_POSTFIX}"
 
 echo "Renaming Template to $NEW_NAME ..."
 qm set "$VMID" --name "$NEW_NAME"

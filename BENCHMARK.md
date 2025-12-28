@@ -14,6 +14,8 @@ scp -r ./benchmark proxmox:/benchmark
 
 ssh to your proxmox
 
+#XXXXXXXXXXXXXXX THIS IS BROKEN atm
+
 ```bash
 cd /benchmark
 
@@ -43,6 +45,24 @@ cd /benchmark
 /benchmark/scripts/orchestrator.py -t helloworld -q
 
 ## vm wariant - /benchmark/scripts/vm-to-testcase-template.sh 101 helloworld /benchmark/testcase/helloworld init.sh /benchmark/scripts/cleanup-debian-for-template.sh
+
+
+/benchmark/scripts/vm-destroy.sh 101 --force
+#/benchmark/scripts/vm-create.sh 101 1002 --full
+/benchmark/scripts/vm-create.sh 101 1002
+/benchmark/scripts/vm-start.sh 101
+/benchmark/scripts/vm-wait-for-agent.sh 101
+
+/benchmark/scripts/vm-to-testcase-template.sh 101 helloworld /benchmark/testcase/helloworld init.sh /benchmark/scripts/cleanup-debian-for-template.sh
+
+/benchmark/scripts/vm-create.sh 102 101 || true
+/benchmark/scripts/vm-create.sh 103 101 || true
+
+/benchmark/scripts/vm-start.sh 102
+/benchmark/scripts/vm-start.sh 103
+
+/benchmark/scripts/vm-wait-for-agent.sh 102
+/benchmark/scripts/vm-wait-for-agent.sh 103
 
 ```
 

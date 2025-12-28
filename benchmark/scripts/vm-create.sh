@@ -80,8 +80,13 @@ fi
 [ "$FULL_CLONE" -eq 1 ] && CLONE_TYPE="full" || CLONE_TYPE="linked"
 echo "Creating VM: $VMID from template: $SOURCE_VMID ($CLONE_TYPE clone)"
 
+SOURCE_NAME=$(qm config "$SOURCE_VMID" | grep "name: " | awk '{print $2}')
+NEW_NAME="${SOURCE_NAME#template-}"
+NEW_NAME="${NEW_NAME%-template}"
+NEW_NAME="$NEW_NAME-$VMID"
+
 # Create a clone (linked by default, full if --full is passed)
-qm clone "$SOURCE_VMID" "$VMID" --name "dummy-vm-$VMID" --full "$FULL_CLONE"
+qm clone "$SOURCE_VMID" "$VMID" --name "$NEW_NAME" --full "$FULL_CLONE"
 
 # Configure resources
 qm set "$VMID" --cores "$CORES" --memory "$MEMORY"
