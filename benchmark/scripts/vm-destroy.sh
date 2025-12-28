@@ -17,6 +17,11 @@ VMID="$1"
 
 echo "Destroying VM: $VMID"
 
+if ! qm status "$VMID" >/dev/null 2>&1; then
+    echo "Warning: VM $VMID does not exist."
+    exit 0
+fi
+
 # Stop the VM (hard stop) to ensure it can be destroyed
 qm stop "$VMID" || true
 

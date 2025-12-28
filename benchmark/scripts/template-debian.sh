@@ -16,7 +16,7 @@ OS_RELEASE="${OS_RELEASE:-trixie}"
 VM_NAME="template-${VM_NAME:-${OS_TYPE}-${OS_VERSION}-cloud}"
 STORAGE="${PVE_STORAGE:-local-zfs}"
 SNIPPET_STORAGE="${PVE_STORAGE_SNIPPETS:-local}"
-SNIPPET_PATH="${SNIPPET_PATH:-/var/lib/vz/snippets}"
+SNIPPET_PATH="${PVE_STORAGE_SNIPPETS_PATH:-/var/lib/vz/snippets}"
 SSH_KEYFILE_PUB="${PVE_VM_SSH_KEY_FILE_PUB:-/root/.ssh/id_rsa.pub}"
 USERNAME="${DEBIAN_USER:-debian}"
 IMAGE_URL="${IMAGE_URL:-https://cloud.debian.org/images/cloud/${OS_RELEASE}/latest/${OS_TYPE}-${OS_VERSION}-genericcloud-amd64.qcow2}"
@@ -44,9 +44,73 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
+if ! pvesm status --storage "$STORAGE" >/dev/null 2>&1; then
+    echo "Error: Storage '$STORAGE' does not exist or is not active."
+    exit 1
+fi
+
+if [ ! -d "$SNIPPET_PATH" ]; then
+    echo "Error: Snippet path '$SNIPPET_PATH' does not exist."
+    exit 1
+fi
+
 echo "Crating template: ${VM_NAME} (${VM_ID})"
 
-# Create the Cloud-Init Snippet for QEMU Agent
+# Check if VM exists
+if qm status "$VM_ID" &>/dev/null; then
+    if [ "$OVERWRITE" != true ]; then
+        echo "Error: VM $VM_ID already exists. Use --overwrite to replace it."
+        exit 1
+    fi
+
+    echo "Deleting existing VM $VM_ID..."
+
+    # Check for linked clones
+    CLONES=$(grep -l "base-${VM_ID}-disk" /etc/pve/qemu-server/*.conf 2>/dev/null | grep -v "/${VM_ID}.conf")
+    if [ -n "$CLONES" ]; then
+        if [ "$FORCE" = true ]; then
+            echo "Found linked clones. Forcing removal..."
+            for conf in $CLONES; do
+                CLONE_ID=$(basename "$conf" .conf)
+                echo "Destroying linked clone $CLONE_ID..."
+                qm stop "$CLONE_ID" --overrule-shutdown 1 &>/dev/null || true
+                qm destroy "$CLONE_ID"
+            done
+        else
+            echo "Error: Linked clones found for template $VM_ID. Use --force to delete them."
+            exit 1
+        fi
+    fi
+
+    qm stop "$VM_ID" --overrule-shutdown 1 &>/dev/null || true
+    qm destroy "$VM_ID"
+fi
+
+# Download the Image
+echo "Downloading Image..."
+wget -q -c -O "$IMAGE_FILE" "$IMAGE_URL"
+
+# Create and Configure the VM
+echo "Creating VM $VM_ID ($VM_NAME)..."
+
+# Create the VM with basic settings
+qm create "$VM_ID" --name "$VM_NAME" --ostype l26
+
+# Memory and CPU settings
+qm set "$VM_ID" --memory 1024 --cores 2 --cpu host
+
+# Networking (VirtIO Bridge)
+qm set "$VM_ID" --net0 virtio,bridge=vmbr0
+
+# Serial Console Settings (Required for Cloud-Init debugging and Proxmox Console)
+qm set "$VM_ID" --serial0 socket --vga serial0
+
+# Import the Disk
+echo "Importing disk to $PVE_STORAGE..."
+qm set "$VM_ID" --scsi0 "${STORAGE}:0,import-from=$(pwd)/$IMAGE_FILE,discard=on,ssd=1,cache=$CACHE" 1> /dev/null
+qm set "$VM_ID" --boot order=scsi0 --scsihw virtio-scsi-single
+
+# Create the a custom Cloud-Init Snippet for QEMU Agent
 # This file tells cloud-init to install the agent on first boot
 echo "Creating Cloud-Init snippet for QEMU Guest Agent..."
 
@@ -76,65 +140,12 @@ runcmd:
   - systemctl enable qemu-guest-agent
 EOF
 
-# Download the Image
-echo "Downloading Image..."
-wget -q -c -O "$IMAGE_FILE" "$IMAGE_URL"
-
-# Check if VM exists
-if qm status "$VM_ID" &>/dev/null; then
-    if [ "$OVERWRITE" = true ]; then
-        echo "Deleting existing VM $VM_ID..."
-
-        # Check for linked clones
-        CLONES=$(grep -l "base-${VM_ID}-disk" /etc/pve/qemu-server/*.conf 2>/dev/null | grep -v "/${VM_ID}.conf")
-        if [ -n "$CLONES" ]; then
-            if [ "$FORCE" = true ]; then
-                echo "Found linked clones. Forcing removal..."
-                for conf in $CLONES; do
-                    CLONE_ID=$(basename "$conf" .conf)
-                    echo "Destroying linked clone $CLONE_ID..."
-                    qm stop "$CLONE_ID" --overrule-shutdown 1 &>/dev/null || true
-                    qm destroy "$CLONE_ID"
-                done
-            else
-                echo "Error: Linked clones found for template $VM_ID. Use --force to delete them."
-                exit 1
-            fi
-        fi
-
-        qm stop "$VM_ID" --overrule-shutdown 1 &>/dev/null || true
-        qm destroy "$VM_ID"
-    else
-        echo "Error: VM $VM_ID already exists. Use --overwrite to replace it."
-        exit 1
-    fi
-fi
-
-# Create and Configure the VM
-echo "Creating VM $VM_ID ($VM_NAME)..."
-
-# Create the VM with basic settings
-qm create "$VM_ID" --name "$VM_NAME" --ostype l26
-
-# Memory and CPU settings
-qm set "$VM_ID" --memory 1024 --cores 2 --cpu host
-
-# Networking (VirtIO Bridge)
-qm set "$VM_ID" --net0 virtio,bridge=vmbr0
-
-# Serial Console Settings (Required for Cloud-Init debugging and Proxmox Console)
-qm set "$VM_ID" --serial0 socket --vga serial0
-
-# Import the Disk
-echo "Importing disk to $PVE_STORAGE..."
-qm set "$VM_ID" --scsi0 "${STORAGE}:0,import-from=$(pwd)/$IMAGE_FILE,discard=on,ssd=1,cache=$CACHE" 1> /dev/null
-qm set "$VM_ID" --boot order=scsi0 --scsihw virtio-scsi-single
-
 # Configure Cloud-Init Drive
 qm set "$VM_ID" --ide2 "${STORAGE}:cloudinit"
 
 # Apply Cloud-Init Settings & Attach Snippet
 echo "Applying Cloud-Init configuration..."
+echo "WARNING: this disables (most) of the Proxmox Cloud Init UI support"
 
 # Attach the User Data Snippet
 # Syntax: user=<storage>:snippets/<filename>

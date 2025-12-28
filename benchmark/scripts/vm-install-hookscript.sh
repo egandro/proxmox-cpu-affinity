@@ -10,18 +10,22 @@ if [ -z "$VMID" ] || [ -z "$STORAGE" ]; then
     exit 1
 fi
 
-if [ -z "$1" ]; then
-    echo "Usage: $0 <vmid>"
+echo "Installing hookscript on VM: $VMID with storage: $STORAGE"
+
+if ! pvesm status --storage "$STORAGE" >/dev/null 2>&1; then
+    echo "Error: Storage '$STORAGE' does not exist or is not active."
     exit 1
 fi
-VMID="$1"
+
+if ! qm status "$VMID" >/dev/null 2>&1; then
+    echo "Warning: VM $VMID does not exist."
+    exit 0
+fi
 
 if ! qm status "$VMID" | grep -q "status: stopped"; then
     echo "Error: VM $VMID is not stopped."
     exit 1
 fi
-
-echo "Installing hookscript on VM: $VMID with storage: $STORAGE"
 
 qm set "${VMID}" --hookscript "${STORAGE}:snippets/proxmox-cpu-affinity-hook"
 

@@ -19,5 +19,10 @@ echo "Rebooting VM: $VMID"
 
 echo "Warning: This will only reboot VMs with a qemu guest agent."
 
+if ! qm status "$VMID" >/dev/null 2>&1; then
+    echo "Warning: VM $VMID does not exist."
+    exit 0
+fi
+
 # Reboot VM, ignore errors
 qm reboot "$VMID" || true

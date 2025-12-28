@@ -12,6 +12,8 @@ VM_ID="${TEMPLATE_ID_EMPTY:-1001}"
 
 VM_NAME="template-empty"
 STORAGE="${PVE_STORAGE:-local-zfs}"
+SNIPPET_STORAGE="${PVE_STORAGE_SNIPPETS:-local}"
+SNIPPET_PATH="${PVE_STORAGE_SNIPPETS_PATH:-/var/lib/vz/snippets}"
 CACHE="${CACHE:-writeback}"
 
 usage() {
@@ -34,6 +36,16 @@ while [[ "$#" -gt 0 ]]; do
     esac
     shift
 done
+
+if ! pvesm status --storage "$STORAGE" >/dev/null 2>&1; then
+    echo "Error: Storage '$STORAGE' does not exist or is not active."
+    exit 1
+fi
+
+if [ ! -d "$SNIPPET_PATH" ]; then
+    echo "Error: Snippet path '$SNIPPET_PATH' does not exist."
+    exit 1
+fi
 
 echo "Crating template: ${VM_NAME} (${VM_ID})"
 

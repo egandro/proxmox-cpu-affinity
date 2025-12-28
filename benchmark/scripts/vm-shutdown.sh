@@ -19,5 +19,10 @@ echo "Shutdown VM: $VMID"
 
 echo "Warning: This will only shutdown VMs with a qemu guest agent."
 
+if ! qm status "$VMID" >/dev/null 2>&1; then
+    echo "Warning: VM $VMID does not exist."
+    exit 0
+fi
+
 # Shutdown VM, ignore errors
 qm shutdown "$VMID" || true

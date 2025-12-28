@@ -17,5 +17,10 @@ VMID="$1"
 
 echo "Stopping VM: $VMID"
 
+if ! qm status "$VMID" >/dev/null 2>&1; then
+    echo "Warning: VM $VMID does not exist."
+    exit 0
+fi
+
 # Stopping VM, ignore errors
 qm stop "$VMID" || true
