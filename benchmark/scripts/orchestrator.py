@@ -108,11 +108,20 @@ def execute_scripts(scripts, env, context_name, args):
 def main():
     parser = argparse.ArgumentParser(description="Benchmark Orchestrator")
     parser.add_argument("config", nargs="?", default="/benchmark/testcases.json", help="Path to configuration file")
+
+    mode_group = parser.add_mutually_exclusive_group(required=True)
+    mode_group.add_argument("-t", "--testcase", help="Only run the specified testcase")
+    mode_group.add_argument("--all", action="store_true", help="Run all testcases")
+    mode_group.add_argument("--create-templates", action="store_true", help="Run template creation scripts")
+
     parser.add_argument("--dry-run", action="store_true", help="Simulate execution")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
     parser.add_argument("-q", "--quiet", action="store_true", help="Suppress command output")
-    parser.add_argument("-t", "--testcase", help="Only run the specified testcase")
-    parser.add_argument("--create-templates", action="store_true", help="Run template creation scripts")
+
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
     args = parser.parse_args()
 
     if not os.path.exists(args.config):
