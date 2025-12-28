@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # Configuration
-VM_ID="${VM_ID:-1002}"
+VM_ID="${TEMPLATE_ID_DEBIAN:-1002}"
 OS_TYPE="${OS_TYPE:-debian}"
 OS_VERSION="${OS_VERSION:-13}"
 OS_RELEASE="${OS_RELEASE:-trixie}"
 
 VM_NAME="template-${VM_NAME:-${OS_TYPE}-${OS_VERSION}-cloud}"
-STORAGE="${STORAGE:-local-zfs}"         # Storage for the VM Disk
-SNIPPET_STORAGE="${SNIPPET_STORAGE:-local}"     # Storage for the Cloud-Init snippet (usually 'local')
+STORAGE="${PVE_STORAGE:-local-zfs}"         # Storage for the VM Disk
+SNIPPET_STORAGE="${PVE_STORAGE_SNIPPETS:-local}"     # Storage for the Cloud-Init snippet (usually 'local')
 SNIPPET_PATH="${SNIPPET_PATH:-/var/lib/vz/snippets}" # Physical path for snippets on host
-SSH_KEYFILE="${SSH_KEYFILE:-/root/.ssh/id_rsa.pub}"
-USERNAME="${USERNAME:-testcase}"
+SSH_KEYFILE="${PVE_SSH_KEY_FILE:-/root/.ssh/id_rsa.pub}"
+USERNAME="${TESTCASE_USER:-testcase}"
 IMAGE_URL="${IMAGE_URL:-https://cloud.debian.org/images/cloud/${OS_RELEASE}/latest/${OS_TYPE}-${OS_VERSION}-genericcloud-amd64.qcow2}"
 IMAGE_FILE="${IMAGE_FILE:-${OS_TYPE}-${OS_VERSION}-genericcloud-amd64.qcow2}"
 CACHE="${CACHE:-writeback}"
@@ -119,7 +119,7 @@ qm set $VM_ID --net0 virtio,bridge=vmbr0
 qm set $VM_ID --serial0 socket --vga serial0
 
 # Import the Disk
-echo "Importing disk to $STORAGE..."
+echo "Importing disk to $PVE_STORAGE..."
 qm set $VM_ID --scsi0 ${STORAGE}:0,import-from="$(pwd)/$IMAGE_FILE",discard=on,ssd=1,cache=$CACHE 1> /dev/null
 qm set $VM_ID --boot order=scsi0 --scsihw virtio-scsi-single
 

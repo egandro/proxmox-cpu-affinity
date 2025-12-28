@@ -1,20 +1,22 @@
 #!/bin/bash
 
-########### Storage
-#export STORAGE=local-zfs
+########### Proxmox Infrastructure (PVE)
+#export PVE_STORAGE="local-zfs"
+#export PVE_STORAGE_SNIPPETS="local"
+#export PVE_SSH_KEY_FILE="/root/.ssh/id_rsa.pub"
 
-########### Templates
-#export CREATE_TEMPLATE_FLAGS="--overwrite --force"
-#export TEMPLATE_EMPTY_VM_ID=1001
-#export TEMPLATE_DEBIAN_VM_ID=1002
+########### Template Definitions (TEMPLATE)
+export TEMPLATE_BUILD_FLAGS="--overwrite --force"
+export TEMPLATE_ID_EMPTY=1001
+export TEMPLATE_ID_DEBIAN=1002
 
-########### Benchmarks
-export BENCHMARK_TEMPLATE_ID="${TEMPLATE_DEBIAN_VM_ID:-1001}"
-export BENCHMARK_START_VMID=200
-export BENCHMARK_NUM_VMS=4
-export BENCHMARK_CORES=4
-export BENCHMARK_MEMORY=1024
+########### Benchmark Orchestration (BENCHMARK)
+export BENCHMARK_SOURCE_ID=$TEMPLATE_ID_DEBIAN
+export BENCHMARK_VMID_START=200
+export BENCHMARK_COUNT=2
+export BENCHMARK_VM_CORES=2
+export BENCHMARK_VM_MEMORY=1024
 
-########## Testcase
-export TESTCASE_NAME=hello-world
-export TESTCASE_SSH_USER=testcase
+########## Testcase Execution (TESTCASE)
+export TESTCASE_NAME="hello-world"
+export TESTCASE_USER="testcase"

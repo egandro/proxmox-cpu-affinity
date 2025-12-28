@@ -45,8 +45,8 @@ for i in $(seq 1 $NUM_VMS); do
     qm set $NEW_VMID --cores $CORES --memory $MEMORY
 
     if [ -n "$USER_SCRIPT" ]; then
-        echo "Running user script $USER_SCRIPT on VM $NEW_VMID with storage $STORAGE..."
-        $USER_SCRIPT "$NEW_VMID" "$STORAGE"
+        echo "Running user script $USER_SCRIPT on VM $NEW_VMID with storage $PVE_STORAGE..."
+        $USER_SCRIPT "$NEW_VMID" "$PVE_STORAGE"
     fi
 done
 

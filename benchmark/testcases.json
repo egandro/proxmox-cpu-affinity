@@ -4,6 +4,19 @@
             "SCRIPT_DIR": "/benchmark/scripts"
         }
     },
+    "create_templates": {
+        "scripts": {
+            "empty": {
+                "cmd": "$SCRIPT_DIR/template-empty.sh $TEMPLATE_BUILD_FLAGS"
+            },
+            "debian": {
+                "cmd": "$SCRIPT_DIR/template-debian.sh $TEMPLATE_BUILD_FLAGS"
+            }
+        },
+        "env": {
+            "TEMPLATE_BUILD_FLAGS": "--overwrite --force"
+        }
+    },
     "testcases": [
         {
             "name": "helloworld",

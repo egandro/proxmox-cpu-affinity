@@ -31,6 +31,6 @@ for i in $(seq 1 $NUM_VMS); do
         exit 1
     fi
 
-    echo "Running user script $USER_SCRIPT on VM $VMID with storage $STORAGE..."
-    $USER_SCRIPT "$VMID" "$STORAGE"
+    echo "Running user script $USER_SCRIPT on VM $VMID with storage $PVE_STORAGE..."
+    $USER_SCRIPT "$VMID" "$PVE_STORAGE"
 done
