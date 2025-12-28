@@ -135,7 +135,11 @@ def main():
     if args.show:
         print("Available Testcases:")
         for tc in data.get("testcases", []):
-            print(f"  - {tc.get('name', 'unnamed')}")
+            name = tc.get('name', 'unnamed')
+            if tc.get("enable", True) is False:
+                print(f"  - {name} (disabled)")
+            else:
+                print(f"  - {name}")
         sys.exit(0)
 
     global_env = data.get("global_config", {}).get("env", {})
@@ -168,6 +172,10 @@ def main():
             sys.exit(1)
 
         if not args.create_templates and args.testcase and args.testcase != context_name:
+            continue
+
+        if testcase.get("enable", True) is False:
+            print(f"Warning: Testcase '{context_name}' is disabled. Skipping.")
             continue
 
         print(f"\n========================================")

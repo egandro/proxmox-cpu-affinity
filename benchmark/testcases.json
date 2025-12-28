@@ -149,6 +149,7 @@
         },
         {
             "name": "kernel",
+            "enable": false,
             "env": {
                 "SLEEP_TIME": "100"
             },
