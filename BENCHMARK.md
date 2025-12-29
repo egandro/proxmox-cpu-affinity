@@ -64,6 +64,14 @@ cd /benchmark
 /benchmark/scripts/vm-wait-for-agent.sh 102
 /benchmark/scripts/vm-wait-for-agent.sh 103
 
+# https://stackoverflow.com/questions/22381686/how-can-size-of-the-root-disk-in-google-compute-engine-be-increased
+# resize hack
+# $ sudo apt install -y cloud-utils         # Debian jessie
+# $ sudo apt install -y cloud-guest-utils   # Debian stretch, Ubuntu
+# $ sudo growpart /dev/sda 1
+# $ sudo resize2fs /dev/sda1
+
+
 ```
 
 ## Results

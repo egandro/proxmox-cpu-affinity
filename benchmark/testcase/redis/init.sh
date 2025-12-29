@@ -10,3 +10,10 @@ echo "Initializing testcase: $TESTCASE"
 
 apt-get update
 apt-get install -y build-essential git time
+
+TESTCASE_DIR="/testcase/"
+mkdir -p "$TESTCASE_DIR"
+cd "$TESTCASE_DIR"
+
+git clone --depth=1 https://github.com/redis/redis.git
+cd redis
