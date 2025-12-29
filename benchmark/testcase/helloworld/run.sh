@@ -10,11 +10,15 @@ fi
 TESTCASE="$1"
 TIMESTAMP=$(date +%s)
 RESULT_DIR="/result/${TESTCASE}/${TIMESTAMP}"
+TESTCASE_DIR="/testcase/"
 
 # create a failed file when this script fails
 trap 'touch "${RESULT_DIR}/failed"' ERR
 
 mkdir -p "$RESULT_DIR"
+
+mkdir -p "$TESTCASE_DIR"
+cd "$TESTCASE_DIR"
 
 # Redirect all output (stdout & stderr) to a main log file
 exec > "${RESULT_DIR}/testcase.log" 2>&1

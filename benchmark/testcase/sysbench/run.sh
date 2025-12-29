@@ -10,11 +10,15 @@ fi
 TESTCASE="$1"
 TIMESTAMP=$(date +%s)
 RESULT_DIR="/result/${TESTCASE}/${TIMESTAMP}"
+TESTCASE_DIR="/testcase/"
 
 # create a failed file when this script fails
 trap 'touch "${RESULT_DIR}/failed"' ERR
 
 mkdir -p "$RESULT_DIR"
+
+mkdir -p "$TESTCASE_DIR"
+cd "$TESTCASE_DIR"
 
 # Redirect all output (stdout & stderr) to a main log file
 exec > "${RESULT_DIR}/testcase.log" 2>&1
@@ -27,7 +31,7 @@ if [ ! -f /usr/bin/time ]; then echo "Error: /usr/bin/time not found. Please run
 # Run sysbench
 # Measure resources and duration, outputting to result.json
 /usr/bin/time -f "{\"testcase\": \"$TESTCASE\", \"duration_sec\": %e, \"max_rss_kb\": %M, \"cpu_user_sec\": %U, \"cpu_sys_sec\": %S}" -o "${RESULT_DIR}/result.json" \
-    sysbench cpu --cpu-max-prime=20000 --threads=$(nproc) run > "${RESULT_DIR}/sysbench.log"
+    sysbench cpu --cpu-max-prime=20000 --threads="$(nproc)" run > "${RESULT_DIR}/sysbench.log"
 
 # Look for: events per second (higher is better).
 

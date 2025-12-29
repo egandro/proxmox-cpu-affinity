@@ -1,10 +1,11 @@
-#/bin/bash
+#!/bin/bash
 
 set -e
 
 SCRIPTDIR="$(dirname "$0")"
 
 if [ -z "$ORCHESTRATOR_MODE" ] && [ -f "${SCRIPTDIR}/../.env" ]; then
+    # shellcheck disable=SC1091
     . "${SCRIPTDIR}/../.env"
 fi
 

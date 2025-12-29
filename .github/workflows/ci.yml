@@ -55,9 +55,22 @@ jobs:
         env:
           CGO_ENABLED: 1
 
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          version: v0.10.0
+
   build-and-package:
     name: Build, Deb (${{ matrix.arch }})
-    needs: test
+    needs: [test, shellcheck]
     runs-on: ubuntu-latest
     container: debian:trixie
     strategy:

@@ -6,6 +6,11 @@ if [ -z "$1" ]; then
 fi
 
 TESTCASE="$1"
+echo "Initializing testcase: $TESTCASE"
 
 apt-get update
 apt-get install -y wrk time
+
+TESTCASE_DIR="/testcase/"
+mkdir -p "$TESTCASE_DIR"
+cd "$TESTCASE_DIR" || exit 1

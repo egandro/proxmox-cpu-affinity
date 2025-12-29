@@ -1,4 +1,4 @@
-.PHONY: all deps build clean test coverage lint tidy deploy deb get-status-core-ranking get-status-svg run-service run-status
+.PHONY: all deps build clean test coverage lint lint-benchmark tidy deploy deb get-status-core-ranking get-status-svg run-service run-status
 
 VERSION ?= 0.0.10
 
@@ -50,6 +50,9 @@ lint:
 	golangci-lint run ./...
 	gosec ./...
 	govulncheck ./...
+
+lint-shellcheck:
+	find . -name "*.sh" -type f -exec shellcheck {} +
 
 tidy:
 	go mod tidy
