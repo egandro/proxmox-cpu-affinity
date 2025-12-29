@@ -13,10 +13,10 @@ apt-get install -y build-essential git bison flex libssl-dev libelf-dev time
 
 TESTCASE_DIR="/testcase/"
 mkdir -p "$TESTCASE_DIR"
-cd "$TESTCASE_DIR"
+cd "$TESTCASE_DIR" || exit 1
 
 git clone --depth=1 https://github.com/torvalds/linux.git
-cd linux
+cd linux || exit 1
 
 make defconfig
 make clean

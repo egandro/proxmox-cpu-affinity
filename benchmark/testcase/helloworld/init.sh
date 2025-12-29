@@ -13,4 +13,4 @@ apt-get install -y time
 
 TESTCASE_DIR="/testcase/"
 mkdir -p "$TESTCASE_DIR"
-cd "$TESTCASE_DIR"
+cd "$TESTCASE_DIR" || exit 1
