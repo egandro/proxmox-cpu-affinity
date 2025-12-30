@@ -166,6 +166,7 @@ qm set <VMID> -vcpus 6
 
 - PVE Hook Scripts <https://pve.proxmox.com/pve-docs/pve-admin-guide.html#_hookscripts>
 - Original Idea for Core 2 Core Latency <https://github.com/nviennot/core-to-core-latency>
+- Similar project with focus of NUMA for SAP <https://github.com/knumskull/rhv-pinning-calculator/blob/master/rhv_pinning/calculator.py>
 
 ## Testing scripts
 
