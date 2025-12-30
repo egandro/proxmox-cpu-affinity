@@ -27,8 +27,8 @@ exec > "${RESULT_DIR}/testcase.log" 2>&1
 if [ ! -f /usr/bin/time ]; then echo "Error: /usr/bin/time not found. Please run init.sh to install 'time'."; exit 1; fi
 
 # in init
-# git clone --depth=1 https://github.com/redis/redis.git
-# cd redis
+# git clone --depth=1 https://github.com/redis/redis.git data
+# cd data
 
 make clean
 
