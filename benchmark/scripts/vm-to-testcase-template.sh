@@ -21,7 +21,7 @@ SSH_OPTS=("${BASE_OPTS[@]}" -p "$SSH_PORT" -i "$SSH_KEYFILE")
 SCP_OPTS=("${BASE_OPTS[@]}" -P "$SSH_PORT" -i "$SSH_KEYFILE")
 
 usage() {
-    echo "Usage: $0 <vmid> <name_postfix> <testcase_dir> <init_script> <cleanup_script>"
+    echo "Usage: $0 <vmid> <testcase> <name_postfix> <init_script> <cleanup_script>"
     exit 1
 }
 
@@ -30,10 +30,13 @@ if [ "$#" -lt 5 ]; then
 fi
 
 VMID="$1"
-NEW_NAME_POSTFIX="$2"
-TESTCASE_DIR="$3"
+TESTCASE="$2"
+NEW_NAME_POSTFIX="$3"
 TESTCASE_SCRIPT="$4"
 CLEANUP_SCRIPT="$5"
+
+TESTCASE_BASE_DIR="${TESTCASE_BASE_DIR:-${SCRIPTDIR}/../testcase}"
+TESTCASE_DIR="${TESTCASE_BASE_DIR}/${TESTCASE}"
 
 if [ ! -d "$TESTCASE_DIR" ]; then
     echo "Error: Testcase directory not found at $TESTCASE_DIR"
@@ -50,7 +53,7 @@ if [ ! -f "$CLEANUP_SCRIPT" ]; then
     exit 1
 fi
 
-echo "Creating new template $NEW_VMID from VM: $VMID (prefix: $NEW_NAME_POSTFIX) with script $TESTCASE_FOLDER"
+echo "Creating new template $NEW_VMID from VM: $VMID (testcase: $TESTCASE, postfix: $NEW_NAME_POSTFIX) with script $TESTCASE_FOLDER"
 
 if ! qm status "$VMID" >/dev/null 2>&1; then
     echo "Error: VM $VMID does not exist."
@@ -121,7 +124,6 @@ CLEAN_CMD_PATH="/tmp/cleanup.sh"
 
 echo "Uploading cleanup script ${CLEANUP_SCRIPT} on VM..."
 scp "${SCP_OPTS[@]}" "$CLEANUP_SCRIPT" "${SSH_USER}@${VM_IP}:${CLEAN_CMD_PATH}" || exit 1
-
 
 echo "Running script ${CLEANUP_SCRIPT} on VM..."
 

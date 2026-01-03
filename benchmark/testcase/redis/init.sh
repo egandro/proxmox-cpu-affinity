@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+set -x
+
 if [ -z "$1" ]; then
     echo "Error: TESTCASE is required."
     exit 1
@@ -11,9 +14,12 @@ echo "Initializing testcase: $TESTCASE"
 apt-get update
 apt-get install -y build-essential git time
 
-TESTCASE_DIR="/testcase"
-mkdir -p "$TESTCASE_DIR"
-cd "$TESTCASE_DIR" || exit 1
+TESTCASE_DIR="/testcase/"
+TESTCASE_WORK_DIR="$TESTCASE_DIR/$TESTCASE/work"
+mkdir -p "$TESTCASE_WORK_DIR"
+cd "$TESTCASE_WORK_DIR" || exit 1
 
-git clone --depth=1 https://github.com/redis/redis.git data
+rm -rf redis
+git clone --depth=1 https://github.com/redis/redis.git
 cd redis || exit 1
+#git checkout 8.4.0  || exit 1

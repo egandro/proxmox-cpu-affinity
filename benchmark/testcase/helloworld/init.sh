@@ -12,5 +12,7 @@ apt-get update
 apt-get install -y time
 
 TESTCASE_DIR="/testcase/"
-mkdir -p "$TESTCASE_DIR"
-cd "$TESTCASE_DIR" || exit 1
+TESTCASE_WORK_DIR="$TESTCASE_DIR/$TESTCASE/work"
+mkdir -p "$TESTCASE_WORK_DIR"
+cd "$TESTCASE_WORK_DIR" || exit 1
+

@@ -17,8 +17,10 @@ trap 'touch "${RESULT_DIR}/failed"' ERR
 
 mkdir -p "$RESULT_DIR"
 
-mkdir -p "$TESTCASE_DIR"
-cd "$TESTCASE_DIR"
+TESTCASE_DIR="/testcase/"
+TESTCASE_WORK_DIR="$TESTCASE_DIR/$TESTCASE/work"
+mkdir -p "$TESTCASE_WORK_DIR"
+cd "$TESTCASE_WORK_DIR" || exit 1
 
 # Redirect all output (stdout & stderr) to a main log file
 exec > "${RESULT_DIR}/testcase.log" 2>&1
