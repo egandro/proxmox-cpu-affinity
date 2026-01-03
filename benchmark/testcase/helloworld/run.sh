@@ -17,7 +17,6 @@ trap 'touch "${RESULT_DIR}/failed"' ERR
 
 mkdir -p "$RESULT_DIR"
 
-TESTCASE_DIR="/testcase/"
 TESTCASE_WORK_DIR="$TESTCASE_DIR/$TESTCASE/work"
 mkdir -p "$TESTCASE_WORK_DIR"
 cd "$TESTCASE_WORK_DIR" || exit 1

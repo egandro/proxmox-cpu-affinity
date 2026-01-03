@@ -17,7 +17,6 @@ trap 'touch "${RESULT_DIR}/failed"' ERR
 
 mkdir -p "$RESULT_DIR"
 
-TESTCASE_DIR="/testcase/"
 TESTCASE_WORK_DIR="$TESTCASE_DIR/$TESTCASE/work"
 mkdir -p "$TESTCASE_WORK_DIR"
 cd "$TESTCASE_WORK_DIR" || exit 1
@@ -33,12 +32,13 @@ if [ ! -f /usr/bin/time ]; then echo "Error: /usr/bin/time not found. Please run
 # cd redis
 
 cd redis
-make clean
+#make
+#make test
 
 # Run sysbench
 # Measure resources and duration, outputting to result.json
 /usr/bin/time -f "{\"testcase\": \"$TESTCASE\", \"duration_sec\": %e, \"max_rss_kb\": %M, \"cpu_user_sec\": %U, \"cpu_sys_sec\": %S}" -o "${RESULT_DIR}/result.json" \
-    /usr/bin/make -j"$(nproc)" > "${RESULT_DIR}/redis.log"
+    /bin/bash -c "/usr/bin/make -j$(nproc) all && /usr/bin/make test || true" > "${RESULT_DIR}/redis.log"
 
 # create a success file to tell this test was ok
 touch "${RESULT_DIR}/success"

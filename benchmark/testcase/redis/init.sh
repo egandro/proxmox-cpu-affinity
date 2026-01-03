@@ -12,7 +12,8 @@ TESTCASE="$1"
 echo "Initializing testcase: $TESTCASE"
 
 apt-get update
-apt-get install -y build-essential git time
+# yes redis needs tcl for tests...
+apt-get install -y time git pkg-config tcl build-essential
 
 TESTCASE_DIR="/testcase/"
 TESTCASE_WORK_DIR="$TESTCASE_DIR/$TESTCASE/work"
@@ -20,6 +21,9 @@ mkdir -p "$TESTCASE_WORK_DIR"
 cd "$TESTCASE_WORK_DIR" || exit 1
 
 rm -rf redis
-git clone --depth=1 https://github.com/redis/redis.git
+VERSION=8.4.0
+git clone https://github.com/redis/redis.git
 cd redis || exit 1
-#git checkout 8.4.0  || exit 1
+git checkout $VERSION  || exit 1
+
+make clean

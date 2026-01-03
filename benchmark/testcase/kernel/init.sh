@@ -17,10 +17,11 @@ mkdir -p "$TESTCASE_WORK_DIR"
 cd "$TESTCASE_WORK_DIR" || exit 1
 
 rm -rf linux
-git clone --depth=1 https://github.com/torvalds/linux.git
+VERSION=v6.18
+git clone --depth=1 --branch "$VERSION" https://github.com/torvalds/linux.git
 cd linux || exit 1
 
-#git checkout v6.18
+#git checkout
 
 make defconfig || exit 1
 make clean || exit 1

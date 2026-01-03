@@ -36,15 +36,15 @@ TESTCASE_SCRIPT="$4"
 CLEANUP_SCRIPT="$5"
 
 TESTCASE_BASE_DIR="${TESTCASE_BASE_DIR:-${SCRIPTDIR}/../testcase}"
-TESTCASE_DIR="${TESTCASE_BASE_DIR}/${TESTCASE}"
+TESTCASE_DIR="${TESTCASE_BASE_DIR}"
 
 if [ ! -d "$TESTCASE_DIR" ]; then
     echo "Error: Testcase directory not found at $TESTCASE_DIR"
     exit 1
 fi
 
-if [ ! -f "$TESTCASE_DIR/$TESTCASE_SCRIPT" ]; then
-    echo "Error: Init script $TESTCASE_DIR/$TESTCASE_SCRIPT does not exist."
+if [ ! -f "$TESTCASE_DIR/$TESTCASE/$TESTCASE_SCRIPT" ]; then
+    echo "Error: Init script $TESTCASE_DIR/$TESTCASE/$TESTCASE_SCRIPT does not exist."
     exit 1
 fi
 
@@ -101,16 +101,13 @@ echo "Uploading script"
 REMOTE_CMD="sudo mkdir -p /testcase && sudo chown -R ${SSH_USER} /testcase"
 # shellcheck disable=SC2029
 ssh "${SSH_OPTS[@]}" "${SSH_USER}@${VM_IP}" "$REMOTE_CMD" || exit 1
-scp -r "${SCP_OPTS[@]}" "$TESTCASE_DIR" "${SSH_USER}@${VM_IP}:/testcase" || exit 1
+scp -r "${SCP_OPTS[@]}" "$TESTCASE_DIR/${TESTCASE}" "${SSH_USER}@${VM_IP}:/testcase" || exit 1
 
-BASE_DIR=$(basename "${TESTCASE_DIR}")
-CMD_PATH="/testcase/${BASE_DIR}"
-# we don't have a testcase name - so assume it's the basedir
-TESTCASE=$BASE_DIR
+CMD_PATH="/testcase/${TESTCASE}"
 RUN_CMD="sudo $CMD_PATH/$TESTCASE_SCRIPT $TESTCASE"
 
 echo TESTCASE_DIR: "$TESTCASE_DIR"
-echo BASE_DIR: "$BASE_DIR"
+echo TESTCASE: "$TESTCASE"
 echo CMD_PATH: "$CMD_PATH"
 echo RUN_CMD: "$RUN_CMD"
 
