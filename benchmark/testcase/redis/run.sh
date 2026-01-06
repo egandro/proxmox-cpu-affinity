@@ -10,7 +10,7 @@ fi
 TESTCASE="$1"
 TIMESTAMP=$(date +%s)
 RESULT_DIR="/result/${TESTCASE}/${TIMESTAMP}"
-TESTCASE_DIR="/testcase/"
+TESTCASE_DIR="/testcase"
 
 # create a failed file when this script fails
 trap 'touch "${RESULT_DIR}/failed"' ERR
@@ -34,6 +34,7 @@ if [ ! -f /usr/bin/time ]; then echo "Error: /usr/bin/time not found. Please run
 cd redis
 #make
 #make test
+
 
 # Run sysbench
 # Measure resources and duration, outputting to result.json

@@ -11,7 +11,7 @@ echo "Initializing testcase: $TESTCASE"
 apt-get update
 apt-get install -y sysbench time
 
-TESTCASE_DIR="/testcase/"
+TESTCASE_DIR="/testcase"
 TESTCASE_WORK_DIR="$TESTCASE_DIR/$TESTCASE/work"
 mkdir -p "$TESTCASE_WORK_DIR"
 cd "$TESTCASE_WORK_DIR" || exit 1

@@ -10,7 +10,7 @@ fi
 TESTCASE="$1"
 TIMESTAMP=$(date +%s)
 RESULT_DIR="/result/${TESTCASE}/${TIMESTAMP}"
-TESTCASE_DIR="/testcase/"
+TESTCASE_DIR="/testcase"
 
 # create a failed file when this script fails
 trap 'touch "${RESULT_DIR}/failed"' ERR

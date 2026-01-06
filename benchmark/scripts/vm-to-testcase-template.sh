@@ -114,6 +114,8 @@ echo RUN_CMD: "$RUN_CMD"
 echo "Running script ${TESTCASE_SCRIPT} on VM..."
 
 REMOTE_CMD="sudo chmod +x $CMD_PATH && $RUN_CMD"
+echo "REMOTE_CMD: ${REMOTE_CMD}"
+
 # shellcheck disable=SC2029
 ssh "${SSH_OPTS[@]}" "${SSH_USER}@${VM_IP}" "$REMOTE_CMD" || exit 1
 
@@ -130,10 +132,10 @@ REMOTE_CMD="sudo chmod +x $CMD_PATH && $RUN_CMD"
 # shellcheck disable=SC2029
 ssh "${SSH_OPTS[@]}" "${SSH_USER}@${VM_IP}" "$REMOTE_CMD" || exit 1
 
-echo "Stopping VM..."
+echo "Shutdown VM..."
 
-# Stopping VM
-qm stop "$VMID"
+# Shutdown VM
+qm shutdown "$VMID"
 
 echo "Creating Template..."
 
