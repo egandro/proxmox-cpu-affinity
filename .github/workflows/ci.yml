@@ -132,7 +132,7 @@ jobs:
       security-events: write
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           pattern: deb-package-*
           merge-multiple: true
